@@ -119,7 +119,7 @@ export function FlowStates(props) {
             <Background
                 variant="dots"
                 gap={defaultSettings.grid.gap}
-                offset={settings.grid.offset}
+                offset={props.settings.grid.offset}
                 size={1}
             />
         </ReactFlow>
