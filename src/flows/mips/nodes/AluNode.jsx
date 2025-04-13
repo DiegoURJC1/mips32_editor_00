@@ -1,5 +1,4 @@
 import React from "react";
-import { Position } from "@xyflow/react";
 import "./common/node-mips-stylesheet.css";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "./common/handles/HandlesMapper.jsx";

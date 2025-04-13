@@ -1,7 +1,6 @@
 import {
     addEdge,
     Background,
-    ConnectionLineType,
     ControlButton,
     Controls,
     getViewportForBounds,
