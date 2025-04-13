@@ -68,15 +68,15 @@ const CustomHandle = (props) => {
     const defaultBgColor = getComputedStyle(document.documentElement).getPropertyValue('--xy-handle-background-color-default').trim();
     const defaultBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--xy-handle-border-color-default').trim();
     const backgroundColor = isMismatch
-        ? 'red'
+        ? 'var(--negation-color)'
         : isControlHandle
-            ? 'orange'
+            ? 'var(--control-color)'
             : defaultBgColor;
 
     const borderColor = isMismatch
-        ? 'darkred'
+        ? 'var(--negation-border-color)'
         : isControlHandle
-            ? 'darkorange'
+            ? 'var(--control-border-color)'
             : defaultBorderColor;
     return (
         <div>

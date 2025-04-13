@@ -3,7 +3,7 @@
     color: var(--text-color);
     padding: 0.5rem;
     box-sizing: border-box;
-    height: calc(100vh - var(--top-bar-height));
+    height: calc(100vh - var(--top-bar-height) + 4px);
     width: 240px;
     display: flex;
     flex-direction: column;

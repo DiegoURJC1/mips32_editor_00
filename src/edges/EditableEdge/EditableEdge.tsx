@@ -98,9 +98,9 @@ export function EditableEdgeComponent(
     }, [sourceNode, targetNode, sourceHandleId, targetHandleId]);
 
     const edgeColor = isMismatch
-        ? 'red' // Si hay desajuste, el borde se pone rojo
+        ? 'var(--negation-color)' // Si hay desajuste, el borde se pone rojo
         : (isControlEdge || isAluControlEdge
-            ? 'orange'
+            ? 'var(--control-color)'
             : COLORS[data.algorithm ?? Algorithm.BezierCatmullRom]);
 
     const { setEdges } = useReactFlow<BuiltInNode, EditableEdge>();

@@ -5,7 +5,7 @@ export const useTheme = () => {
     const [theme, setTheme] = useState(themes.light);
 
     useEffect(() => {
-        document.body.setAttribute("color-mode", theme);
+        document.body.setAttribute("theme", theme);
         console.log("Theme set to: ", theme);
     }, [theme]);
 
