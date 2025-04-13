@@ -5,10 +5,8 @@ import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "./common/handles/HandlesMapper.jsx";
 import {colors, renderAluSvg} from "../../../assets/svg-nodes/svgNodesData.jsx";
 import {getAluHandles} from "./common/handles/handleLists.js";
-import {useTheme} from "../../../hooks/useTheme.jsx";
 
 export default function AluNode({ id, data, isConnectable }) {
-    const { theme } = useTheme();
 
     let mul = 5;
     const size = {
@@ -51,7 +49,7 @@ export default function AluNode({ id, data, isConnectable }) {
                 nodeId={id}
             />
 
-            {renderAluSvg(theme, borderWidth)}
+            {renderAluSvg(backgroundColor, borderColor, borderWidth)}
 
             <HandlesMapper
                 handleList={handleList}
