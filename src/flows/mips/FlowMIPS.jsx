@@ -87,7 +87,7 @@ export function FlowMIPS(props) {
 
             props.setEdges((edges) => addEdge(edge, edges));
         },
-        [props.setEdges]
+        [props]
     );
 
 
