@@ -1,0 +1,73 @@
+.control-node, .alu-exit-node {
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: var(--border-width) solid var(--border-color);
+
+    box-sizing: border-box;
+    border-radius: 0.4em;
+
+}
+
+.mips-node {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: var(--border-width) solid var(--border-color);
+    box-sizing: border-box;
+    border-radius: 0.4em;
+}
+
+.mips-node.control,
+.mips-node.alu-control {
+    border-color: orange;
+}
+
+.mips-node.control {
+    border-radius: 50% !important;
+}
+
+.mips-node.multiplexer {
+    border-radius: 4em;
+}
+.mips-node.sign-extend, .mips-node.shift-left-2, .mips-node.alu-control {
+    border-radius: 100% !important;
+}
+
+.mips-node.memory, .mips-node.instruction-register {
+    align-items: flex-end !important;
+}
+
+.mips-node.register {
+    align-items: baseline;
+    justify-content: right;
+}
+
+.control-node {
+    border-radius: 50%; !important;
+    border-color: orange;
+}
+.multiplexer-node {
+    border-radius: 4em;
+}
+
+.alu-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--text-color);
+}

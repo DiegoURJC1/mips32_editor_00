@@ -1,0 +1,155 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { Position, useUpdateNodeInternals } from "@xyflow/react";
+
+import {
+    colors,
+    logicGateTypes,
+    renderLeftAndSvg, renderRightAndSvg,
+    renderLeftOrSvg, renderRightOrSvg,
+    renderLeftNotSvg, renderRightNotSvg,
+} from "../../../assets/svg-nodes/svgNodesData.jsx";
+
+import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
+import HandlesMapper from "./common/handles/HandlesMapper.jsx";
+
+// Constants
+const NODE_HEIGHT = 80;
+
+// Generates handles for each gate type and orientation
+function getHandles(gateType, isLeft, height) {
+    const unit = "px";
+    const inputPosition = isLeft ? Position.Right : Position.Left;
+    const outputPosition = isLeft ? Position.Left : Position.Right;
+
+    switch (gateType) {
+        case logicGateTypes.AND:
+        case logicGateTypes.OR:
+            return [
+                {
+                    id: "input1",
+                    name: "Input 1",
+                    type: "target",
+                    position: inputPosition,
+                    connectioncount: 1,
+                    bits: 1,
+                    style: { top: `30px` },
+                },
+                {
+                    id: "input2",
+                    name: "Input 2",
+                    type: "target",
+                    position: inputPosition,
+                    connectioncount: 1,
+                    bits: 1,
+                    style: { top: `${height - 30}${unit}` },
+                },
+                {
+                    id: "output",
+                    name: "Output",
+                    type: "source",
+                    position: outputPosition,
+                    bits: 1,
+                },
+            ];
+        case logicGateTypes.NOT:
+            return [
+                {
+                    id: "input",
+                    name: "Input",
+                    type: "target",
+                    position: inputPosition,
+                    bits: 1,
+                    connectioncount: 1,
+                },
+                {
+                    id: "output",
+                    name: "Output",
+                    type: "source",
+                    position: outputPosition,
+                    bits: 1,
+                },
+            ];
+        default:
+            return [];
+    }
+}
+
+// Generates SVGs for each gate type
+function getSVGs(gateType, bgColor, borderColor, borderWidth) {
+    switch (gateType) {
+        case logicGateTypes.AND:
+            return {
+                left: renderLeftAndSvg(bgColor, borderColor, borderWidth),
+                right: renderRightAndSvg(bgColor, borderColor, borderWidth),
+            };
+        case logicGateTypes.OR:
+            return {
+                left: renderLeftOrSvg(bgColor, borderColor, borderWidth),
+                right: renderRightOrSvg(bgColor, borderColor, borderWidth),
+            };
+        case logicGateTypes.NOT:
+            return {
+                left: renderLeftNotSvg(bgColor, borderColor, borderWidth),
+                right: renderRightNotSvg(bgColor, borderColor, borderWidth),
+            };
+        default:
+            return { left: null, right: null };
+    }
+}
+
+const LogicGateNode = React.memo(function LogicGateNode({ id, data, isConnectable }) {
+    const updateNodeInternals = useUpdateNodeInternals();
+    const [isLeftOriented, setIsLeftOriented] = useState(data.isLeftOrientation || false);
+
+    // Sync internal state if `data.isLeftOrientation` changes externally
+    useEffect(() => {
+        setIsLeftOriented(data.isLeftOrientation || false);
+    }, [data.isLeftOrientation]);
+
+    // Update handles when orientation changes
+    useEffect(() => {
+        updateNodeInternals(id);
+    }, [isLeftOriented, id, updateNodeInternals]);
+
+    const handleToggleOrientation = () => {
+        setIsLeftOriented((prev) => !prev);
+    };
+
+    const isDarkMode = data.colorMode === "dark";
+    const { backgroundColor, borderColor } = isDarkMode ? colors.dark : colors.light;
+
+    const borderWidth = useMemo(() => {
+        return getComputedStyle(document.documentElement)
+            .getPropertyValue("--border-width")
+            .trim();
+    }, []);
+
+    const handleList = useMemo(() => {
+        return getHandles(data.type, isLeftOriented, NODE_HEIGHT);
+    }, [data.type, isLeftOriented]);
+
+    const { left: leftSVG, right: rightSVG } = useMemo(() => {
+        return getSVGs(data.type, backgroundColor, borderColor, borderWidth);
+    }, [data.type, backgroundColor, borderColor, borderWidth]);
+
+    return (
+        <div
+            className="logic-gate-node"
+            style={{
+                height: `${NODE_HEIGHT}px`,
+            }}
+        >
+            {isLeftOriented ? leftSVG : rightSVG}
+
+            <CustomNodeToolbar data={data} handles={handleList} nodeId={id}>
+                <button className="toggle-orientation" onClick={handleToggleOrientation}>
+                    🔄
+                </button>
+            </CustomNodeToolbar>
+
+            <HandlesMapper handleList={handleList} isConnectable={isConnectable} />
+        </div>
+    );
+});
+
+export default LogicGateNode;

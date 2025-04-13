@@ -1,0 +1,21 @@
+.states-node {
+    border-radius: 100%;
+
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: var(--border-width) solid var(--border-color);
+
+    box-sizing: border-box;
+}
+
+.state-number {
+    position: absolute;
+}

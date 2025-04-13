@@ -1,0 +1,31 @@
+.dnd-node-wrapper {
+    width: 60px;
+    border: var(--border-width) solid var(--border-color);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;  /* Para organizar los elementos en columna */
+    justify-content: flex-start;  /* Asegura que los elementos estén al principio */
+    align-items: center;  /* Centra los elementos horizontalmente */
+
+    margin: 4px;
+}
+
+.dnd-button-icon {
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    aspect-ratio: 1;
+    box-sizing: border-box;
+}
+
+.dnd-button-label {
+    text-align: center;
+    padding: 4px;
+    margin-top: auto;  /* Hace que el label se adhiera a la parte inferior */
+    font-size: 0.8em;
+    border-top: var(--border-width) solid var(--border-color);
+    width: 100%;
+    box-sizing: border-box;
+}

@@ -1,0 +1,9 @@
+.handle-text, .handle-bits {
+    color: var(--text-color);
+    position: relative;
+    font-size: 12px;
+    pointer-events: none;
+    white-space: pre-line;
+}
+
+

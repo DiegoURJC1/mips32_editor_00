@@ -1,0 +1,9 @@
+.test-node-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+}

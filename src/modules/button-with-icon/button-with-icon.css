@@ -1,0 +1,28 @@
+.button-with-icon {
+    background-color: var(--background-color);
+    color: white;
+    border-radius: 0.2rem;
+    border: none;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Transición suave */
+}
+
+
+
+.button-with-icon.active {
+    background-color: #007bff; /* Color del botón cuando está activo */
+}
+
+.button-with-icon:focus {
+    outline: none; /* Elimina el borde de enfoque */
+}
+
+.svg-icon {
+    height: 2rem;
+    width: 2rem;
+}

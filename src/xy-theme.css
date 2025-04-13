@@ -1,0 +1,10 @@
+.react-flow {
+}
+
+.react-flow__background {
+    background-color: white;
+}
+.dark .react-flow__background {
+    background-color: #232323;
+;
+}

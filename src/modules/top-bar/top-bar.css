@@ -1,0 +1,27 @@
+.top-bar {
+    /* Box Model */
+    width: 100vw;
+    height: var(--top-bar-height);
+    padding-left: 0.5rem;
+    box-sizing: border-box;
+
+    /* Layout */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    /* Visual */
+    background-color: var(--top-bar-background-color);
+    color: var(--text-color);
+    font-size: 2rem;
+    font-weight: bold;
+
+    /* Miscellaneous */
+}
+
+.panel-buttons-wrapper {
+    /* Layout */
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}

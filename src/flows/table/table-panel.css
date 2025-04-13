@@ -1,0 +1,26 @@
+.table-panel-wrapper {
+    display: flex;
+    justify-content: center; /* Centra la tabla horizontalmente */
+    align-items: center;     /* Centra la tabla verticalmente */
+    flex-direction: column;  /* Organiza los elementos en columna */
+    width: 100vw;
+}
+
+
+th {
+    writing-mode: vertical-rl;  /* Hace que el texto sea vertical de arriba a abajo */
+    text-align: center;         /* Centra el texto horizontalmente */
+    vertical-align: middle;     /* Alinea el texto verticalmente en el centro */
+    padding: 10px;              /* Añade espacio alrededor del texto */
+    height: 100px;              /* Asegura que haya suficiente altura */
+}
+
+tr {
+    text-align: center;
+}
+
+.input-table-value {
+    height: 100%;
+    max-width: 20px;
+    text-align: center;
+}

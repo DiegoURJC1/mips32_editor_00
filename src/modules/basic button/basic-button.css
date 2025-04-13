@@ -1,0 +1,8 @@
+.basic-button{
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: thin solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+    padding: 1em;
+}

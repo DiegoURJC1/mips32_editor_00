@@ -1,0 +1,57 @@
+.custom-node-toolbar {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 300px;
+    height: auto;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    padding: 10px;
+    z-index: 10;
+    box-sizing: border-box;
+    color: var(--text-color);
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px; /* Espacio entre las pestañas y el contenido */
+}
+
+.tabs button {
+    color: var(--text-color);
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    margin-right: 10px;
+}
+
+.tabs button.active {
+    border-bottom: 2px solid #007bff;
+    font-weight: bold;
+}
+
+/* Sección de contenido de las pestañas */
+.content-tab, .handles-tab, .extra-tab {
+    flex-grow: 1; /* Permite que el contenido se expanda hacia abajo */
+    padding: 10px;
+    overflow-y: auto; /* Si el contenido es muy largo, permite desplazarse hacia abajo */
+}
+
+.node-toolbar-section-title {
+    margin-bottom: 5px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.target-handles ul, .source-handles ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.target-handles li, .source-handles li {
+    padding: 2px 2px 2px 8px;
+}
