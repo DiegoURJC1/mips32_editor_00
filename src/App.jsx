@@ -171,7 +171,8 @@ export const App = () => {
                             currentPanel={currentPanel}
                             settings={settings}
                             onChangeGrid={handleUpdateSettingsGrid}
-                            onChangeColorMode={handleUpdateSettingsColorMode}
+                            theme={theme}
+                            setThemeMode={setThemeMode}
                             onClickResetButton={handleResetSettings}
                         />
                         <div className="flow-wrapper" ref={reactFlowWrapper}>
