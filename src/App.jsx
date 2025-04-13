@@ -145,9 +145,9 @@ export const App = () => {
                         <SidePanel
                             currentPanel={currentPanel}
                             settings={settings}
-                            onChangeGrid={handleUpdateSettingsGrid}
                             theme={theme}
                             setThemeMode={setThemeMode}
+                            onChangeGrid={handleUpdateSettingsGrid}
                             onClickResetButton={handleResetSettings}
                         />
                         <div className="flow-wrapper" ref={reactFlowWrapper}>
@@ -157,6 +157,7 @@ export const App = () => {
                                 onNodesChange={onNodesChangeMips}
                                 onEdgesChange={onEdgesChangeMips}
                                 setEdges={setEdgesMips}
+
                                 onDrop={onDrop}
                                 onDragOver={onDragOver}
                                 settings={settings}
@@ -170,9 +171,9 @@ export const App = () => {
                         <SidePanel
                             currentPanel={currentPanel}
                             settings={settings}
-                            onChangeGrid={handleUpdateSettingsGrid}
                             theme={theme}
                             setThemeMode={setThemeMode}
+                            onChangeGrid={handleUpdateSettingsGrid}
                             onClickResetButton={handleResetSettings}
                         />
                         <div className="flow-wrapper" ref={reactFlowWrapper}>
@@ -182,10 +183,11 @@ export const App = () => {
                                 onNodesChange={onNodesChangeStates}
                                 onEdgesChange={onEdgesChangeStates}
                                 setEdges={setEdgesStates}
+
                                 onDrop={onDrop}
                                 onDragOver={onDragOver}
+
                                 settings={settings}
-                                defaultSettings={defaultSettings}
                                 colorMode={theme}
                             />
                         </div>

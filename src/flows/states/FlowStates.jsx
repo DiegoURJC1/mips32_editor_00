@@ -16,7 +16,7 @@ import {DEFAULT_ALGORITHM} from "../../edges/EditableEdge/constants.js";
 import {edgeTypes} from "../../edges/edgeTypes.js";
 import {ConnectionLine} from "../../edges/ConnectionLine.js";
 import {validateConnection} from "../common/reactFlowProps.js";
-import {vpcStates} from "../../common-data/settings.js";
+import {defaultSettings, vpcStates} from "../../common-data/settings.js";
 
 const proOptions = { hideAttribution: true };
 
@@ -118,8 +118,8 @@ export function FlowStates(props) {
             <MiniMap/>
             <Background
                 variant="dots"
-                gap={props.defaultSettings.grid.gap}
-                offset={props.settings.grid.offset}
+                gap={defaultSettings.grid.gap}
+                offset={settings.grid.offset}
                 size={1}
             />
         </ReactFlow>
