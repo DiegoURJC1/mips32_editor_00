@@ -1,6 +1,6 @@
 import { toPng } from 'html-to-image';
 import {getNodesBounds} from "@xyflow/react";
-import {colorModes} from "../../common-data/settings.js";
+import {themes} from "../../common-data/settings.js";
 const image = {
     width: 1920,
     height: 1080,
@@ -25,9 +25,9 @@ export function handleDownload(getNodes, getViewportForBounds, colorMode) {
     );
 
     let backgroundColor;
-    if (colorMode === colorModes.dark) {
+    if (colorMode === themes.dark) {
         backgroundColor = '#232323';
-    } else if (colorMode === colorModes.light) {
+    } else if (colorMode === themes.light) {
         backgroundColor = 'white';
     }
 

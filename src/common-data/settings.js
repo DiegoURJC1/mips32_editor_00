@@ -1,4 +1,4 @@
-export const colorModes = {
+export const themes = {
     dark: 'dark',
     light: 'light',
 }

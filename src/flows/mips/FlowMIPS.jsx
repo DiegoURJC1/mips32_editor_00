@@ -92,8 +92,6 @@ export function FlowMIPS(props) {
     );
 
 
-
-
     return(
         <ReactFlow
             nodes={nodesWithColorMode}

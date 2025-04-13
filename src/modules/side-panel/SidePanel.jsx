@@ -2,11 +2,9 @@ import BasicButton from "../basic button/BasicButton.jsx";
 import "./side-panel.css"
 import {useDnD} from "./DnDContext.jsx";
 import {DnDButtonsMips, DnDButtonsStates} from "../dnd-button/DnDButton.jsx";
-import {useTheme} from "../../hooks/useTheme.jsx";
-import {colorModes} from "../../common-data/settings.js";
+import {themes} from "../../common-data/settings.js";
 
 export default function SidePanel(props) {
-    const { theme, setThemeMode } = useTheme();
 
     const [_, setType] = useDnD();
 
@@ -28,7 +26,7 @@ export default function SidePanel(props) {
                 <div className={"side-panel-dnd-buttons-wrapper"}>
                     {props.currentPanel === 0 && (
                         <DnDButtonsMips
-                            colorMode={theme}
+                            colorMode={props.theme}
                             onDragStart={onDragStart}
                         />
                     )}
@@ -52,11 +50,11 @@ export default function SidePanel(props) {
                     Choose Color Mode:
                     <select
                         id="colorMode"
-                        value={theme}
-                        onChange={(e) => setThemeMode(e.target.value)}
+                        value={props.theme}
+                        onChange={(e) => props.setThemeMode(e.target.value)}
                     >
-                        <option value={colorModes.light}>Light</option>
-                        <option value={colorModes.dark}>Dark</option>
+                        <option value={themes.light}>Light</option>
+                        <option value={themes.dark}>Dark</option>
                     </select>
                 </label>
 

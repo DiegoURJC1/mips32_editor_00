@@ -11,7 +11,7 @@ import './xy-theme.css'
 import TopBar from "./modules/top-bar/TopBar.jsx";
 import {FlowStates} from "./flows/states/FlowStates.jsx";
 import TablePanel from "./flows/table/TablePanel.jsx";
-import { defaultSettings } from "./common-data/settings.js";
+import {defaultSettings} from "./common-data/settings.js";
 import {initialEdges as initialEdgesMips} from "./flows/mips/initial-elements/initialEdges.js";
 import {initialEdges as initialEdgesStates} from "./flows/states/initial-elements/initialEdges.js";
 import {useTheme} from "./hooks/useTheme.jsx";
@@ -34,6 +34,9 @@ export const App = () => {
     const reactFlowWrapper = useRef(null);
     const { screenToFlowPosition } = useReactFlow();
     const [type] = useDnD();
+
+    const { theme, setThemeMode } = useTheme();
+    const [settings, setSettings] = useState(defaultSettings);
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -87,7 +90,7 @@ export const App = () => {
                         ...(isLogicGate && {
                             type: upperType, // logicGateType como 'AND'
                             isLeftOrientation: false,
-                            colorMode: currentTheme,
+                            colorMode: theme,
                         }),
                     },
                 };
@@ -105,11 +108,9 @@ export const App = () => {
                 setNodesStates((nds) => nds.concat(newNode));
             }
         },
-        [screenToFlowPosition, setNodesMips, setNodesStates, type, currentPanel] // <- dependencias corregidas
+        [screenToFlowPosition, setNodesMips, setNodesStates, type, currentPanel, theme] // <- dependencias corregidas
     );
 
-    const [settings, setSettings] = useState(defaultSettings);
-    const { theme: currentTheme, setThemeMode } = useTheme();
 
     const handleUpdateSettingsGrid = (grid) => {
         setSettings({
@@ -122,17 +123,12 @@ export const App = () => {
             },
         });
     };
+
     const handleResetSettings = () => {
         setSettings(defaultSettings);
-        console.log("Settings changed to default");
+        console.log("Settings set to default");
         console.log(settings);
     };
-    const handleUpdateSettingsColorMode = (e) => {
-        const newColorMode = e.target.value;
-        setThemeMode(newColorMode);
-        console.log(`Color mode changed to ${newColorMode}`);
-    };
-
 
 
 
@@ -150,7 +146,8 @@ export const App = () => {
                             currentPanel={currentPanel}
                             settings={settings}
                             onChangeGrid={handleUpdateSettingsGrid}
-                            onChangeColorMode={handleUpdateSettingsColorMode}
+                            theme={theme}
+                            setThemeMode={setThemeMode}
                             onClickResetButton={handleResetSettings}
                         />
                         <div className="flow-wrapper" ref={reactFlowWrapper}>
@@ -163,7 +160,7 @@ export const App = () => {
                                 onDrop={onDrop}
                                 onDragOver={onDragOver}
                                 settings={settings}
-                                colorMode={currentTheme}
+                                colorMode={theme}
                             />
                         </div>
                     </>
@@ -188,7 +185,7 @@ export const App = () => {
                                 onDragOver={onDragOver}
                                 settings={settings}
                                 defaultSettings={defaultSettings}
-                                colorMode={currentTheme}
+                                colorMode={theme}
                             />
                         </div>
                     </>
