@@ -3,9 +3,11 @@ import "./basic-button.css"
 const BasicButton = (props) => {
     return (
         <button
-
-            onClick={props.onClick}
             className="basic-button"
+            onClick={e => {
+                e.stopPropagation();
+                props.onClick();
+            }}
         >
             {props.children}
         </button>
