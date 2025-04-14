@@ -162,7 +162,7 @@ function nodeColor(node) {
     switch (node.type) {
         case 'control':
         case 'aluControl':
-            return 'orange';
+            return 'var(--control-color)';
         default:
             return defaultNodeColor;
     }
