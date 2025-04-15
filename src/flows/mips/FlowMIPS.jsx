@@ -13,7 +13,7 @@ import "./nodes/common/node-mips-stylesheet.css"
 //import {nodeTypes} from "./nodes/common/nodeTypes.js";
 import {ConnectionLine} from "../../edges/ConnectionLine.js";
 import {DEFAULT_ALGORITHM} from "../../edges/EditableEdge/constants.ts";
-import {useCallback, useMemo} from "react";
+import {useCallback} from "react";
 import {useAppStore} from "../../store.ts";
 import {handleDownload} from "../common/downloadImage.js";
 import {edgeTypes} from "../../edges/edgeTypes.js";
@@ -38,23 +38,10 @@ const allNodeTypes = {
 
 export function FlowMIPS(props) {
     const { getNodes } = useReactFlow();
-
+    const { theme } = useThemeContext();
     const onClickDownload = () => {
-        handleDownload(getNodes, getViewportForBounds, props.colorMode);
+        handleDownload(getNodes, getViewportForBounds, theme);
     };
-
-    const nodesWithColorMode = useMemo(() => {
-        return props.nodes.map((node) => {
-            if (node.data.colorMode === props.colorMode) return node;
-            return {
-                ...node,
-                data: {
-                    ...node.data,
-                    colorMode: props.colorMode,
-                },
-            };
-        });
-    }, [props.nodes, props.colorMode]);
 
 
     /*const onConnect = useCallback(
@@ -91,11 +78,10 @@ export function FlowMIPS(props) {
         [props]
     );
 
-    const { theme } = useThemeContext();
 
     return(
         <ReactFlow
-            nodes={nodesWithColorMode}
+            nodes={props.nodes}
             edges={props.edges}
             onNodesChange={props.onNodesChange}
             onEdgesChange={props.onEdgesChange}
