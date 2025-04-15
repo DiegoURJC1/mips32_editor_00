@@ -92,7 +92,6 @@ export const App = () => {
                         ...(isLogicGate && {
                             type: upperType, // logicGateType como 'AND'
                             isLeftOrientation: false,
-                            colorMode: theme,
                         }),
                     },
                 };
