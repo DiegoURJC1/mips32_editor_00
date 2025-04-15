@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Position, useUpdateNodeInternals } from "@xyflow/react";
 
 import {
-    colors,
+    colorsForInlineSvg,
     logicGateTypes,
     renderLeftAndSvg, renderRightAndSvg,
     renderLeftOrSvg, renderRightOrSvg,
@@ -11,6 +11,8 @@ import {
 
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "./common/handles/HandlesMapper.jsx";
+import {useThemeContext} from "../../../hooks/ThemeContext.jsx";
+import {themes} from "../../../common-data/settings.js";
 
 // Constants
 const NODE_HEIGHT = 80;
@@ -98,6 +100,7 @@ function getSVGs(gateType, bgColor, borderColor, borderWidth) {
 }
 
 const LogicGateNode = React.memo(function LogicGateNode({ id, data, isConnectable }) {
+    const { theme } = useThemeContext();
     const updateNodeInternals = useUpdateNodeInternals();
     const [isLeftOriented, setIsLeftOriented] = useState(data.isLeftOrientation || false);
 
@@ -115,8 +118,18 @@ const LogicGateNode = React.memo(function LogicGateNode({ id, data, isConnectabl
         setIsLeftOriented((prev) => !prev);
     };
 
-    const isDarkMode = data.colorMode === "dark";
-    const { backgroundColor, borderColor } = isDarkMode ? colors.dark : colors.light;
+    let backgroundColor, borderColor;
+
+    switch (theme) {
+        case themes.light:
+            backgroundColor = colorsForInlineSvg.light.backgroundColor;
+            borderColor = colorsForInlineSvg.light.borderColor;
+            break;
+        case themes.dark:
+            backgroundColor = colorsForInlineSvg.dark.backgroundColor;
+            borderColor = colorsForInlineSvg.dark.borderColor;
+            break;
+    }
 
     const borderWidth = useMemo(() => {
         return getComputedStyle(document.documentElement)

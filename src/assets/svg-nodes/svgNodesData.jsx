@@ -6,7 +6,7 @@ export const logicGateTypes = {
     NOT: 'NOT'
 }
 
-export const colors = {
+export const colorsForInlineSvg = {
     light: {
         backgroundColor: '#f4f7ff',
         borderColor: '#b8c7f6',

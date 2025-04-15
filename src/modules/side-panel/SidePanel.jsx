@@ -3,9 +3,10 @@ import "./side-panel.css"
 import {useDnD} from "./DnDContext.jsx";
 import {DnDButtonsMips, DnDButtonsStates} from "../dnd-button/DnDButton.jsx";
 import {themes} from "../../common-data/settings.js";
+import {useThemeContext} from "../../hooks/ThemeContext.jsx";
 
 export default function SidePanel(props) {
-
+    const { theme, setThemeMode } = useThemeContext();
     const [_, setType] = useDnD();
 
     const onDragStart = (event, nodeType) => {
@@ -19,7 +20,7 @@ export default function SidePanel(props) {
             <div>
                 {title}
             </div>
-            <div>
+            <div className={"dnd-nodes"}>
                 <div className="side-panel-section-title">
                     Nodos
                 </div>
@@ -36,7 +37,6 @@ export default function SidePanel(props) {
                         />
                     )}
                 </div>
-
             </div>
             <div className={"values"}>
                 <div className="side-panel-section-title">
@@ -46,12 +46,12 @@ export default function SidePanel(props) {
                 <div>g: {props.settings.grid.gap} o: {props.settings.grid.offset}</div>
             </div>
             <div className={"color-settings"}>
-                <label htmlFor="colorMode">
+                <label htmlFor="theme">
                     Choose Color Mode:
                     <select
-                        id="colorMode"
-                        value={props.theme}
-                        onChange={(e) => props.setThemeMode(e.target.value)}
+                        id="theme"
+                        value={theme}
+                        onChange={(e) => setThemeMode(e.target.value)}
                     >
                         <option value={themes.light}>Light</option>
                         <option value={themes.dark}>Dark</option>

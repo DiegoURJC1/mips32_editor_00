@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {themes} from "../common-data/settings.js";
+import {themes} from "../../common-data/settings.js";
 
 export const useTheme = () => {
     const [theme, setTheme] = useState(themes.light);

@@ -22,6 +22,7 @@ const proOptions = { hideAttribution: true };
 
 import { nodeTypes as mipsNodeTypes } from "../mips/nodes/common/nodeTypes.js";
 import { nodeTypes as statesNodeTypes } from './nodes/common/nodeTypes.js';
+import {useThemeContext} from "../../hooks/ThemeContext.jsx";
 const allNodeTypes = {
     ...mipsNodeTypes,
     ...statesNodeTypes,
@@ -61,6 +62,7 @@ export function FlowStates(props) {
         [props.setEdges]
     );
 
+    const { theme } = useThemeContext();
 
     return (
         <ReactFlow
@@ -100,7 +102,7 @@ export function FlowStates(props) {
                 ]]
             }
             proOptions={proOptions}
-            colorMode={props.colorMode}
+            colorMode={theme}
 
             zoomOnDoubleClick={false}
 

@@ -1,6 +1,8 @@
 import React from "react";
-import {colors, renderRightAndSvg, renderRightNotSvg, renderRightOrSvg} from "../../assets/svg-nodes/svgNodesData.jsx";
+import {colorsForInlineSvg, renderRightAndSvg, renderRightNotSvg, renderRightOrSvg} from "../../assets/svg-nodes/svgNodesData.jsx";
 import "./dnd-button.css"
+import {themes} from "../../common-data/settings.js";
+import {useThemeContext} from "../../hooks/ThemeContext.jsx";
 
 
 export default function DndButton(props) {
@@ -23,9 +25,18 @@ export default function DndButton(props) {
 }
 
 export function DnDButtonsMips(props) {
-    const isDark = props.colorMode === 'dark';
-
-    const { backgroundColor, borderColor } = isDark ? colors.dark : colors.light;
+    const { theme } = useThemeContext();
+    let backgroundColor, borderColor;
+    switch (theme) {
+        case themes.light:
+            backgroundColor = colorsForInlineSvg.light.backgroundColor;
+            borderColor = colorsForInlineSvg.light.borderColor;
+            break;
+        case themes.dark:
+            backgroundColor = colorsForInlineSvg.dark.backgroundColor;
+            borderColor = colorsForInlineSvg.dark.borderColor;
+            break;
+    }
     const borderWidth = getComputedStyle(document.documentElement).getPropertyValue('--border-width').trim();
 
     return (

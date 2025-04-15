@@ -14,7 +14,7 @@ import TablePanel from "./flows/table/TablePanel.jsx";
 import {defaultSettings} from "./common-data/settings.js";
 import {initialEdges as initialEdgesMips} from "./flows/mips/initial-elements/initialEdges.js";
 import {initialEdges as initialEdgesStates} from "./flows/states/initial-elements/initialEdges.js";
-import {useTheme} from "./hooks/useTheme.jsx";
+import {ThemeProvider, useThemeContext} from "./hooks/ThemeContext.jsx";
 
 
 let id = 0;
@@ -35,7 +35,7 @@ export const App = () => {
     const { screenToFlowPosition } = useReactFlow();
     const [type] = useDnD();
 
-    const { theme, setThemeMode } = useTheme();
+    const { theme } = useThemeContext();
     const [settings, setSettings] = useState(defaultSettings);
 
     const onDragOver = useCallback((event) => {
@@ -145,8 +145,7 @@ export const App = () => {
                         <SidePanel
                             currentPanel={currentPanel}
                             settings={settings}
-                            theme={theme}
-                            setThemeMode={setThemeMode}
+
                             onChangeGrid={handleUpdateSettingsGrid}
                             onClickResetButton={handleResetSettings}
                         />
@@ -161,7 +160,6 @@ export const App = () => {
                                 onDrop={onDrop}
                                 onDragOver={onDragOver}
                                 settings={settings}
-                                colorMode={theme}
                             />
                         </div>
                     </>
@@ -171,8 +169,7 @@ export const App = () => {
                         <SidePanel
                             currentPanel={currentPanel}
                             settings={settings}
-                            theme={theme}
-                            setThemeMode={setThemeMode}
+
                             onChangeGrid={handleUpdateSettingsGrid}
                             onClickResetButton={handleResetSettings}
                         />
@@ -188,7 +185,6 @@ export const App = () => {
                                 onDragOver={onDragOver}
 
                                 settings={settings}
-                                colorMode={theme}
                             />
                         </div>
                     </>
@@ -206,7 +202,9 @@ export const App = () => {
 export default () => (
     <ReactFlowProvider>
         <DnDProvider>
-            <App />
+            <ThemeProvider>
+                <App />
+            </ThemeProvider>
         </DnDProvider>
     </ReactFlowProvider>
 );

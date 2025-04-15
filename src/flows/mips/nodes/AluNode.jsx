@@ -2,10 +2,13 @@ import React from "react";
 import "./common/node-mips-stylesheet.css";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "./common/handles/HandlesMapper.jsx";
-import {colors, renderAluSvg} from "../../../assets/svg-nodes/svgNodesData.jsx";
+import {colorsForInlineSvg, renderAluSvg} from "../../../assets/svg-nodes/svgNodesData.jsx";
 import {getAluHandles} from "./common/handles/handleLists.js";
+import {useThemeContext} from "../../../hooks/ThemeContext.jsx";
+import {themes} from "../../../common-data/settings.js";
 
 export default function AluNode({ id, data, isConnectable }) {
+    const { theme } = useThemeContext();
 
     let mul = 5;
     const size = {
@@ -13,9 +16,18 @@ export default function AluNode({ id, data, isConnectable }) {
         height: 32*mul,
     };
 
-    const isDark = data.colorMode === 'dark';
+    let backgroundColor, borderColor;
 
-    const { backgroundColor, borderColor } = isDark ? colors.dark : colors.light;
+    switch (theme) {
+        case themes.light:
+            backgroundColor = colorsForInlineSvg.light.backgroundColor;
+            borderColor = colorsForInlineSvg.light.borderColor;
+            break;
+        case themes.dark:
+            backgroundColor = colorsForInlineSvg.dark.backgroundColor;
+            borderColor = colorsForInlineSvg.dark.borderColor;
+            break;
+    }
 
 
     const handleList = getAluHandles(size);
