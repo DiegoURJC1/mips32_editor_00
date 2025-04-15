@@ -15,6 +15,8 @@ import {defaultSettings} from "./common-data/settings.js";
 import {initialEdges as initialEdgesMips} from "./flows/mips/initial-elements/initialEdges.js";
 import {initialEdges as initialEdgesStates} from "./flows/states/initial-elements/initialEdges.js";
 import {ThemeProvider, useThemeContext} from "./hooks/ThemeContext.jsx";
+import {statesData, headersData} from "./common-data/statesData.js";
+import {useTable} from "./hooks/useTable.jsx";
 
 
 let id = 0;
@@ -130,8 +132,26 @@ export const App = () => {
         console.log(settings);
     };
 
+    /**
+     * Table hooks
+     *
+     */
+    console.log("In App: ",headersData);
+    console.log("In App: ",statesData);
+    const {
+            headers,
+            data,
+            addColumn,
+            removeColumn,
+            addRow,
+            removeRow,
+            getRowNumberInBinary,
+            editCell,
+            editHeader
+        } = useTable(headersData, statesData);
 
-
+    console.log("In App2: ",headers);
+    console.log("In App2: ",data);
 
     return (
         <div className="content-wrapper">
@@ -190,10 +210,16 @@ export const App = () => {
                     </>
                 )}
                 {currentPanel === 2 && (
-                    <TablePanel/>
+                    <TablePanel
+                        headers={headers}
+                        data={data}
+                        removeColumn={removeColumn}
+                        removeRow={removeRow}
+                        getRowNumberInBinary={getRowNumberInBinary}
+                        editCell={editCell}
+                        editHeader={editHeader}
+                    />
                 )}
-
-
             </div>
         </div>
     );
