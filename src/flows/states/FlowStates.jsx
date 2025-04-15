@@ -59,7 +59,7 @@ export function FlowStates(props) {
 
             props.setEdges((edges) => addEdge(edge, edges));
         },
-        [props.setEdges]
+        [props]
     );
 
     const { theme } = useThemeContext();

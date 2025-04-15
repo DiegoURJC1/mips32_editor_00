@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
-import CustomHandle from "../../../handles/CustomHandle.jsx";
-import {NodeToolbar, Position, useUpdateNodeInternals} from "@xyflow/react";
+import { Position, useUpdateNodeInternals} from "@xyflow/react";
 import "./common/node-mips-stylesheet.css";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "./common/handles/HandlesMapper.jsx"; // <- Asegúrate de importar el mapper
@@ -40,9 +39,9 @@ export default function ControlNode(
         memReadOutput: getHandlePosition((180 * 4) / numHandles.left + 90),
         memWriteOutput: getHandlePosition((180 * 3) / numHandles.left + 90),
         memToRegOutput: getHandlePosition((180 * 2) / numHandles.left + 90),
-        iRWriteOutput: getHandlePosition((180 * 1) / numHandles.left + 90),
+        iRWriteOutput: getHandlePosition((180) / numHandles.left + 90),
 
-        pcSourceOutput: getHandlePosition((180 * 1) / numHandles.right - 90),
+        pcSourceOutput: getHandlePosition((180) / numHandles.right - 90),
         aluOpOutput: getHandlePosition((180 * 2) / numHandles.right - 90),
         aluSrcBOutput: getHandlePosition((180 * 3) / numHandles.right - 90),
         aluSrcAOutput: getHandlePosition((180 * 4) / numHandles.right - 90),

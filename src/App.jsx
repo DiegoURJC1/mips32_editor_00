@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {ReactFlowProvider, useEdgesState, useNodesState, useReactFlow} from '@xyflow/react';
 import './App.css'
 import '@xyflow/react/dist/style.css';
@@ -14,7 +14,7 @@ import TablePanel from "./flows/table/TablePanel.jsx";
 import {defaultSettings} from "./common-data/settings.js";
 import {initialEdges as initialEdgesMips} from "./flows/mips/initial-elements/initialEdges.js";
 import {initialEdges as initialEdgesStates} from "./flows/states/initial-elements/initialEdges.js";
-import {ThemeProvider, useThemeContext} from "./hooks/ThemeContext.jsx";
+import {ThemeProvider} from "./hooks/ThemeContext.jsx";
 import {statesData, headersData} from "./common-data/statesData.js";
 import {useTable} from "./hooks/useTable.jsx";
 
@@ -62,7 +62,6 @@ export const App = () => {
 
     const [numberOfStates, setNumberOfStates] = useState(initialNodesStates.length)
 
-    const { theme } = useThemeContext();
     const [settings, setSettings] = useState(defaultSettings);
 
     const onNodesChangeStates = useCallback((changes) => {
@@ -187,7 +186,7 @@ export const App = () => {
                 console.log("numberOfStates: ", numberOfStates);
             }
         },
-        [screenToFlowPosition, setNodesMips, setNodesStates, type, currentPanel, theme, numberOfStates]
+        [type, screenToFlowPosition, currentPanel, setNodesMips, numberOfStates, addRow, setNodesStates]
     );
 
 
