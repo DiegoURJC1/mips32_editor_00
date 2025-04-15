@@ -107,7 +107,6 @@ export function FlowStates(props) {
             zoomOnDoubleClick={false}
 
             connectionLineComponent={ConnectionLine}
-            deleteKeyCode={false}
         >
             <Controls
                 position={"top-right"}
