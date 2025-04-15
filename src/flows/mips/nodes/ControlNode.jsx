@@ -1,15 +1,23 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import CustomHandle from "../../../handles/CustomHandle.jsx";
-import { NodeToolbar, Position } from "@xyflow/react";
+import {NodeToolbar, Position, useUpdateNodeInternals} from "@xyflow/react";
 import "./common/node-mips-stylesheet.css";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "./common/handles/HandlesMapper.jsx"; // <- Asegúrate de importar el mapper
 
-export default function ControlNode({ id, data, isConnectable }) {
+export default function ControlNode(
+    {
+        id,
+        data,
+        isConnectable
+    }) {
     const size = {
         width: 160,
         height: 220,
     };
+    const [bitsControl, setBitsControl] = useState(5);
+
+
 
     const centerX = (size.width - 8) / 2;
     const centerY = size.height / 2;
@@ -41,13 +49,12 @@ export default function ControlNode({ id, data, isConnectable }) {
         regWriteOutput: getHandlePosition((180 * 5) / numHandles.right - 90),
         regDstOutput: getHandlePosition((180 * 6) / numHandles.right - 90),
     };
-
     const handleList = [
         {
             id: "input",
             type: "target",
             position: Position.Bottom,
-            bits: 5,
+            bits: bitsControl,
             isConnectable,
             connectioncount: 1,
         },
@@ -75,7 +82,8 @@ export default function ControlNode({ id, data, isConnectable }) {
             id: "i-or-d-output",
             type: "source",
             position: Position.Left,
-            label: "I o D",
+            bits: 1,
+            label: "IoD",
             isConnectable,
             style: handlePositions.iOrDOutput,
             positionInverted: true,
@@ -181,15 +189,102 @@ export default function ControlNode({ id, data, isConnectable }) {
             positionInverted: true,
         },
     ];
+    const [columnName, setColumnName] = useState("");
+    const [handleBits, setHandleBits] = useState(1);
+    const [dynamicHandles, setDynamicHandles] = useState([]);
+
+    const updateNodeInternals = useUpdateNodeInternals();
+    useEffect(() => {
+        updateNodeInternals(id);
+    }, [dynamicHandles.length, id, updateNodeInternals]);
+
+
+    const calculateBitsInput = (n) => {
+        return Math.max(Math.ceil(Math.log2(n)), 5);
+    };
+    const handleUpdateBitsInput = () => {
+        setBitsControl(calculateBitsInput(handleList.length + dynamicHandles.length))
+    }
+
+    const handleAddColumn = () => {
+        if (columnName) {
+            data.functions.addColumn(columnName); // Llama la función addColumn con el nombre ingresado
+        }
+        setNumHandles(prevNumHandles => ({
+            left: prevNumHandles.left,
+            right: prevNumHandles.right + 1,
+        }));
+        let numberHandle = numHandles.right
+        console.log("1",numberHandle);
+        console.log("2",numHandles);
+        let newHandle = {
+                id: `${numberHandle}`,
+                type: "source",
+                position: Position.Right,
+                isConnectable,
+                label: columnName,
+                bits: handleBits,
+                connectioncount: 1,
+                style: getHandlePosition((180 * numberHandle) / (numHandles.right + 1) - 90),
+                positionInverted: true,
+            };
+        console.log("bits: ",handleBits);
+        setDynamicHandles((prevHandles) => [...prevHandles, newHandle]);
+        handleUpdateBitsInput();
+
+    };
+    useEffect(() => {
+        const updatedHandles = dynamicHandles.map((handle, index) => {
+            const newPosition = getHandlePosition((180 * (numHandles.right - index - 1)) / (numHandles.right) - 90);
+            return {
+                ...handle,
+                style: newPosition,
+            };
+        });
+
+        setDynamicHandles(updatedHandles);
+    }, [dynamicHandles.length]);
+
+    const handleRemoveColumn = () => {
+        if (columnName) {
+            data.functions.removeColumn(columnName);
+        }
+    };
+
+    const handleUpdateHandleBits = (bits) => {
+        setHandleBits(bits);
+    }
+
+
 
     return (
         <>
             <CustomNodeToolbar data={data} nodeId={id}>
-                <button>Nueva salida</button>
-                <input type={"text"} minLength={1} maxLength={16} />
+                <button onClick={handleAddColumn}>Añadir salida</button>
+                <input
+                    type="text"
+                    minLength={1}
+                    maxLength={16}
+                    value={columnName}
+                    onChange={(e) => setColumnName(e.target.value)}
+                />
+                <input
+                    type="number"
+                    min="1"
+                    max="32"
+                    value={handleBits}
+                    onChange={(e) => setHandleBits(Number(e.target.value))}
+                    placeholder="Número de bits"
+                />
                 <br />
-                <button>Borrar salida</button>
-                <input type={"text"} minLength={1} maxLength={16} />
+                <button onClick={handleRemoveColumn}>Borrar salida</button>
+                <input
+                    type="text"
+                    minLength={1}
+                    maxLength={16}
+                    value={columnName}
+                    onChange={handleUpdateHandleBits}
+                />
             </CustomNodeToolbar>
 
             <div
@@ -201,7 +296,7 @@ export default function ControlNode({ id, data, isConnectable }) {
             >
                     {data.label}
 
-                <HandlesMapper handleList={handleList} isConnectable={isConnectable} />
+                <HandlesMapper handleList={[...handleList, ...dynamicHandles]} isConnectable={isConnectable} />
             </div>
         </>
     );

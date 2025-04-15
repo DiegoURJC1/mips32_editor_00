@@ -3,20 +3,31 @@ import { useState } from 'react';
 export const useTable = (initialHeaders, initialData) => {
     const [headers, setHeaders] = useState(initialHeaders);
     const [data, setData] = useState(initialData);
-    console.log("In state: ",headers);
-    console.log("In state: ",data);
+
     const addColumn = (headerName) => {
+        if (headers.includes(headerName)) {
+            console.warn(`Column "${headerName}" already exists.`);
+            return false;
+        }
+
         setHeaders([...headers, headerName]);
-        setData(data.map(row => [...row, ''])); // Default column value
+        setData(data.map(row => [...row, '']));
+        return true;
     };
 
-    const removeColumn = (index) => {
-        setHeaders(headers.filter((_, i) => i !== index));
-        setData(data.map(row => row.filter((_, i) => i !== index)));
+    const removeColumn = (headerName) => {
+        const columnIndex = headers.indexOf(headerName);
+
+        if (columnIndex !== -1) {
+            setHeaders(headers.filter((_, i) => i !== columnIndex));
+            setData(data.map(row => row.filter((_, i) => i !== columnIndex)));
+        } else {
+            console.warn(`Column "${headerName}" does not exist.`);
+        }
     };
 
     const addRow = () => {
-        const newRow = new Array(headers.length).fill(''); // Default row value
+        const newRow = new Array(headers.length).fill(''); // Valor predeterminado para la nueva fila
         setData([...data, newRow]);
     };
 
@@ -25,7 +36,7 @@ export const useTable = (initialHeaders, initialData) => {
     };
 
     const getRowNumberInBinary = (rowIndex) => {
-        return rowIndex.toString(2).padStart(4, '0'); // Binary number in 4 digits
+        return rowIndex.toString(2).padStart(4, '0'); // Número binario en 4 dígitos
     };
 
     const editCell = (rowIndex, colIndex, newValue) => {

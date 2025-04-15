@@ -26,19 +26,41 @@ const getId = () => `dndNode_${id++}`;
 
 export const App = () => {
     const [currentPanel, setCurrentPanel] = useState(0);
+    /**
+     * Table hooks
+     *
+     */
+    const {
+        headers,
+        data,
+        addColumn,
+        removeColumn,
+        addRow,
+        removeRow,
+        getRowNumberInBinary,
+        editCell,
+        editHeader
+    } = useTable(headersData, statesData);
 
-    const [nodesMips, setNodesMips, onNodesChangeMips] = useNodesState(initialNodesMips);
+    const [nodesMips, setNodesMips, onNodesChangeMips] = useNodesState(initialNodesMips(addColumn, removeColumn,));
     const [nodesStates, setNodesStates, onNodesChangeStates] = useNodesState(initialNodesStates);
 
     const [edgesMips, setEdgesMips, onEdgesChangeMips] = useEdgesState(initialEdgesMips);
     const [edgesStates, setEdgesStates, onEdgesChangeStates] = useEdgesState(initialEdgesStates);
 
-    const reactFlowWrapper = useRef(null);
-    const { screenToFlowPosition } = useReactFlow();
-    const [type] = useDnD();
+    const [numberOfStates, setNumberOfStates] = useState(initialNodesStates.length)
 
     const { theme } = useThemeContext();
     const [settings, setSettings] = useState(defaultSettings);
+
+
+    /**
+     *  Drag and drop
+     *
+     */
+    const reactFlowWrapper = useRef(null);
+    const { screenToFlowPosition } = useReactFlow();
+    const [type] = useDnD();
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -97,15 +119,17 @@ export const App = () => {
                 };
                 setNodesMips((nds) => nds.concat(newNode));
             } else if (currentPanel === 1) {
+                setNumberOfStates((nds) => nds++);
                 newNode = {
                     id: getId(),
                     type,
                     position,
                     data: {
                         label: label,
-                        statesNumber: 9,
+                        statesNumber: numberOfStates,
                     },
                 };
+                addRow();
                 setNodesStates((nds) => nds.concat(newNode));
             }
         },
@@ -113,6 +137,10 @@ export const App = () => {
     );
 
 
+    /**
+     * Settings handling
+     *
+     */
     const handleUpdateSettingsGrid = (grid) => {
         setSettings({
             ...settings,
@@ -131,26 +159,7 @@ export const App = () => {
         console.log(settings);
     };
 
-    /**
-     * Table hooks
-     *
-     */
-    console.log("In App: ",headersData);
-    console.log("In App: ",statesData);
-    const {
-            headers,
-            data,
-            addColumn,
-            removeColumn,
-            addRow,
-            removeRow,
-            getRowNumberInBinary,
-            editCell,
-            editHeader
-        } = useTable(headersData, statesData);
 
-    console.log("In App2: ",headers);
-    console.log("In App2: ",data);
 
     return (
         <div className="content-wrapper">
@@ -170,14 +179,18 @@ export const App = () => {
                         />
                         <div className="flow-wrapper" ref={reactFlowWrapper}>
                             <FlowMIPS
+                                // Nodes and Edges
                                 nodes={nodesMips}
                                 edges={edgesMips}
                                 onNodesChange={onNodesChangeMips}
                                 onEdgesChange={onEdgesChangeMips}
                                 setEdges={setEdgesMips}
-
+                                // Table editing
+                                addColumn={addColumn}
+                                // Drag and Drop
                                 onDrop={onDrop}
                                 onDragOver={onDragOver}
+                                // Settings
                                 settings={settings}
                             />
                         </div>

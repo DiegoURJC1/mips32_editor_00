@@ -43,14 +43,6 @@ export function FlowMIPS(props) {
         handleDownload(getNodes, getViewportForBounds, theme);
     };
 
-
-    /*const onConnect = useCallback(
-        (connection) => {
-            const edge = { ...connection, type: "custom-edge" };
-            setEdges((eds) => addEdge(edge, eds));
-        },
-        [setEdges],
-    );*/
     const onConnect = useCallback(
         (connection) => {
             const { connectionLinePath } = useAppStore.getState();
@@ -78,7 +70,6 @@ export function FlowMIPS(props) {
         [props]
     );
 
-
     return(
         <ReactFlow
             nodes={props.nodes}
@@ -94,7 +85,7 @@ export function FlowMIPS(props) {
             edgeTypes={edgeTypes}
 
             isValidConnection={validateConnection}
-            //defaultEdgeOptions={defaultEdgeOptions}
+
             // Viewport props
             fitView
             snapToGrid={true}
