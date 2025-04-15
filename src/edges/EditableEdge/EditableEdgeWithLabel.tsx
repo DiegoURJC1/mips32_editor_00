@@ -57,7 +57,6 @@ export function EditableEdgeWithLabelComponent(
         style,
         data = { points: [] },
 
-        // 🔥 Extraemos los props no válidos
         animated,
         selectable,
         deletable,

@@ -10,7 +10,14 @@ import {
 const memorySize = { width: 120, height: 180 };
 const instructionRegisterSize = { width: 120, height: 260 };
 const registerSize = { width: 160, height: 220 };
-export function initialNodes(addColumn, removeColumn) {
+export function initialNodes(
+    addColumn,
+    removeColumn,
+    dynamicControlHandles,
+    setDynamicControlHandles,
+    numHandlesControl,
+    setNumHandlesControl,
+) {
     return [
         {
             id: 'test',
@@ -244,6 +251,10 @@ export function initialNodes(addColumn, removeColumn) {
                 functions: {
                     addColumn: addColumn,
                     removeColumn: removeColumn,
+                    dynamicControlHandles: dynamicControlHandles,
+                    setDynamicControlHandles: setDynamicControlHandles,
+                    numHandlesControl: numHandlesControl,
+                    setNumHandlesControl: setNumHandlesControl,
                 },
             },
 

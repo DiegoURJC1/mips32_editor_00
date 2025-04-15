@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ReactFlowProvider, useEdgesState, useNodesState, useReactFlow} from '@xyflow/react';
 import './App.css'
 import '@xyflow/react/dist/style.css';
@@ -25,7 +25,6 @@ const getId = () => `dndNode_${id++}`;
 
 
 export const App = () => {
-    const [currentPanel, setCurrentPanel] = useState(0);
     /**
      * Table hooks
      *
@@ -41,9 +40,22 @@ export const App = () => {
         editCell,
         editHeader
     } = useTable(headersData, statesData);
+    const [currentPanel, setCurrentPanel] = useState(0);
+    const [dynamicControlHandles, setDynamicControlHandles] = useState([]);
+    const [numHandlesControl, setNumHandlesControl] = useState({ left: 8, right: 7 });
 
-    const [nodesMips, setNodesMips, onNodesChangeMips] = useNodesState(initialNodesMips(addColumn, removeColumn,));
-    const [nodesStates, setNodesStates, onNodesChangeStates] = useNodesState(initialNodesStates);
+    /**
+     *
+     */
+    const [nodesMips, setNodesMips, onNodesChangeMips] = useNodesState(initialNodesMips(
+        addColumn,
+        removeColumn,
+        dynamicControlHandles,
+        setDynamicControlHandles,
+        numHandlesControl,
+        setNumHandlesControl,
+        ));
+    const [nodesStates, setNodesStates, onNodesChangeStatesBase] = useNodesState(initialNodesStates);
 
     const [edgesMips, setEdgesMips, onEdgesChangeMips] = useEdgesState(initialEdgesMips);
     const [edgesStates, setEdgesStates, onEdgesChangeStates] = useEdgesState(initialEdgesStates);
@@ -53,6 +65,45 @@ export const App = () => {
     const { theme } = useThemeContext();
     const [settings, setSettings] = useState(defaultSettings);
 
+    const onNodesChangeStates = useCallback((changes) => {
+        let updatedNodes = [...nodesStates];
+
+        changes.forEach(change => {
+            if (change.type === 'remove') {
+                const deletedNode = updatedNodes.find(node => node.id === change.id);
+
+                if (deletedNode) {
+                    const deletedStateNumber = deletedNode.data.statesNumber;
+                    console.log(`Node deleted: ${change.id} with state number: ${deletedStateNumber}`);
+
+                    // Remove the corresponding row
+                    removeRow(deletedStateNumber);
+
+                    // Update state numbers of remaining nodes
+                    updatedNodes = updatedNodes.map(node => {
+                        if (node.id !== change.id && node.data.statesNumber > deletedStateNumber) {
+                            return {
+                                ...node,
+                                data: {
+                                    ...node.data,
+                                    statesNumber: node.data.statesNumber - 1,
+                                },
+                            };
+                        }
+                        return node;
+                    });
+
+                    // Apply the updated nodes list to state
+                    setNodesStates(updatedNodes);
+                    setNumberOfStates(n => n - 1);
+                } else {
+                    console.warn(`Node with id ${change.id} not found.`);
+                }
+            }
+        });
+
+        onNodesChangeStatesBase(changes);
+    }, [nodesStates, onNodesChangeStatesBase, removeRow, setNodesStates]);
 
     /**
      *  Drag and drop
@@ -112,28 +163,31 @@ export const App = () => {
                     data: {
                         label,
                         ...(isLogicGate && {
-                            type: upperType, // logicGateType como 'AND'
+                            type: upperType,
                             isLeftOrientation: false,
                         }),
                     },
                 };
                 setNodesMips((nds) => nds.concat(newNode));
             } else if (currentPanel === 1) {
-                setNumberOfStates((nds) => nds++);
+                const numNodes = numberOfStates;
+                setNumberOfStates(numNodes + 1);
                 newNode = {
                     id: getId(),
                     type,
                     position,
                     data: {
                         label: label,
-                        statesNumber: numberOfStates,
+                        statesNumber: numNodes,
                     },
                 };
                 addRow();
                 setNodesStates((nds) => nds.concat(newNode));
+                console.log("NumNodes: ", numNodes);
+                console.log("numberOfStates: ", numberOfStates);
             }
         },
-        [screenToFlowPosition, setNodesMips, setNodesStates, type, currentPanel, theme] // <- dependencias corregidas
+        [screenToFlowPosition, setNodesMips, setNodesStates, type, currentPanel, theme, numberOfStates]
     );
 
 
