@@ -40,7 +40,7 @@ export function FlowMIPS(props) {
     const { getNodes } = useReactFlow();
     const { theme } = useThemeContext();
     const onClickDownload = () => {
-        handleDownload(getNodes, getViewportForBounds, theme);
+        handleDownload(getNodes, getViewportForBounds, theme, 0);
     };
 
     const onConnect = useCallback(

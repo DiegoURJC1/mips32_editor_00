@@ -12,7 +12,6 @@ import {handleDownload} from "../common/downloadImage.js";
 import {useCallback} from "react";
 import {useAppStore} from "../../store.js";
 import {DEFAULT_ALGORITHM} from "../../edges/EditableEdge/constants.js";
-//import {nodeTypes} from "./nodes/common/nodeTypes.js";
 import {edgeTypes} from "../../edges/edgeTypes.js";
 import {ConnectionLine} from "../../edges/ConnectionLine.js";
 import {validateConnection} from "../common/reactFlowProps.js";
@@ -30,9 +29,9 @@ const allNodeTypes = {
 
 export function FlowStates(props) {
     const { getNodes } = useReactFlow();
-
+    const { theme } = useThemeContext();
     const onClickDownload = () => {
-        handleDownload(getNodes, getViewportForBounds, props.colorMode);
+        handleDownload(getNodes, getViewportForBounds, theme, 1);
     };
 
     const onConnect = useCallback(
@@ -62,7 +61,6 @@ export function FlowStates(props) {
         [props]
     );
 
-    const { theme } = useThemeContext();
 
     return (
         <ReactFlow

@@ -2,8 +2,8 @@ import { toPng } from 'html-to-image';
 import {getNodesBounds} from "@xyflow/react";
 import {themes} from "../../common-data/settings.js";
 const image = {
-    width: 1920,
-    height: 1080,
+    width: 3840,
+    height: 2160,
 };
 
 export function downloadImage(dataUrl) {
@@ -13,16 +13,29 @@ export function downloadImage(dataUrl) {
     a.click();
 }
 
-export function handleDownload(getNodes, getViewportForBounds, colorMode) {
+export function handleDownload(getNodes, getViewportForBounds, colorMode, currentPanel) {
     const nodesBounds = getNodesBounds(getNodes());
-    const viewport = getViewportForBounds(
-        nodesBounds,
-        image.width,
-        image.height,
-        1,
-        4,
-        10
-    );
+    let viewport;
+    if (currentPanel === 0) {
+        viewport = getViewportForBounds(
+            nodesBounds,
+            image.width,
+            image.height,
+            2,
+            4,
+            10
+        );
+    } else if (currentPanel === 1) {
+        viewport = getViewportForBounds(
+            nodesBounds,
+            image.width,
+            image.height,
+            2.5,
+            4,
+            10
+        );
+    }
+
 
     let backgroundColor;
     if (colorMode === themes.dark) {
