@@ -10,6 +10,7 @@ export default function ControlNode(
         data,
         isConnectable
     }) {
+    const { numHandlesControl, setNumHandlesControl } = data.functions;
     const size = {
         width: 160,
         height: 220,

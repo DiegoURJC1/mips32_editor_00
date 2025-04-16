@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 
 export const useTable = (initialHeaders, initialData) => {
     const [headers, setHeaders] = useState(initialHeaders);

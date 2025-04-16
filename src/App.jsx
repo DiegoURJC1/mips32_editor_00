@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ReactFlowProvider, useEdgesState, useNodesState, useReactFlow} from '@xyflow/react';
 import './App.css'
 import '@xyflow/react/dist/style.css';
@@ -55,13 +55,15 @@ export const App = () => {
         numHandlesControl,
         setNumHandlesControl,
         ));
-    const [nodesStates, setNodesStates, onNodesChangeStatesBase] = useNodesState(initialNodesStates);
+    const [nodesStates, setNodesStates, onNodesChangeStatesBase] = useNodesState(initialNodesStates(
+        headers,
+        data,
+    ));
 
     const [edgesMips, setEdgesMips, onEdgesChangeMips] = useEdgesState(initialEdgesMips);
     const [edgesStates, setEdgesStates, onEdgesChangeStates] = useEdgesState(initialEdgesStates);
 
-    const [numberOfStates, setNumberOfStates] = useState(initialNodesStates.length)
-
+    const [numberOfStates, setNumberOfStates] = useState(initialNodesStates().length)
     const [settings, setSettings] = useState(defaultSettings);
 
     const onNodesChangeStates = useCallback((changes) => {
@@ -103,6 +105,19 @@ export const App = () => {
 
         onNodesChangeStatesBase(changes);
     }, [nodesStates, onNodesChangeStatesBase, removeRow, setNodesStates]);
+    // Update States node when table changes
+    useEffect(() => {
+        setNodesStates((prevNodes) =>
+            prevNodes.map((node) => ({
+                ...node,
+                data: {
+                    ...node.data,
+                    headers,
+                    data,
+                },
+            }))
+        );
+    }, [headers, data, setNodesStates]);
 
     /**
      *  Drag and drop
@@ -178,6 +193,8 @@ export const App = () => {
                     data: {
                         label: label,
                         statesNumber: numNodes,
+                        data: data,
+                        headers: headers,
                     },
                 };
                 addRow();
