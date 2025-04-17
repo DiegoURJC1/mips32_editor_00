@@ -36,7 +36,6 @@ export function initialNodes(
             data: {
                 type: logicGateTypes.AND,
                 label: 'AND',
-                isLeftOrientation: true,
             },
             position: { x: 750, y: 450 },
         },
@@ -46,7 +45,6 @@ export function initialNodes(
             data: {
                 type: logicGateTypes.OR,
                 label: 'OR',
-                isLeftOrientation: true,
             },
             position: { x: 640, y: 460 },
         },

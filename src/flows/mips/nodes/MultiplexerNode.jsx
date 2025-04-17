@@ -5,7 +5,7 @@ import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import "./common/node-mips-stylesheet.css";
 
 export default function MultiplexerNode({ id, data, isConnectable }) {
-    const { setEdges, getEdges, getNodes } = useReactFlow();
+    const { setEdges, getNodes } = useReactFlow();
     const connections = useNodeConnections(id); // Usamos useNodeConnections para obtener las conexiones del nodo
 
     const initialInputs = data?.initialInputs || 2;

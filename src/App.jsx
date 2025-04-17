@@ -17,6 +17,7 @@ import {initialEdges as initialEdgesStates} from "./flows/states/initial-element
 import {ThemeProvider} from "./hooks/ThemeContext.jsx";
 import {statesData, headersData} from "./common-data/statesData.js";
 import {useTable} from "./hooks/useTable.jsx";
+import {FlowMIPSProvider, useFlowMIPS} from "./hooks/FlowMIPSContext.jsx";
 
 
 let id = 0;
@@ -47,7 +48,7 @@ export const App = () => {
     /**
      *
      */
-    const [nodesMips, setNodesMips, onNodesChangeMips] = useNodesState(initialNodesMips(
+    const [nodesMips, setNodesMips, onNodesChangeMipsBase] = useNodesState(initialNodesMips(
         addColumn,
         removeColumn,
         dynamicControlHandles,
@@ -65,6 +66,32 @@ export const App = () => {
 
     const [numberOfStates, setNumberOfStates] = useState(initialNodesStates().length)
     const [settings, setSettings] = useState(defaultSettings);
+
+    const { removeOrientation, removeMultiplexer } = useFlowMIPS();
+    const onNodesChangeMips = useCallback((changes) => {
+        let updatedNodes = [...nodesMips];
+
+        changes.forEach(change => {
+            if (change.type === 'remove') {
+                const deletedNode = updatedNodes.find(node => node.id === change.id);
+
+                if (deletedNode) {
+                    // Limpieza de datos según el tipo de nodo
+                    if (deletedNode.type === 'logicGate') {
+                        removeOrientation(deletedNode.id);
+                    } else if (deletedNode.type === 'multiplexer') {
+                        removeMultiplexer(deletedNode.id);
+                    }
+
+                    // Eliminar nodo del estado local
+                    updatedNodes = updatedNodes.filter(node => node.id !== deletedNode.id);
+                    setNodesMips(updatedNodes);
+                }
+            }
+        });
+
+        onNodesChangeMipsBase(changes);
+    }, [nodesMips, onNodesChangeMipsBase, setNodesMips, removeOrientation, removeMultiplexer]);
 
     const onNodesChangeStates = useCallback((changes) => {
         let updatedNodes = [...nodesStates];
@@ -118,6 +145,10 @@ export const App = () => {
             }))
         );
     }, [headers, data, setNodesStates]);
+
+    /**
+     *
+     */
 
     /**
      *  Drag and drop
@@ -178,7 +209,6 @@ export const App = () => {
                         label,
                         ...(isLogicGate && {
                             type: upperType,
-                            isLeftOrientation: false,
                         }),
                     },
                 };
@@ -203,7 +233,7 @@ export const App = () => {
                 console.log("numberOfStates: ", numberOfStates);
             }
         },
-        [type, screenToFlowPosition, currentPanel, setNodesMips, numberOfStates, addRow, setNodesStates]
+        [type, screenToFlowPosition, currentPanel, setNodesMips, numberOfStates, data, headers, addRow, setNodesStates]
     );
 
 
@@ -309,10 +339,10 @@ export const App = () => {
 // eslint-disable-next-line react-refresh/only-export-components
 export default () => (
     <ReactFlowProvider>
-        <DnDProvider>
-            <ThemeProvider>
+        <FlowMIPSProvider>
+            <DnDProvider>
                 <App />
-            </ThemeProvider>
-        </DnDProvider>
+            </DnDProvider>
+        </FlowMIPSProvider>
     </ReactFlowProvider>
 );

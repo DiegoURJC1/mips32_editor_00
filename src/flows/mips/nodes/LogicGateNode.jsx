@@ -13,6 +13,7 @@ import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "./common/handles/HandlesMapper.jsx";
 import {useThemeContext} from "../../../hooks/ThemeContext.jsx";
 import {themes} from "../../../common-data/settings.js";
+import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";
 
 // Constants
 const NODE_HEIGHT = 80;
@@ -102,12 +103,9 @@ function getSVGs(gateType, bgColor, borderColor, borderWidth) {
 const LogicGateNode = React.memo(function LogicGateNode({ id, data, isConnectable }) {
     const { theme } = useThemeContext();
     const updateNodeInternals = useUpdateNodeInternals();
-    const [isLeftOriented, setIsLeftOriented] = useState(data.isLeftOrientation || false);
+    const { logicGateOrientation, setOrientation } = useFlowMIPS();
 
-    // Sync internal state if `data.isLeftOrientation` changes externally
-    useEffect(() => {
-        setIsLeftOriented(data.isLeftOrientation || false);
-    }, [data.isLeftOrientation]);
+    const isLeftOriented = logicGateOrientation.get(id) ?? false;
 
     // Update handles when orientation changes
     useEffect(() => {
@@ -115,7 +113,7 @@ const LogicGateNode = React.memo(function LogicGateNode({ id, data, isConnectabl
     }, [isLeftOriented, id, updateNodeInternals]);
 
     const handleToggleOrientation = () => {
-        setIsLeftOriented((prev) => !prev);
+        setOrientation(id, !isLeftOriented);
     };
 
     let backgroundColor, borderColor;
