@@ -6,7 +6,7 @@ export const useFlowMIPS = () => useContext(FlowMIPSContext);
 
 export const FlowMIPSProvider = ({ children }) => {
     const [logicGateOrientation, setLogicGateOrientation] = useState(new Map().set('and', true).set('or', true));
-    const [multiplexerInputs, setMultiplexerInputs] = useState(new Map());
+    const [multiplexerInputs, setMultiplexerInputs] = useState(new Map().set('multiplexer5', 4).set('multiplexer6', 3));
 
     // Logic Gate Orientation Methods
     const setOrientation = useCallback((id, isLeft) => {
@@ -34,6 +34,27 @@ export const FlowMIPSProvider = ({ children }) => {
         });
     }, []);
 
+    // Añadir una entrada
+    const addMultiplexerInput = useCallback((id) => {
+        setMultiplexerInputs(prev => {
+            const newMap = new Map(prev);
+            const current = newMap.get(id) || 2;
+            newMap.set(id, current + 1);
+            return newMap;
+        });
+    }, []);
+    // Remover una entrada
+    const removeMultiplexerInput = useCallback((id) => {
+        setMultiplexerInputs(prev => {
+            const newMap = new Map(prev);
+            const current = newMap.get(id) || 2;
+            if (current > 2) {
+                newMap.set(id, current - 1);
+            }
+            return newMap;
+        });
+    }, []);
+
     const removeMultiplexer = useCallback((id) => {
         setMultiplexerInputs(prev => {
             const newMap = new Map(prev);
@@ -50,6 +71,8 @@ export const FlowMIPSProvider = ({ children }) => {
                 removeOrientation,
                 multiplexerInputs,
                 setMultiplexerInputCount,
+                addMultiplexerInput,
+                removeMultiplexerInput,
                 removeMultiplexer,
             }}
         >
