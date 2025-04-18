@@ -107,7 +107,7 @@ export function initialNodes(
                     height: 80,
                 }
             },
-            position: { x: 800, y: 1210 },
+            position: { x: 800, y: 1150 },
         },
         {
             id: 'register',
@@ -140,7 +140,7 @@ export function initialNodes(
             position: { x: 1210, y: 1200 },
         },
         {
-            id: 'shiftLeftInstructionRegister',
+            id: 'shiftLeftSignExtend',
             type: 'mipsGeneral',
             data: {
                 nodeClass: 'shift-left-2',
@@ -155,7 +155,7 @@ export function initialNodes(
             position: { x: 1400, y: 1200 },
         },
         {
-            id: 'shiftLeftSignExtend',
+            id: 'shiftLeftInstructionRegister',
             type: 'mipsGeneral',
             data: {
                 nodeClass: 'shift-left-2',
