@@ -57,7 +57,7 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
 
     const staticHandles = [
         {
-            id: "control-input",
+            id: `control-input-${id}`,
             type: "target",
             position: Position.Top,
             bits: bitsControl,
@@ -65,7 +65,7 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
             name: "Control",
         },
         {
-            id: "output-multiplexer",
+            id: `output-${id}`,
             type: "source",
             position: Position.Right,
             connectioncount: null,

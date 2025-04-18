@@ -1,9 +1,7 @@
 import {Position, useNodeConnections, useReactFlow} from "@xyflow/react";
 import CustomNodeToolbar from "../../mips/nodes/common/node-toobar/CustomNodeToolbar.jsx";
-import React, {useEffect} from "react";
-import CustomHandle from "../../../handles/CustomHandle.jsx";
 import "./common/node-states-stylesheet.css"
-import HandlesMapper from "../../mips/nodes/common/handles/HandlesMapper.jsx";
+import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 
 export default function StatesNode({id, data, isConnectable}) {
     const size = {

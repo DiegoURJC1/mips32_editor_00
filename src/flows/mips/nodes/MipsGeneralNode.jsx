@@ -1,6 +1,6 @@
 import React from "react";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
-import HandlesMapper from "./common/handles/HandlesMapper.jsx";
+import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import "./common/node-mips-stylesheet.css";
 
 export default function MipsGeneralNode(

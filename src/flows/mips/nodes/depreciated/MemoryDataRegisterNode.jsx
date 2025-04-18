@@ -3,7 +3,7 @@ import CustomHandle from "../../../../handles/CustomHandle.jsx";
 import { NodeToolbar, Position } from "@xyflow/react";
 import "../common/node-mips-stylesheet.css";
 import CustomNodeToolbar from "../common/node-toobar/CustomNodeToolbar.jsx";
-import HandlesMapper from "../common/handles/HandlesMapper.jsx";
+import HandlesMapper from "../../../../handles/HandlesMapper.jsx";
 
 export default function MemoryDataRegisterNode({ id, data, isConnectable }) {
     const size = {

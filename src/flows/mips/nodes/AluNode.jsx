@@ -1,7 +1,7 @@
 import React from "react";
 import "./common/node-mips-stylesheet.css";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
-import HandlesMapper from "./common/handles/HandlesMapper.jsx";
+import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import {colorsForInlineSvg, renderAluSvg} from "../../../assets/svg-nodes/svgNodesData.jsx";
 import {getAluHandles} from "./common/handles/handleLists.js";
 import {useThemeContext} from "../../../hooks/ThemeContext.jsx";

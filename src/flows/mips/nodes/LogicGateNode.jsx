@@ -10,7 +10,7 @@ import {
 } from "../../../assets/svg-nodes/svgNodesData.jsx";
 
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
-import HandlesMapper from "./common/handles/HandlesMapper.jsx";
+import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import {useThemeContext} from "../../../hooks/ThemeContext.jsx";
 import {themes} from "../../../common-data/settings.js";
 import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";

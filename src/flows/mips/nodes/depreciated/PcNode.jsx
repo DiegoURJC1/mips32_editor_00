@@ -2,7 +2,7 @@ import React from "react";
 import { Position } from "@xyflow/react";
 import "../common/node-mips-stylesheet.css";
 import CustomNodeToolbar from "../common/node-toobar/CustomNodeToolbar.jsx";
-import HandlesMapper from "../common/handles/HandlesMapper.jsx";
+import HandlesMapper from "../../../../handles/HandlesMapper.jsx";
 
 export default function PcNode({ id, data, isConnectable }) {
     const size = {

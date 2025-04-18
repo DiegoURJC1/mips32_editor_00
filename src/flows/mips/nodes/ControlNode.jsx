@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import { Position, useUpdateNodeInternals} from "@xyflow/react";
 import "./common/node-mips-stylesheet.css";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
-import HandlesMapper from "./common/handles/HandlesMapper.jsx"; // <- Asegúrate de importar el mapper
+import HandlesMapper from "../../../handles/HandlesMapper.jsx"; // <- Asegúrate de importar el mapper
 
 export default function ControlNode(
     {

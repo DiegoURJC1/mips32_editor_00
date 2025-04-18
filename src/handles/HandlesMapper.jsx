@@ -1,6 +1,6 @@
 // components/common/HandlesRenderer.jsx
 import React from "react";
-import CustomHandle from "../../../../../handles/CustomHandle.jsx";
+import CustomHandle from "./CustomHandle.jsx";
 
 export default function HandlesMapper({ nodeId, handleList, isConnectable }) {
     return (
