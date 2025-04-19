@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import {createContext, useContext, useState, useCallback, useEffect} from "react";
+import {Position} from "@xyflow/react";
 
 const FlowMIPSContext = createContext();
 
@@ -27,6 +28,7 @@ export const FlowMIPSProvider = ({ children }) => {
 
     // Multiplexer Input Methods
     const setMultiplexerInputCount = useCallback((id, count) => {
+        console.log(`Multiplexer '${id}' initialized with ${count} inputs`);
         setMultiplexerInputs(prev => {
             const newMap = new Map(prev);
             newMap.set(id, count);
@@ -36,6 +38,7 @@ export const FlowMIPSProvider = ({ children }) => {
 
     // Añadir una entrada
     const addMultiplexerInput = useCallback((id) => {
+        console.log(`Multiplexer '${id}' input added`);
         setMultiplexerInputs(prev => {
             const newMap = new Map(prev);
             const current = newMap.get(id) || 2;
@@ -45,6 +48,7 @@ export const FlowMIPSProvider = ({ children }) => {
     }, []);
     // Remover una entrada
     const removeMultiplexerInput = useCallback((id) => {
+        console.log(`Multiplexer '${id}' input removed`);
         setMultiplexerInputs(prev => {
             const newMap = new Map(prev);
             const current = newMap.get(id) || 2;
@@ -56,6 +60,7 @@ export const FlowMIPSProvider = ({ children }) => {
     }, []);
 
     const removeMultiplexer = useCallback((id) => {
+        console.log(`Multiplexer '${id}' removed`);
         setMultiplexerInputs(prev => {
             const newMap = new Map(prev);
             newMap.delete(id);
@@ -63,19 +68,368 @@ export const FlowMIPSProvider = ({ children }) => {
         });
     }, []);
 
+    /**
+     * Control Node
+     */
+    const [numHandles, setNumHandles] = useState({ left: 8, right: 7 });
+    const [bitsInputControl, setBitsInputControl] = useState(5);
+
+    const sizeControl = {
+        width: 160,
+        height: 220,
+    };
+    const centerX = (sizeControl.width - 8) / 2;
+    const centerY = sizeControl.height / 2;
+    const radiusX = (sizeControl.width - 6) / 2;
+    const radiusY = sizeControl.height / 2;
+
+    const getHandlePosition = (angleInDegrees) => {
+        const angleInRadians = (Math.PI / 180) * angleInDegrees;
+        const x = centerX + radiusX * Math.cos(angleInRadians);
+        const y = centerY + radiusY * Math.sin(angleInRadians);
+        return { top: y, left: x };
+    };
+    let handlePositions = {
+        pcWriteCondOutput: getHandlePosition((180 * 7) / numHandles.left + 90),
+        pcWriteOutput: getHandlePosition((180 * 6) / numHandles.left + 90),
+        iOrDOutput: getHandlePosition((180 * 5) / numHandles.left + 90),
+        memReadOutput: getHandlePosition((180 * 4) / numHandles.left + 90),
+        memWriteOutput: getHandlePosition((180 * 3) / numHandles.left + 90),
+        memToRegOutput: getHandlePosition((180 * 2) / numHandles.left + 90),
+        iRWriteOutput: getHandlePosition((180) / numHandles.left + 90),
+
+        pcSourceOutput: getHandlePosition((180) / numHandles.right - 90),
+        aluOpOutput: getHandlePosition((180 * 2) / numHandles.right - 90),
+        aluSrcBOutput: getHandlePosition((180 * 3) / numHandles.right - 90),
+        aluSrcAOutput: getHandlePosition((180 * 4) / numHandles.right - 90),
+        regWriteOutput: getHandlePosition((180 * 5) / numHandles.right - 90),
+        regDstOutput: getHandlePosition((180 * 6) / numHandles.right - 90),
+    };
+
+    const staticControlHandleInput = [
+        {
+            id: "input",
+            type: "target",
+            position: Position.Bottom,
+            bits: bitsInputControl,
+            connectioncount: 1,
+        },
+    ]
+    const staticControlHandleList = [
+        {
+            id: "pc-write-cond-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "EscPC Cond",
+            style: handlePositions.pcWriteCondOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "pc-write-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "EscPC",
+            style: handlePositions.pcWriteOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "i-or-d-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "IoD",
+            style: handlePositions.iOrDOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "mem-read-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "LeerMem",
+            style: handlePositions.memReadOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "mem-write-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "EscrMem",
+            style: handlePositions.memWriteOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "mem-to-reg-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "MemoReg",
+            style: handlePositions.memToRegOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "i-r-write-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "EscrIR",
+            style: handlePositions.iRWriteOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "pc-source-output",
+            type: "source",
+            position: Position.Right,
+            bits: 1,
+            label: "FuentePC",
+            style: handlePositions.pcSourceOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "alu-op-output",
+            type: "source",
+            position: Position.Right,
+            bits: 1,
+            label: "ALUOp",
+            style: handlePositions.aluOpOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "alu-src-b-output",
+            type: "source",
+            position: Position.Right,
+            bits: 2,
+            label: "ALUSrcB",
+            style: handlePositions.aluSrcBOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "alu-src-a-output",
+            type: "source",
+            position: Position.Right,
+            bits: 1,
+            label: "ALUSrcA",
+            style: handlePositions.aluSrcAOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "reg-write-output",
+            type: "source",
+            position: Position.Right,
+            bits: 1,
+            label: "EscrReg",
+            style: handlePositions.regWriteOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+        {
+            id: "reg-dst-output",
+            type: "source",
+            position: Position.Right,
+            bits: 1,
+            label: "RegDest",
+            style: handlePositions.regDstOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+    ];
+    
+    const [staticControlHandles, setStaticControlHandles] = useState(staticControlHandleList);
+
+    const [dynamicControlHandles, setDynamicControlHandles] = useState([]);
+
+    useEffect(() => {
+
+        const leftHandles = dynamicControlHandles.filter(h => h.isLeft);
+        const rightHandles = dynamicControlHandles.filter(h => !h.isLeft);
+
+        const updatedDynamicHandlesL = leftHandles.map((handle, index) => {
+            const newPosition = getHandlePosition((180 * (numHandles.left - index - 1)) / numHandles.left + 90);
+            return {
+                ...handle,
+                style: newPosition,
+            };
+        });
+
+        const updatedDynamicHandlesR = rightHandles.map((handle, index) => {
+            const newPosition = getHandlePosition((180 * (numHandles.right - index - 1)) / numHandles.right - 90);
+            return {
+                ...handle,
+                style: newPosition,
+            };
+        });
+
+        setDynamicControlHandles([...updatedDynamicHandlesL, ...updatedDynamicHandlesR]);
+
+        const updatedHandles = staticControlHandles.map(handle => {
+            let newStyle;
+
+            switch (handle.id) {
+                case "pc-write-cond-output":
+                    newStyle = getHandlePosition((180 * 7) / numHandles.left + 90);
+                    break;
+                case "pc-write-output":
+                    newStyle = getHandlePosition((180 * 6) / numHandles.left + 90);
+                    break;
+                case "i-or-d-output":
+                    newStyle = getHandlePosition((180 * 5) / numHandles.left + 90);
+                    break;
+                case "mem-read-output":
+                    newStyle = getHandlePosition((180 * 4) / numHandles.left + 90);
+                    break;
+                case "mem-write-output":
+                    newStyle = getHandlePosition((180 * 3) / numHandles.left + 90);
+                    break;
+                case "mem-to-reg-output":
+                    newStyle = getHandlePosition((180 * 2) / numHandles.left + 90);
+                    break;
+                case "i-r-write-output":
+                    newStyle = getHandlePosition(180 / numHandles.left + 90);
+                    break;
+                case "pc-source-output":
+                    newStyle = getHandlePosition(180 / numHandles.right - 90);
+                    break;
+                case "alu-op-output":
+                    newStyle = getHandlePosition((180 * 2) / numHandles.right - 90);
+                    break;
+                case "alu-src-b-output":
+                    newStyle = getHandlePosition((180 * 3) / numHandles.right - 90);
+                    break;
+                case "alu-src-a-output":
+                    newStyle = getHandlePosition((180 * 4) / numHandles.right - 90);
+                    break;
+                case "reg-write-output":
+                    newStyle = getHandlePosition((180 * 5) / numHandles.right - 90);
+                    break;
+                case "reg-dst-output":
+                    newStyle = getHandlePosition((180 * 6) / numHandles.right - 90);
+                    break;
+                default:
+                    newStyle = handle.style;
+            }
+
+            return {
+                ...handle,
+                style: newStyle
+            };
+        });
+
+        setStaticControlHandles(updatedHandles);
+    }, [numHandles]);
+    useEffect(() => {
+        setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicControlHandles.length)), 5))
+    }, [staticControlHandles.length, dynamicControlHandles.length])
+// Cambiar los bits de un handle estático
+    const updateStaticHandleBits = (label, bits) => {
+        setStaticControlHandles(prev =>
+            prev.map(handle => handle.label === label ? { ...handle, bits } : handle)
+        );
+    };
+
+// Funciones para manejar dinámicos
+    const addDynamicHandle = ({ label, bits }) => {
+        if (label === "" || label === undefined) return;
+        console.log(label, bits);
+        console.log("H: ", numHandles)
+        const id = `dyn-${label}`;
+        const allNames = new Set([
+            ...staticControlHandles.map(h => h.label),
+            ...staticControlHandles.map(h => h.id),
+            ...dynamicControlHandles.map(h => h.label),
+            ...dynamicControlHandles.map(h => h.id)
+        ]);
+
+        if (bits < 1 || bits > 32 || allNames.has(label)) return;
+        let position;
+        let isLeft;
+        if (numHandles.right <= numHandles.left) {
+            isLeft = false;
+            position = Position.Right;
+            setNumHandles({left: numHandles.left, right: numHandles.right+1});
+        } else {
+            isLeft = true;
+            position = Position.Left;
+            setNumHandles({left: numHandles.left+1, right: numHandles.right});
+        }
+        setDynamicControlHandles(prev => [
+            ...prev,
+            { id, type:'source', label, bits, position, positionInverted: true, isLeft },
+        ]);
+        console.log("Updated Control handles:\n", dynamicControlHandles);
+    };
+
+    const removeDynamicHandle = (label) => {
+        if (!dynamicControlHandles.some(h => h.label === label)) return;
+        const handle = dynamicControlHandles.find(h => h.label === label);
+        if (handle.isLeft) {
+            setNumHandles({left: numHandles.left-1, right: numHandles.right});
+        } else {
+            setNumHandles({left: numHandles.left, right: numHandles.right-1});
+        }
+        setDynamicControlHandles(prev => prev.filter(h => h.label !== label));
+    };
+
+    const updateDynamicHandleBits = (label, bits) => {
+        setDynamicControlHandles(prev =>
+            prev.map(h => h.label === label ? { ...h, bits } : h)
+        );
+    };
+
+    const updateDynamicHandleSide = (label, isLeft) => {
+        setDynamicControlHandles(prev =>
+            prev.map(h => h.label === label ? { ...h, isLeft } : h)
+        );
+    };
+
+    const updateDynamicHandleLabel = (oldLabel, newLabel) => {
+        const labels = new Set([
+            ...staticControlHandles.map(h => h.label),
+            ...dynamicControlHandles.map(h => h.label)
+        ]);
+        if (labels.has(newLabel)) return false;
+
+        setDynamicControlHandles(prev =>
+            prev.map(h => h.label === oldLabel ? { ...h, label: newLabel, id: `dyn-${newLabel}` } : h)
+        );
+        return true;
+    };
+
     return (
-        <FlowMIPSContext.Provider
-            value={{
-                logicGateOrientation,
-                setOrientation,
-                removeOrientation,
-                multiplexerInputs,
-                setMultiplexerInputCount,
-                addMultiplexerInput,
-                removeMultiplexerInput,
-                removeMultiplexer,
-            }}
-        >
+        <FlowMIPSContext.Provider value={{
+            logicGateOrientation,
+            setOrientation,
+            removeOrientation,
+            multiplexerInputs,
+            setMultiplexerInputCount,
+            addMultiplexerInput,
+            removeMultiplexerInput,
+            removeMultiplexer,
+
+            staticControlHandleInput,
+            staticControlHandles,
+            updateStaticHandleBits,
+
+            dynamicControlHandles,
+            addDynamicHandle,
+            removeDynamicHandle,
+            updateDynamicHandleBits,
+            updateDynamicHandleSide,
+            updateDynamicHandleLabel,
+        }}>
             {children}
         </FlowMIPSContext.Provider>
     );
