@@ -1,16 +1,10 @@
 import {useState} from "react";
 import "./table-panel.css"
-export default function TablePanel({
-                                       headers,
-                                       data,
-                                       removeColumn,
-                                       removeRow,
-                                       getRowNumberInBinary,
-                                       editCell,
-                                       editHeader,
-                                   }) {
+import {useFlowMIPS} from "../../hooks/FlowMIPSContext.jsx";
+export default function TablePanel() {
     const [editingCell, setEditingCell] = useState(null);
 
+    const { headers, tableData, editHeader, editCell, getRowNumberInBinary } = useFlowMIPS();
     const handleCellChange = (rowIndex, colIndex, e) => {
         editCell(rowIndex, colIndex, e.target.value);
     };
@@ -41,7 +35,7 @@ export default function TablePanel({
                     </tr>
                     </thead>
                     <tbody>
-                    {data.map((row, rowIndex) => (
+                    {tableData.map((row, rowIndex) => (
                         <tr key={rowIndex}>
                             <td>{getRowNumberInBinary(rowIndex)}</td>
                             {row.map((cell, colIndex) => (

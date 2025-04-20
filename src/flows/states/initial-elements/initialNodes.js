@@ -1,11 +1,9 @@
-export function initialNodes(headers, data) {
+export function initialNodes() {
     return [
         {
             id: 'node0',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 0,
                 isProtected: true,
             },
@@ -15,8 +13,6 @@ export function initialNodes(headers, data) {
             id: 'node1',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 1,
                 isProtected: true,
             },
@@ -26,8 +22,6 @@ export function initialNodes(headers, data) {
             id: 'node2',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 2,
                 isProtected: true,
             },
@@ -37,8 +31,6 @@ export function initialNodes(headers, data) {
             id: 'node3',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 3,
                 isProtected: true,
             },
@@ -48,8 +40,6 @@ export function initialNodes(headers, data) {
             id: 'node4',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 4,
                 isProtected: true,
             },
@@ -59,8 +49,6 @@ export function initialNodes(headers, data) {
             id: 'node5',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 5,
                 isProtected: true,
             },
@@ -70,8 +58,6 @@ export function initialNodes(headers, data) {
             id: 'node6',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 6,
                 isProtected: true,
             },
@@ -81,8 +67,6 @@ export function initialNodes(headers, data) {
             id: 'node7',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 7,
                 isProtected: true,
             },
@@ -92,8 +76,6 @@ export function initialNodes(headers, data) {
             id: 'node8',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 8,
                 isProtected: true,
             },
@@ -103,8 +85,6 @@ export function initialNodes(headers, data) {
             id: 'node9',
             type: 'state',
             data: {
-                headers: headers,
-                data: data,
                 statesNumber: 9,
                 isProtected: true,
             },

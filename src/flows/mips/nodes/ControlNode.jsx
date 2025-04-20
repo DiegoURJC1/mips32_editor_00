@@ -38,7 +38,13 @@ export default function ControlNode(
         data.handles = [...staticControlHandles, ...dynamicControlHandles];
     }, [dynamicControlHandles.length, id, updateNodeInternals]);
 
-
+    const handleChange = (event) => {
+        const value = event.target.value;
+        // Verificamos si el valor es un número antes de actualizar el estado
+        if (!isNaN(value)) {
+            setHandleBits(Number(value)); // Convertimos el valor a número antes de guardarlo
+        }
+    };
     return (
         <>
             <CustomNodeToolbar data={data} nodeId={id}>
@@ -55,7 +61,7 @@ export default function ControlNode(
                     min="1"
                     max="32"
                     value={handleBits}
-                    onChange={(e) => setHandleBits(Number(e.target.value))}
+                    onChange={handleChange}
                     placeholder="Número de bits"
                 />
                 <br />

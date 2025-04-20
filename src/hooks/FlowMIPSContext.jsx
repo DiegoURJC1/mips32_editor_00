@@ -1,6 +1,7 @@
 import {createContext, useContext, useState, useCallback, useEffect} from "react";
 import {Position} from "@xyflow/react";
-
+import {getControlHandles} from "../flows/mips/nodes/common/handles/handleLists.js";
+import {headersData as initialHeaders, statesData as initialData} from "../common-data/statesData.js"
 const FlowMIPSContext = createContext();
 
 export const useFlowMIPS = () => useContext(FlowMIPSContext);
@@ -8,6 +9,9 @@ export const useFlowMIPS = () => useContext(FlowMIPSContext);
 export const FlowMIPSProvider = ({ children }) => {
     const [logicGateOrientation, setLogicGateOrientation] = useState(new Map().set('and', true).set('or', true));
     const [multiplexerInputs, setMultiplexerInputs] = useState(new Map().set('multiplexer5', 4).set('multiplexer6', 3));
+
+    const [headers, setHeaders] = useState(initialHeaders);
+    const [tableData, setTableData] = useState(initialData);
 
     // Logic Gate Orientation Methods
     const setOrientation = useCallback((id, isLeft) => {
@@ -115,138 +119,7 @@ export const FlowMIPSProvider = ({ children }) => {
             connectioncount: 1,
         },
     ]
-    const staticControlHandleList = [
-        {
-            id: "pc-write-cond-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "EscPC Cond",
-            style: handlePositions.pcWriteCondOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "pc-write-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "EscPC",
-            style: handlePositions.pcWriteOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "i-or-d-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "IoD",
-            style: handlePositions.iOrDOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "mem-read-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "LeerMem",
-            style: handlePositions.memReadOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "mem-write-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "EscrMem",
-            style: handlePositions.memWriteOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "mem-to-reg-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "MemoReg",
-            style: handlePositions.memToRegOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "i-r-write-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "EscrIR",
-            style: handlePositions.iRWriteOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "pc-source-output",
-            type: "source",
-            position: Position.Right,
-            bits: 1,
-            label: "FuentePC",
-            style: handlePositions.pcSourceOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "alu-op-output",
-            type: "source",
-            position: Position.Right,
-            bits: 1,
-            label: "ALUOp",
-            style: handlePositions.aluOpOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "alu-src-b-output",
-            type: "source",
-            position: Position.Right,
-            bits: 2,
-            label: "ALUSrcB",
-            style: handlePositions.aluSrcBOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "alu-src-a-output",
-            type: "source",
-            position: Position.Right,
-            bits: 1,
-            label: "ALUSrcA",
-            style: handlePositions.aluSrcAOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "reg-write-output",
-            type: "source",
-            position: Position.Right,
-            bits: 1,
-            label: "EscrReg",
-            style: handlePositions.regWriteOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "reg-dst-output",
-            type: "source",
-            position: Position.Right,
-            bits: 1,
-            label: "RegDest",
-            style: handlePositions.regDstOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-    ];
+    const staticControlHandleList = getControlHandles(sizeControl, handlePositions);
     
     const [staticControlHandles, setStaticControlHandles] = useState(staticControlHandleList);
 
@@ -330,17 +203,19 @@ export const FlowMIPSProvider = ({ children }) => {
 
         setStaticControlHandles(updatedHandles);
     }, [numHandles]);
+
     useEffect(() => {
         setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicControlHandles.length)), 5))
     }, [staticControlHandles.length, dynamicControlHandles.length])
-// Cambiar los bits de un handle estático
+
+    // Cambiar los bits de un handle estático
     const updateStaticHandleBits = (label, bits) => {
         setStaticControlHandles(prev =>
             prev.map(handle => handle.label === label ? { ...handle, bits } : handle)
         );
     };
 
-// Funciones para manejar dinámicos
+    // Funciones para manejar dinámicos
     const addDynamicHandle = ({ label, bits }) => {
         if (label === "" || label === undefined) return;
         console.log(label, bits);
@@ -369,6 +244,7 @@ export const FlowMIPSProvider = ({ children }) => {
             ...prev,
             { id, type:'source', label, bits, position, positionInverted: true, isLeft },
         ]);
+        addColumn(label)
         console.log("Updated Control handles:\n", dynamicControlHandles);
     };
 
@@ -381,6 +257,7 @@ export const FlowMIPSProvider = ({ children }) => {
             setNumHandles({left: numHandles.left, right: numHandles.right-1});
         }
         setDynamicControlHandles(prev => prev.filter(h => h.label !== label));
+        removeColumn(label);
     };
 
     const updateDynamicHandleBits = (label, bits) => {
@@ -408,6 +285,54 @@ export const FlowMIPSProvider = ({ children }) => {
         return true;
     };
 
+    /**
+     * Table
+     */
+    const addColumn = (headerName) => {
+        if (headers.includes(headerName)) {
+            console.warn(`Column "${headerName}" already exists.`);
+            return;
+        }
+
+        setHeaders([...headers, headerName]);
+        setTableData(tableData.map(row => [...row, '']));
+    };
+    const removeColumn = (headerName) => {
+        const columnIndex = headers.indexOf(headerName);
+
+        if (columnIndex !== -1) {
+            setHeaders(headers.filter((_, i) => i !== columnIndex));
+            setTableData(tableData.map(row => row.filter((_, i) => i !== columnIndex)));
+        } else {
+            console.warn(`Column "${headerName}" does not exist.`);
+        }
+    };
+
+    const addRow = () => {
+        const newRow = new Array(headers.length).fill(''); // Valor predeterminado para la nueva fila
+        setTableData([...tableData, newRow]);
+    };
+
+    const removeRow = (index) => {
+        setTableData(tableData.filter((_, i) => i !== index));
+    };
+
+    const getRowNumberInBinary = (rowIndex) => {
+        return rowIndex.toString(2).padStart(4, '0'); // Número binario en 4 dígitos
+    };
+
+    const editCell = (rowIndex, colIndex, newValue) => {
+        const newData = [...tableData];
+        newData[rowIndex][colIndex] = newValue;
+        setTableData(newData);
+    };
+
+    const editHeader = (colIndex, newHeader) => {
+        const newHeaders = [...headers];
+        newHeaders[colIndex] = newHeader;
+        setHeaders(newHeaders);
+    };
+
     return (
         <FlowMIPSContext.Provider value={{
             logicGateOrientation,
@@ -429,6 +354,16 @@ export const FlowMIPSProvider = ({ children }) => {
             updateDynamicHandleBits,
             updateDynamicHandleSide,
             updateDynamicHandleLabel,
+
+            headers,
+            tableData,
+
+            editHeader,
+            editCell,
+            getRowNumberInBinary,
+
+            addRow,
+            removeRow,
         }}>
             {children}
         </FlowMIPSContext.Provider>

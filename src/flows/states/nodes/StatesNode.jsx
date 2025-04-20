@@ -3,8 +3,10 @@ import {Position, useNodeConnections, useReactFlow} from "@xyflow/react";
 import CustomNodeToolbar from "../../mips/nodes/common/node-toobar/CustomNodeToolbar.jsx";
 import "./common/node-states-stylesheet.css"
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
+import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";
 
 export default function StatesNode({id, data, isConnectable}) {
+    const { headers, tableData } = useFlowMIPS()
     const size = {
         width: 60,
         height: 60,
@@ -34,7 +36,7 @@ export default function StatesNode({id, data, isConnectable}) {
 
     function generateLabel() {
         const index = data.statesNumber;
-        const currentRow = data.data[index];
+        const currentRow = tableData[index];
         const labelLines = [];
 
         if (!currentRow) return '';
@@ -43,7 +45,7 @@ export default function StatesNode({id, data, isConnectable}) {
         const nonBinary = [];
 
         // Clasificamos los encabezados
-        data.headers.forEach((header, i) => {
+        headers.forEach((header, i) => {
             const match = header.match(/^([a-zA-Z_]+)(\d+)$/);
             if (match) {
                 const base = match[1];
@@ -85,7 +87,7 @@ export default function StatesNode({id, data, isConnectable}) {
             .map(conn => {
                 const node = getNode(conn.source);
                 if (node && node.data && typeof node.data.statesNumber !== 'undefined') {
-                    return data.data[node.data.statesNumber];
+                    return tableData[node.data.statesNumber];
                 }
                 return null;
             })

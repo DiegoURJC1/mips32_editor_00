@@ -7,12 +7,11 @@ export const useTable = (initialHeaders, initialData) => {
     const addColumn = (headerName) => {
         if (headers.includes(headerName)) {
             console.warn(`Column "${headerName}" already exists.`);
-            return false;
+            return;
         }
 
         setHeaders([...headers, headerName]);
         setData(data.map(row => [...row, '']));
-        return true;
     };
 
     const removeColumn = (headerName) => {

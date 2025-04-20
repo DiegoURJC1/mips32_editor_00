@@ -14,9 +14,6 @@ import TablePanel from "./flows/table/TablePanel.jsx";
 import {defaultSettings} from "./common-data/settings.js";
 import {initialEdges as initialEdgesMips} from "./flows/mips/initial-elements/initialEdges.js";
 import {initialEdges as initialEdgesStates} from "./flows/states/initial-elements/initialEdges.js";
-import {ThemeProvider} from "./hooks/ThemeContext.jsx";
-import {statesData, headersData} from "./common-data/statesData.js";
-import {useTable} from "./hooks/useTable.jsx";
 import {FlowMIPSProvider, useFlowMIPS} from "./hooks/FlowMIPSContext.jsx";
 
 
@@ -30,17 +27,6 @@ export const App = () => {
      * Table hooks
      *
      */
-    const {
-        headers,
-        data,
-        addColumn,
-        removeColumn,
-        addRow,
-        removeRow,
-        getRowNumberInBinary,
-        editCell,
-        editHeader
-    } = useTable(headersData, statesData);
     const [currentPanel, setCurrentPanel] = useState(0);
     const [dynamicControlHandles, setDynamicControlHandles] = useState([]);
     const [numHandlesControl, setNumHandlesControl] = useState({ left: 8, right: 7 });
@@ -49,17 +35,12 @@ export const App = () => {
      *
      */
     const [nodesMips, setNodesMips, onNodesChangeMipsBase] = useNodesState(initialNodesMips(
-        addColumn,
-        removeColumn,
         dynamicControlHandles,
         setDynamicControlHandles,
         numHandlesControl,
         setNumHandlesControl,
         ));
-    const [nodesStates, setNodesStates, onNodesChangeStatesBase] = useNodesState(initialNodesStates(
-        headers,
-        data,
-    ));
+    const [nodesStates, setNodesStates, onNodesChangeStatesBase] = useNodesState(initialNodesStates);
 
     const [edgesMips, setEdgesMips, onEdgesChangeMips] = useEdgesState(initialEdgesMips);
     const [edgesStates, setEdgesStates, onEdgesChangeStates] = useEdgesState(initialEdgesStates);
@@ -67,7 +48,7 @@ export const App = () => {
     const [numberOfStates, setNumberOfStates] = useState(initialNodesStates().length)
     const [settings, setSettings] = useState(defaultSettings);
 
-    const { removeOrientation, removeMultiplexer } = useFlowMIPS();
+    const { removeOrientation, removeMultiplexer, addRow, removeRow } = useFlowMIPS();
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
 
@@ -139,12 +120,10 @@ export const App = () => {
                 ...node,
                 data: {
                     ...node.data,
-                    headers,
-                    data,
                 },
             }))
         );
-    }, [headers, data, setNodesStates]);
+    }, [setNodesStates]);
 
     /**
      *
@@ -223,8 +202,6 @@ export const App = () => {
                     data: {
                         label: label,
                         statesNumber: numNodes,
-                        data: data,
-                        headers: headers,
                     },
                 };
                 addRow();
@@ -233,7 +210,7 @@ export const App = () => {
                 console.log("numberOfStates: ", numberOfStates);
             }
         },
-        [type, screenToFlowPosition, currentPanel, setNodesMips, numberOfStates, data, headers, addRow, setNodesStates]
+        [type, screenToFlowPosition, currentPanel, setNodesMips, numberOfStates, addRow, setNodesStates]
     );
 
 
@@ -285,8 +262,6 @@ export const App = () => {
                                 onNodesChange={onNodesChangeMips}
                                 onEdgesChange={onEdgesChangeMips}
                                 setEdges={setEdgesMips}
-                                // Table editing
-                                addColumn={addColumn}
                                 // Drag and Drop
                                 onDrop={onDrop}
                                 onDragOver={onDragOver}
@@ -322,15 +297,7 @@ export const App = () => {
                     </>
                 )}
                 {currentPanel === 2 && (
-                    <TablePanel
-                        headers={headers}
-                        data={data}
-                        removeColumn={removeColumn}
-                        removeRow={removeRow}
-                        getRowNumberInBinary={getRowNumberInBinary}
-                        editCell={editCell}
-                        editHeader={editHeader}
-                    />
+                    <TablePanel/>
                 )}
             </div>
         </div>
