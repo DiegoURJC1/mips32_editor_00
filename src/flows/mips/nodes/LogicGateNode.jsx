@@ -14,6 +14,7 @@ import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import {useThemeContext} from "../../../hooks/ThemeContext.jsx";
 import {themes} from "../../../common-data/settings.js";
 import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";
+import ButtonWithIconSmall from "../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
 
 // Constants
 const NODE_HEIGHT = 80;
@@ -153,9 +154,7 @@ const LogicGateNode = React.memo(function LogicGateNode({ id, data, isConnectabl
             {isLeftOriented ? leftSVG : rightSVG}
 
             <CustomNodeToolbar data={data} handles={handleList} nodeId={id}>
-                <button className="toggle-orientation" onClick={handleToggleOrientation}>
-                    🔄
-                </button>
+                <ButtonWithIconSmall onClick={handleToggleOrientation} icon={"src/assets/icons/vertical_flip_icon.svg"}/>
             </CustomNodeToolbar>
 
             <HandlesMapper handleList={handleList} isConnectable={isConnectable} />

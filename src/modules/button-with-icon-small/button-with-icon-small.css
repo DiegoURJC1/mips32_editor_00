@@ -1,0 +1,31 @@
+.button-with-icon-small, .trash-button-small {
+    background-color: var(--button-background-color);
+    border: none;
+    border-radius: var(--button-border-radius);
+    transition-duration: var(--transition-duration);
+    margin: 2px;
+    aspect-ratio: 1;
+    box-sizing: border-box;
+}
+
+.trash-button-small:hover {
+    background-color: var(--negation-color);
+}
+
+.button-with-icon-small:hover {
+    background-color: var(--button-background-color-hover);
+}
+
+.button-with-icon-small:disabled {
+    opacity: 0.6;
+}
+
+.button-with-icon-small:disabled:hover {
+    background-color: var(--button-background-color);
+    cursor: not-allowed;
+}
+
+.svg-icon-small {
+    height: 20px;
+    width: auto;
+}

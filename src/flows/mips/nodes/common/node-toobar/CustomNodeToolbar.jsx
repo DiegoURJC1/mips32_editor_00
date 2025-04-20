@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import {NodeToolbar, Position, useReactFlow} from "@xyflow/react";
 import "./custom-node-toolbar.css";
+import ButtonWithIconSmall, {
+    TrashButtonSmall
+} from "../../../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
 
 export default function CustomNodeToolbar(props) {
     const { deleteElements } = useReactFlow();
@@ -17,6 +20,7 @@ export default function CustomNodeToolbar(props) {
             deleteElements({ nodes: [{ id: props.nodeId }] });
         }
     };
+
 
     return (
         <NodeToolbar
@@ -53,11 +57,11 @@ export default function CustomNodeToolbar(props) {
                         <div>{props.data?.label || 'No label provided'}</div>
                         {props.children}
                         <br/>
-                        <button
-                            className={"delete"}
+
+                        <TrashButtonSmall
                             onClick={handleDelete}
                             disabled={props.data?.isProtected}
-                        >🗑️</button>
+                        />
                     </div>
 
                 ) : activeTab === 'handles' ? (

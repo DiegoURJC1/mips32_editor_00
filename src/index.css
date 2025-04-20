@@ -6,8 +6,9 @@
   --border-radius: 1em;
   --top-bar-height: 4rem;
 
+  --button-border-radius: 4px;
 
-
+  --transition-duration: 0.2s;
 
 }
 
@@ -26,6 +27,10 @@
   --text-color: black;
   --top-bar-background-color: #eff4ff;
   --border-color: #b8c7f6;
+  --button-background-color: #c7d6ff;
+  --button-background-color-hover: #90abef;
+
+  --icon-color: #bfbfbf;
 
   --background-background-color: white;
 
@@ -41,6 +46,10 @@
   --text-color: white;
   --top-bar-background-color: #222222;
   --border-color: #aaa9a9;
+  --button-background-color: #474949;
+  --button-background-color-hover: #acaaaa;
+
+  --icon-color: #858585;
 
   --background-background-color: #232323;
 
