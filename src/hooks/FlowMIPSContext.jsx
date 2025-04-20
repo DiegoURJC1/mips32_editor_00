@@ -328,9 +328,16 @@ export const FlowMIPSProvider = ({ children }) => {
     };
 
     const editHeader = (colIndex, newHeader) => {
+        const oldHeader = headers[colIndex];
         const newHeaders = [...headers];
         newHeaders[colIndex] = newHeader;
         setHeaders(newHeaders);
+
+        // Si el header modificado coincide con un dynamic handle, también actualiza su label
+        const dynamicHandle = dynamicControlHandles.find(h => h.label === oldHeader);
+        if (dynamicHandle) {
+            updateDynamicHandleLabel(oldHeader, newHeader);
+        }
     };
 
     return (
