@@ -1,5 +1,5 @@
 .top-bar {
-    width: 100%;
+    width: 100vw;
     padding: 0.5rem 1rem 0.5rem 1rem;
     box-sizing: border-box;
 
@@ -29,6 +29,6 @@
 
 .main-content-wrapper {
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
 }
