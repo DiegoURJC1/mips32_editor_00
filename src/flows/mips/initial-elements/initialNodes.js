@@ -246,14 +246,6 @@ export function initialNodes(
             data: {
                 label: 'Control',
                 isProtected: true,
-                functions: {
-                    addColumn: addColumn,
-                    removeColumn: removeColumn,
-                    dynamicControlHandles: dynamicControlHandles,
-                    setDynamicControlHandles: setDynamicControlHandles,
-                    numHandlesControl: numHandlesControl,
-                    setNumHandlesControl: setNumHandlesControl,
-                },
             },
 
             position: { x: 1000, y: 500 },

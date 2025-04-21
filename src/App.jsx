@@ -28,18 +28,8 @@ export const App = () => {
      *
      */
     const [currentPanel, setCurrentPanel] = useState(0);
-    const [dynamicControlHandles, setDynamicControlHandles] = useState([]);
-    const [numHandlesControl, setNumHandlesControl] = useState({ left: 8, right: 7 });
 
-    /**
-     *
-     */
-    const [nodesMips, setNodesMips, onNodesChangeMipsBase] = useNodesState(initialNodesMips(
-        dynamicControlHandles,
-        setDynamicControlHandles,
-        numHandlesControl,
-        setNumHandlesControl,
-        ));
+    const [nodesMips, setNodesMips, onNodesChangeMipsBase] = useNodesState(initialNodesMips);
     const [nodesStates, setNodesStates, onNodesChangeStatesBase] = useNodesState(initialNodesStates);
 
     const [edgesMips, setEdgesMips, onEdgesChangeMips] = useEdgesState(initialEdgesMips);
