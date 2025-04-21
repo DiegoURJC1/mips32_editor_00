@@ -56,6 +56,13 @@
     padding: 20px;
     box-sizing: border-box;
     gap: 1rem;
+    animation: fadeInAnimation ease-in 0.2s;
+    transition: all var(--transition-duration) cubic-bezier(0, 0.81, 0.43, 1.01);;
+}
+@keyframes fadeInAnimation {
+    0% { opacity: 0; }
+    100% { opacity: 1;}
+
 }
 
 .info-panel-title {

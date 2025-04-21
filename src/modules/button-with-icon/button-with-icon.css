@@ -9,13 +9,16 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Transición suave */
+    transition: all var(--transition-duration) cubic-bezier(0, 0.81, 0.43, 1.01); /* Transición suave */
 }
 
 .button-with-icon:hover {
     scale: var(--scale-hover);
     background-color: var(--button-background-color-hover);
     cursor: pointer;
+    .svg-icon {
+        scale: 110%;
+    }
 }
 
 .button-with-icon.active {
