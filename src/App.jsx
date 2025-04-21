@@ -32,8 +32,8 @@ export const App = () => {
     const [nodesMips, setNodesMips, onNodesChangeMipsBase] = useNodesState(initialNodesMips);
     const [nodesStates, setNodesStates, onNodesChangeStatesBase] = useNodesState(initialNodesStates);
 
-    const [edgesMips, setEdgesMips, onEdgesChangeMips] = useEdgesState(initialEdgesMips);
-    const [edgesStates, setEdgesStates, onEdgesChangeStates] = useEdgesState(initialEdgesStates);
+    const [edgesMips, setEdgesMips, onEdgesChangeMipsBase] = useEdgesState(initialEdgesMips);
+    const [edgesStates, setEdgesStates, onEdgesChangeStatesBase] = useEdgesState(initialEdgesStates);
 
     const [numberOfStates, setNumberOfStates] = useState(initialNodesStates().length)
     const [settings, setSettings] = useState(defaultSettings);
@@ -42,35 +42,86 @@ export const App = () => {
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
 
-        changes.forEach(change => {
+        const filteredChanges = changes.filter(change => {
             if (change.type === 'remove') {
                 const deletedNode = updatedNodes.find(node => node.id === change.id);
-
-                if (deletedNode) {
-                    // Limpieza de datos según el tipo de nodo
-                    if (deletedNode.type === 'logicGate') {
-                        removeOrientation(deletedNode.id);
-                    } else if (deletedNode.type === 'multiplexer') {
-                        removeMultiplexer(deletedNode.id);
-                    }
-
-                    // Eliminar nodo del estado local
-                    updatedNodes = updatedNodes.filter(node => node.id !== deletedNode.id);
-                    setNodesMips(updatedNodes);
+                if (deletedNode?.data?.isProtected) {
+                    // ❌ Evita eliminar el nodo protegido
+                    return false;
                 }
+
+                // Limpieza de estructuras internas
+                if (deletedNode?.type === 'logicGate') {
+                    removeOrientation(deletedNode.id);
+                } else if (deletedNode?.type === 'multiplexer') {
+                    removeMultiplexer(deletedNode.id);
+                }
+
+                updatedNodes = updatedNodes.filter(node => node.id !== deletedNode.id);
+                setNodesMips(updatedNodes);
             }
+
+            return true;
         });
 
-        onNodesChangeMipsBase(changes);
+        if (filteredChanges.length > 0) {
+            onNodesChangeMipsBase(filteredChanges);
+        }
     }, [nodesMips, onNodesChangeMipsBase, setNodesMips, removeOrientation, removeMultiplexer]);
+    const onEdgesChangeMips = useCallback((changes) => {
+        // Si solo hay un cambio y es eliminar un edge, lo dejamos pasar sin filtros
+        if (
+            changes.length === 1 &&
+            changes[0].type === 'remove'
+        ) {
+            onEdgesChangeMipsBase(changes);
+            return;
+        }
+
+        const protectedNodeIds = nodesMips
+            .filter(n => n.data?.isProtected)
+            .map(n => n.id);
+
+        const filteredChanges = changes.filter(change => {
+            if (change.type === 'remove') {
+                const edge = edgesMips.find(e => e.id === change.id);
+                if (!edge) return true;
+
+                const sourceIsProtected = protectedNodeIds.includes(edge.source);
+                const targetIsProtected = protectedNodeIds.includes(edge.target);
+
+                const sourceNodeExists = nodesMips.some(n => n.id === edge.source);
+                const targetNodeExists = nodesMips.some(n => n.id === edge.target);
+
+                const nodeStillExists = sourceNodeExists && targetNodeExists;
+
+                if ((sourceIsProtected || targetIsProtected) && nodeStillExists) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        if (filteredChanges.length > 0) {
+            onEdgesChangeMipsBase(filteredChanges);
+        }
+    }, [edgesMips, nodesMips, onEdgesChangeMipsBase]);
+
+
+
+
 
     const onNodesChangeStates = useCallback((changes) => {
         let updatedNodes = [...nodesStates];
-
+        let dontDelete = false;
         changes.forEach(change => {
             if (change.type === 'remove') {
                 const deletedNode = updatedNodes.find(node => node.id === change.id);
-
+                if (deletedNode.data.isProtected === true) {
+                    dontDelete = true;
+                    return
+                }
                 if (deletedNode) {
                     const deletedStateNumber = deletedNode.data.statesNumber;
                     console.log(`Node deleted: ${change.id} with state number: ${deletedStateNumber}`);
@@ -100,9 +151,45 @@ export const App = () => {
                 }
             }
         });
-
-        onNodesChangeStatesBase(changes);
+        if (!dontDelete) {
+            onNodesChangeStatesBase(changes);
+        }
     }, [nodesStates, onNodesChangeStatesBase, removeRow, setNodesStates]);
+
+    const onEdgesChangeStates = useCallback((changes) => {
+        // Permitir eliminar si es un único cambio (edge seleccionado manualmente)
+        if (
+            changes.length === 1 &&
+            changes[0].type === 'remove'
+        ) {
+            onEdgesChangeStatesBase(changes);
+            return;
+        }
+
+        const filteredChanges = changes.filter(change => {
+            if (change.type === 'remove') {
+                const edge = edgesStates.find(e => e.id === change.id);
+                if (!edge) return true;
+
+                const sourceNode = nodesStates.find(n => n.id === edge.source);
+                const targetNode = nodesStates.find(n => n.id === edge.target);
+
+                const sourceIsProtected = sourceNode?.data?.isProtected;
+                const targetIsProtected = targetNode?.data?.isProtected;
+
+                if (sourceIsProtected || targetIsProtected) {
+                    return false; // bloquear eliminación si está conectado a nodos protegidos
+                }
+            }
+
+            return true;
+        });
+
+        if (filteredChanges.length > 0) {
+            onEdgesChangeStatesBase(filteredChanges);
+        }
+    }, [edgesStates, nodesStates, onEdgesChangeStatesBase]);
+
     // Update States node when table changes
     useEffect(() => {
         setNodesStates((prevNodes) =>
