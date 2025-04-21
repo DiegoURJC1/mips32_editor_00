@@ -148,7 +148,7 @@ export default function StatesNode({id, data, isConnectable}) {
                     handles={handleList}
                     nodeId={id}
                 >
-                    <div className="states-text" style={{ fontSize: `10px` }}>
+                    <div className="state-text-toolbar">
                         {generateLabel().split('\n').map((line, idx) => {
                             const isEmptyLine = line.trim() === '' || line.match(/= *$/);
                             return (
@@ -162,7 +162,7 @@ export default function StatesNode({id, data, isConnectable}) {
                         })}
                     </div>
                 </CustomNodeToolbar>
-                <div className="states-text" style={{ fontSize: `4px` }}>
+                <div className="state-text">
                     {generateLabel().split('\n').map((line, idx) => {
                         const isEmptyLine = line.trim() === '' || line.match(/= *$/);
                         return (

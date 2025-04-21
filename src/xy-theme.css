@@ -1,4 +1,5 @@
 .react-flow {
+    --xy-controls-button-background-color-default: var(--background-color);
 }
 
 .react-flow__background {

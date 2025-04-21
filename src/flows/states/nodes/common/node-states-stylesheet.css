@@ -20,3 +20,7 @@
     position: absolute;
     color: var(--text-color);
 }
+
+.state-text {
+    font-size: calc(var(--font-size) - 0.75rem);
+}

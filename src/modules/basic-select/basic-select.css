@@ -1,0 +1,26 @@
+.basic-select {
+    background-color: var(--button-background-color);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    transition: var(--transition-duration);
+
+
+}
+
+.basic-select:hover {
+    color: var(--text-color-contrast);
+    background-color: var(--button-background-color-hover);
+    cursor: pointer;
+}
+.basic-select:focus {
+    outline: var(--border-width) solid var(--border-color);
+
+    color: var(--text-color);
+}
+
+
+option {
+    background-color: var(--button-background-color);
+}
+

@@ -1,15 +1,27 @@
 :root {
   font-family: "Noto Sans", sans-serif;
-  font-size: 1rem;
+  --font-size: 1rem;
+  font-size: var(--font-size);
 
   --border-width: 2px;
   --border-radius: 1em;
+  --border-radius-small: 2px;
+
   --top-bar-height: 4rem;
+  --side-panel-width: 16rem;
 
   --button-border-radius: 4px;
 
   --transition-duration: 0.2s;
 
+  --padding-small: 4px;
+
+  --scale-hover: 105%;
+
+
+  --table-background-color: hsl(from var(--background-color) h s calc(l - 2));
+  --table-background-color-input: hsl(from var(--table-background-color) h s calc(l + 3));
+  --table-background-color-input-hover: hsl(from var(--table-background-color-input) h s calc(l + 5));
 }
 
 
@@ -25,10 +37,23 @@
 [theme="light"] {
   --background-color: #f4f7ff;
   --text-color: black;
-  --top-bar-background-color: #eff4ff;
+  --text-color-contrast: white;
+  --text-color-top-bar: #1e1e1e;
+  --top-bar-background-color: #c4d3fd;
   --border-color: #b8c7f6;
-  --button-background-color: #c7d6ff;
+
+  --shadow-color: rgba(2, 68, 140, 0.5);
+
+  --table-background-color: hsl(from var(--background-color) h s calc(l - 2));
+  --table-background-color-input: hsl(from var(--table-background-color) h s calc(l + 3));
+  --table-background-color-input-hover: hsl(from var(--table-background-color-input) h s calc(l + 5));
+
+  --button-background-color: #e5ecfd;
   --button-background-color-hover: #90abef;
+  --button-background-color-active: #f8ffff;
+
+  --input-background-color: #e1e6f4;
+  --input-background-color-hover: hsl(from var(--input-background-color) h s calc(l + 10));
 
   --icon-color: #bfbfbf;
 
@@ -40,14 +65,29 @@
   --confirmation-border-color: #4eea4e;
   --negation-color: #ec4949;
   --negation-border-color: #ed3737;
+
+  --trash-icon-color: #9f9f9f;
 }
 [theme="dark"] {
   --background-color: #2b2b2b;
   --text-color: white;
+  --text-color-contrast: black;
+  --text-color-top-bar: var(--text-color);
   --top-bar-background-color: #222222;
   --border-color: #aaa9a9;
+
+  --shadow-color: rgba(255, 255, 255, 0.5);
+
+  --table-background-color: hsl(from var(--background-color) h s calc(l - 2));
+  --table-background-color-input: hsl(from var(--table-background-color) h s calc(l + 3));
+  --table-background-color-input-hover: hsl(from var(--table-background-color-input) h s calc(l + 5));
+
   --button-background-color: #474949;
-  --button-background-color-hover: #acaaaa;
+  --button-background-color-hover: hsl(from var(--button-background-color) h 0 calc(l + 60));
+  --button-background-color-active: #61e1ff;
+
+  --input-background-color: #191919;
+  --input-background-color-hover: hsl(from var(--input-background-color) h s calc(l + 10));
 
   --icon-color: #858585;
 
@@ -59,6 +99,8 @@
   --confirmation-border-color: #59ea59;
   --negation-color: #e16363;
   --negation-border-color: #bf4040;
+
+  --trash-icon-color: #d6d6d6;
 }
 
 html, body {

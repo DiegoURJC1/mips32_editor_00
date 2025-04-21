@@ -118,6 +118,7 @@ export function FlowMIPS(props) {
             <Controls
                 position={"top-right"}
                 orientation={"horizontal"}
+                style={{backgroundColor: "var(--background-color)"}}
             >
                 <ControlButton onClick={onClickDownload}>
                     D

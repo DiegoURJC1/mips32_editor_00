@@ -48,7 +48,7 @@ export const App = () => {
     const [numberOfStates, setNumberOfStates] = useState(initialNodesStates().length)
     const [settings, setSettings] = useState(defaultSettings);
 
-    const { removeOrientation, removeMultiplexer, addRow, removeRow } = useFlowMIPS();
+    const { removeOrientation, removeMultiplexer, addRow, removeRow, infoPanelTypes, activeInfoPanel, setActiveInfoPanel, } = useFlowMIPS();
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
 
@@ -240,6 +240,17 @@ export const App = () => {
 
     return (
         <div className="content-wrapper">
+            {activeInfoPanel === infoPanelTypes.about && (
+                <div className={"about-panel-background"} onClick={() => {setActiveInfoPanel(infoPanelTypes.none)}}>
+                    <div className={"about-panel"} onClick={(e) => {e.stopPropagation()}}>
+                        <div className={"info-panel-title"}>Acerca de</div>
+                        <div className={"info-panel-content"}>
+                            Proyecto realizado por Diego Gil Luengo.<br/><br/>
+                            Estudiante de la Universidad Rey Juan Carlos en el grado de Ingeniería de Computadores.
+                        </div>
+                    </div>
+                </div>
+            )}
             <TopBar
                 currentPanel={currentPanel}
                 setCurrentPanel={setCurrentPanel}

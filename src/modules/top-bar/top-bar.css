@@ -13,11 +13,24 @@
 
     /* Visual */
     background-color: var(--top-bar-background-color);
-    color: var(--text-color);
+    color: var(--text-color-top-bar);
     font-size: 2rem;
     font-weight: bold;
 
     /* Miscellaneous */
+}
+
+.top-bar-left-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.top-bar-right-wrapper {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .panel-buttons-wrapper {
@@ -25,4 +38,24 @@
     display: flex;
     align-items: center;
     gap: 0.2rem;
+}
+
+.info-button {
+    border-radius: 100%;
+    border: var(--border-width) solid var(--border-color);
+    font-size: 0.5em;
+    display: flex;
+    height: 20px;
+
+    aspect-ratio: auto 1 / 1;    place-content: center;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-duration);
+
+}
+
+.info-button:hover {
+    scale: var(--scale-hover);
+    box-shadow: 0 0 8px var(--shadow-color);
+    cursor: pointer;
 }

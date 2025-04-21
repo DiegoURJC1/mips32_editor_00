@@ -1,9 +1,11 @@
-import BasicButton from "../basic button/BasicButton.jsx";
+import BasicButton from "../basic-button/BasicButton.jsx";
 import "./side-panel.css"
 import {useDnD} from "./DnDContext.jsx";
 import {DnDButtonsMips, DnDButtonsStates} from "../dnd-button/DnDButton.jsx";
 import {themes} from "../../common-data/settings.js";
 import {useThemeContext} from "../../hooks/ThemeContext.jsx";
+import BasicInputSmall from "../basic-input-small/BasicInputSmall.jsx";
+import BasicSelect from "../basic-select/BasicSelect.jsx";
 
 export default function SidePanel(props) {
     const { theme, setThemeMode } = useThemeContext();
@@ -17,7 +19,7 @@ export default function SidePanel(props) {
 
     return (
         <aside className="side-panel">
-            <div>
+            <div className="side-panel-section-title">
                 {title}
             </div>
             <div className={"dnd-nodes"}>
@@ -47,15 +49,15 @@ export default function SidePanel(props) {
             </div>
             <div className={"color-settings"}>
                 <label htmlFor="theme">
-                    Choose Color Mode:
-                    <select
+                    Tema:
+                    <BasicSelect
                         id="theme"
                         value={theme}
                         onChange={(e) => setThemeMode(e.target.value)}
                     >
-                        <option value={themes.light}>Light</option>
-                        <option value={themes.dark}>Dark</option>
-                    </select>
+                        <option value={themes.light}>Claro</option>
+                        <option value={themes.dark}>Oscuro</option>
+                    </BasicSelect>
                 </label>
 
             </div>
@@ -65,15 +67,14 @@ export default function SidePanel(props) {
                 </div>
                 <div className={"grid-settings"}>
                     Grid:
-                    <input
-                        id={"grid"}
+                    <BasicInputSmall
                         type={"number"}
                         min={10}
                         step={10}
                         onChange={props.onChangeGrid}
                         value={props.settings.grid.gap}
                         inputMode="numeric"
-                    ></input>
+                    ></BasicInputSmall>
                 </div>
             </div>
 

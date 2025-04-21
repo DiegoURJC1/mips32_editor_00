@@ -43,7 +43,16 @@
 .node-toolbar-section-title {
     margin-bottom: 5px;
     margin-top: 10px;
+    font-weight: bolder;
+}
+
+.node-toolbar-subsection-title {
     font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.content-tab-content {
+    margin-bottom: 16px;
 }
 
 .target-handles ul, .source-handles ul {

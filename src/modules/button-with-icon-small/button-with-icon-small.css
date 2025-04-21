@@ -1,31 +1,50 @@
-.button-with-icon-small, .trash-button-small {
+.button-with-icon-small, .trash-button-small, .button-with-text-small {
+    color: var(--text-color);
     background-color: var(--button-background-color);
     border: none;
     border-radius: var(--button-border-radius);
     transition-duration: var(--transition-duration);
-    margin: 2px;
-    aspect-ratio: 1;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.trash-button-small:hover {
+.button-with-icon-small, .trash-button-small {
+    aspect-ratio: 1;
+}
+
+.trash-button-small:hover:not(:disabled) {
     background-color: var(--negation-color);
 }
 
-.button-with-icon-small:hover {
+.trash-button-small:hover:not(:disabled), .button-with-icon-small:hover:not(:disabled), .button-with-text-small:hover:not(:disabled) {
+    cursor: pointer;
+}
+
+.button-with-icon-small:hover:not(:disabled), .button-with-text-small:hover:not(:disabled) {
     background-color: var(--button-background-color-hover);
+    color: var(--text-color-contrast);
 }
 
-.button-with-icon-small:disabled {
-    opacity: 0.6;
-}
-
-.button-with-icon-small:disabled:hover {
-    background-color: var(--button-background-color);
+.button-with-icon-small:disabled, .trash-button-small:disabled, .button-with-text-small:disabled {
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
 .svg-icon-small {
-    height: 20px;
+    height: 24px;
     width: auto;
 }
+.button-with-icon-small:hover:not(:disabled),
+.trash-button-small:hover:not(:disabled) {
+    --trash-icon-color: white;
+}
+
+.svg-icon-small path,
+.svg-icon-small g,
+.svg-icon-small circle,
+.svg-icon-small rect {
+    transition: calc(var(--transition-duration) - 0.1s);
+}
+

@@ -340,6 +340,15 @@ export const FlowMIPSProvider = ({ children }) => {
         }
     };
 
+    /**
+     * Info panel
+     */
+    const infoPanelTypes = {
+        none: null,
+        about: "about",
+    }
+    const [activeInfoPanel, setActiveInfoPanel] = useState(infoPanelTypes.none);
+
     return (
         <FlowMIPSContext.Provider value={{
             logicGateOrientation,
@@ -371,6 +380,10 @@ export const FlowMIPSProvider = ({ children }) => {
 
             addRow,
             removeRow,
+
+            infoPanelTypes,
+            activeInfoPanel,
+            setActiveInfoPanel,
         }}>
             {children}
         </FlowMIPSContext.Provider>

@@ -1,9 +1,14 @@
 import {useEffect, useState} from "react";
 import { Position, useUpdateNodeInternals} from "@xyflow/react";
 import "./common/node-mips-stylesheet.css";
+import "./control-node-toolbar.css"
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";
+import ButtonWithIconSmall, {
+    ButtonWithTextSmall
+} from "../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
+import BasicInputSmall from "../../../modules/basic-input-small/BasicInputSmall.jsx";
 
 export default function ControlNode(
     {
@@ -45,34 +50,46 @@ export default function ControlNode(
             setHandleBits(Number(value)); // Convertimos el valor a número antes de guardarlo
         }
     };
+
     return (
         <>
             <CustomNodeToolbar data={data} nodeId={id}>
-                <button onClick={() => addDynamicHandle({ label: columnName, bits: handleBits })}>Añadir salida</button>
-                <input
-                    type="text"
-                    minLength={1}
-                    maxLength={16}
-                    value={columnName}
-                    onChange={(e) => setColumnName(e.target.value)}
-                />
-                <input
-                    type="number"
-                    min="1"
-                    max="32"
-                    value={handleBits}
-                    onChange={handleChange}
-                    placeholder="Número de bits"
-                />
-                <br />
-                <button onClick={() => removeDynamicHandle(columnName)}>Borrar salida</button>
-                <input
-                    type="text"
-                    minLength={1}
-                    maxLength={16}
-                    value={columnName}
-                    onChange={(e) => setColumnName(e.target.value)}
-                />
+                <div className={"add-handle-wrapper"}>
+                    <BasicInputSmall
+                        type="text"
+                        minLength={1}
+                        maxLength={16}
+                        value={columnName}
+                        onChange={(e) => setColumnName(e.target.value)}
+                        style={{maxWidth: '120px', marginRight: '2px'}}
+                        placeholder={"Nombre de salida"}
+                    />
+                    <BasicInputSmall
+                        type="number"
+                        min="1"
+                        max="32"
+                        value={handleBits}
+                        onChange={handleChange}
+                        placeholder={"Número de bits"}
+                    />
+                    <ButtonWithTextSmall
+                        onClick={() => addDynamicHandle({ label: columnName, bits: handleBits })}
+                    >Añadir salida</ButtonWithTextSmall>
+                </div>
+                <div className={"remove-handle-wrapper"}>
+                    <BasicInputSmall
+                        type="text"
+                        minLength={1}
+                        maxLength={16}
+                        value={columnName}
+                        onChange={(e) => setColumnName(e.target.value)}
+                        style={{maxWidth: '120px'}}
+                        placeholder={"Nombre de salida"}
+                    />
+                    <ButtonWithTextSmall
+                        onClick={() => removeDynamicHandle(columnName)}
+                    >Borrar salida</ButtonWithTextSmall>
+                </div>
             </CustomNodeToolbar>
 
             <div

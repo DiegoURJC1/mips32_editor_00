@@ -1,6 +1,7 @@
 import {useState} from "react";
 import "./table-panel.css"
 import {useFlowMIPS} from "../../hooks/FlowMIPSContext.jsx";
+import BasicButton from "../../modules/basic-button/BasicButton.jsx";
 export default function TablePanel() {
     const [editingCell, setEditingCell] = useState(null);
 
@@ -13,9 +14,34 @@ export default function TablePanel() {
         editHeader(colIndex, e.target.value);
     };
 
+    const downloadCSV = () => {
+        const csvRows = [];
+
+        // Encabezados
+        csvRows.push(['', ...headers].join(','));
+
+        // Filas con datos
+        tableData.forEach((row, rowIndex) => {
+            csvRows.push([getRowNumberInBinary(rowIndex), ...row].join(','));
+        });
+
+        const csvContent = csvRows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'tabla_mips.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <div className={"table-panel-wrapper"}>
-            <div className={"table-controls"}>table controls</div>
+            <div className={"table-controls"}>
+                <BasicButton onClick={downloadCSV}>Descargar CSV</BasicButton>
+            </div>
 
             <div className={"table-content"}>
                 <table border="1" style={{ width: "100%", borderCollapse: "collapse", marginTop: "10px" }}>
@@ -29,6 +55,7 @@ export default function TablePanel() {
                                     type="text"
                                     value={header}
                                     onChange={(e) => handleHeaderChange(idx, e)}
+                                    disabled={idx < 16}
                                 />
                             </th>
                         ))}

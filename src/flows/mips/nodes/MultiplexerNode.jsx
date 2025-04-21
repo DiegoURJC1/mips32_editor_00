@@ -4,6 +4,9 @@ import CustomHandle from "../../../handles/CustomHandle.jsx";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import "./common/node-mips-stylesheet.css";
 import { useFlowMIPS } from "../../../hooks/FlowMIPSContext.jsx";
+import ButtonWithIconSmall, {
+    ButtonWithTextSmall
+} from "../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
 
 export default function MultiplexerNode({ id, data, isConnectable }) {
     const { setEdges, getNodes } = useReactFlow();
@@ -148,9 +151,9 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
                 handles={[...staticHandles, ...dynamicHandles]}
                 nodeId={id}
             >
-                <div style={{ display: "flex" }}>
-                    <button onClick={handleAddInput}>➕</button>
-                    <button onClick={handleRemoveInput} disabled={inputsCount <= 2}>➖</button>
+                <div style={{ display: "flex", gap: "4px" }}>
+                    <ButtonWithTextSmall onClick={handleAddInput}>➕</ButtonWithTextSmall>
+                    <ButtonWithTextSmall onClick={handleRemoveInput} disabled={inputsCount <= 2}>➖</ButtonWithTextSmall>
                 </div>
             </CustomNodeToolbar>
 

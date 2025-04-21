@@ -4,6 +4,9 @@
     align-items: center;     /* Centra la tabla verticalmente */
     flex-direction: column;  /* Organiza los elementos en columna */
     width: 100vw;
+
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 
@@ -11,16 +14,33 @@ th {
     writing-mode: vertical-rl;  /* Hace que el texto sea vertical de arriba a abajo */
     text-align: center;         /* Centra el texto horizontalmente */
     vertical-align: middle;     /* Alinea el texto verticalmente en el centro */
-    padding: 10px;              /* Añade espacio alrededor del texto */
+    padding: 8px;              /* Añade espacio alrededor del texto */
     height: 100px;              /* Asegura que haya suficiente altura */
+    background-color: var(--table-background-color);
 }
 
-tr {
+tr, td {
     text-align: center;
+    padding: 2px 4px 2px 4px;
+    background-color: var(--table-background-color);
 }
 
 .input-table-value {
     height: 100%;
     max-width: 20px;
     text-align: center;
+    background-color: inherit;
+    color: var(--text-color);
+    border: none;
+    border-radius: var(--button-border-radius);
+    transition: var(--transition-duration);
+}
+
+.input-table-value:hover:not(:disabled) {
+    background-color: var(--table-background-color-input-hover);
+    cursor: text;
+}
+
+.input-table-value:not(:disabled) {
+    background-color: var(--table-background-color-input);
 }

@@ -1,0 +1,16 @@
+.basic-button{
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+    padding: 1em;
+    transition: var(--transition-duration);
+}
+
+.basic-button:hover{
+    scale: var(--scale-hover);
+    background-color: var(--button-background-color-hover);
+    color: var(--text-color-contrast);
+    cursor: pointer;
+}

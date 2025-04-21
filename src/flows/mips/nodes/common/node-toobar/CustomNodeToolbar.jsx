@@ -40,7 +40,7 @@ export default function CustomNodeToolbar(props) {
                         className={activeTab === 'handles' ? 'active' : ''}
                         onClick={() => setActiveTab('handles')}
                     >
-                        Handles
+                        E/S
                     </button>
                     <button
                         className={activeTab === 'extra' ? 'active' : ''}
@@ -54,10 +54,10 @@ export default function CustomNodeToolbar(props) {
                 {activeTab === 'content' ? (
                     <div className="content-tab">
                         <div className={"node-toolbar-section-title"}>Info básica</div>
-                        <div>{props.data?.label || 'No label provided'}</div>
-                        {props.children}
-                        <br/>
-
+                        <div className={"content-tab-content"}>
+                            <div className={"node-toolbar-subsection-title"}>{props.data?.label || 'No label provided'}</div>
+                            {props.children}
+                        </div>
                         <TrashButtonSmall
                             onClick={handleDelete}
                             disabled={props.data?.isProtected}
