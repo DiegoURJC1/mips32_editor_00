@@ -22,6 +22,15 @@
     cursor: pointer;
 }
 
+.trash-button-small:active:not(:disabled), .button-with-icon-small:active:not(:disabled), .button-with-text-small:active:not(:disabled) {
+    .svg-icon-small path,
+    .svg-icon-small g,
+    .svg-icon-small circle,
+    .svg-icon-small rect {
+        scale: 95%;
+    }
+}
+
 .button-with-icon-small:hover:not(:disabled), .button-with-text-small:hover:not(:disabled) {
     background-color: var(--button-background-color-hover);
     color: var(--text-color-contrast);

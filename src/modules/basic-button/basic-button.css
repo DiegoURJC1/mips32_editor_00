@@ -14,3 +14,7 @@
     color: var(--text-color-contrast);
     cursor: pointer;
 }
+
+.basic-button:active{
+    scale: 95%;
+}
