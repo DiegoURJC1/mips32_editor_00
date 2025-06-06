@@ -4,7 +4,7 @@ export const headersData = [
     "IoD",
     "LeerMem",
     "EscrMem",
-    "EsrcIR",
+    "EscrIR",
     "MemaReg",
     "FuentePC1",
     "FuentePC0",

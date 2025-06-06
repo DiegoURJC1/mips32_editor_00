@@ -99,7 +99,7 @@ const CustomHandle = (props) => {
                 >
                     {props.label}
                     {props.bits != null && (
-                        <span style={{ fontSize: "0.75em", marginLeft: "4px", opacity: 0.6 }}>
+                        <span style={{ fontSize: "0.75em", marginLeft: "4px", opacity: 0.6}}>
                             [{props.bits}]
                         </span>
                     )}

@@ -55,6 +55,19 @@ export function DnDButtonsMips(props) {
 
             </div></DndButton>
             <DndButton
+                nodeId={'number'}
+                onDragStart={props.onDragStart}
+                label={'Número'}
+            ><div
+                className={"mips-node number"}
+                style={{
+                    width: '30px',
+                    height: '30px',
+                }}
+            >
+
+            </div></DndButton>
+            <DndButton
                 colorMode={props.colorMode}
                 nodeId={'and'}
                 onDragStart={props.onDragStart}

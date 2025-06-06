@@ -565,3 +565,16 @@ export function getControlHandles(size, handlePositions) {
         },
     ];
 }
+
+export const numberHandleList = [
+    {
+        id: "output-number",
+        type: "source",
+        position: Position.Right,
+        bits: 32,
+        connectioncount: null,
+        label: null,
+        name: "Salida",
+        style: null
+    }
+];

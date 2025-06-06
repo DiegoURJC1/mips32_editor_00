@@ -9,6 +9,7 @@ export const useFlowMIPS = () => useContext(FlowMIPSContext);
 export const FlowMIPSProvider = ({ children }) => {
     const [logicGateOrientation, setLogicGateOrientation] = useState(new Map().set('and', true).set('or', true));
     const [multiplexerInputs, setMultiplexerInputs] = useState(new Map().set('multiplexer5', 4).set('multiplexer6', 3));
+    const [numberNodes, setNumberNodes] = useState(new Map().set('number1', 4));
 
     const [headers, setHeaders] = useState(initialHeaders);
     const [tableData, setTableData] = useState(initialData);
@@ -71,6 +72,36 @@ export const FlowMIPSProvider = ({ children }) => {
             return newMap;
         });
     }, []);
+
+    /**
+     * Number Node
+     */
+    const registerNumberNode = (id, value) => {
+        setNumberNodes(prev => {
+            const newMap = new Map(prev);
+            newMap.set(id, value);
+            return newMap;
+        });
+    };
+
+    const updateNumberNodeValue = (id, newValue) => {
+        setNumberNodes(prev => {
+            const newMap = new Map(prev);
+            if (newMap.has(id)) {
+                newMap.set(id, newValue);
+            }
+            return newMap;
+        });
+    };
+
+    const unregisterNumberNode = (id) => {
+        setNumberNodes(prev => {
+            const newMap = new Map(prev);
+            newMap.delete(id);
+            return newMap;
+        });
+    };
+
 
     /**
      * Control Node
@@ -359,6 +390,11 @@ export const FlowMIPSProvider = ({ children }) => {
             addMultiplexerInput,
             removeMultiplexerInput,
             removeMultiplexer,
+
+            numberNodes,
+            registerNumberNode,
+            updateNumberNodeValue,
+            unregisterNumberNode,
 
             staticControlHandleInput,
             staticControlHandles,

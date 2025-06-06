@@ -2,7 +2,7 @@ import {logicGateTypes} from "../../../assets/svg-nodes/svgNodesData.jsx";
 import {
     aluControlHandleList,
     aluExitHandleList, getInstructionRegisterHandles, getMemoryHandles, getRegisterHandles,
-    letterHandleList, memoryDataRegisterHandleList,
+    letterHandleList, memoryDataRegisterHandleList, numberHandleList,
     pcHandleList,
     shiftLeft2HandleList,
     signExtendHandleList
@@ -178,11 +178,11 @@ export function initialNodes(
                 isProtected: true,
                 handles: letterHandleList,
                 size: {
-                    width: 40,
-                    height: 40,
+                    width: 60,
+                    height: 60,
                 }
             },
-            position: { x: 1400, y: 860 },
+            position: { x: 1400, y: 850 },
         },
         {
             id: 'letterB',
@@ -193,11 +193,11 @@ export function initialNodes(
                 isProtected: true,
                 handles: letterHandleList,
                 size: {
-                    width: 40,
-                    height: 40,
+                    width: 60,
+                    height: 60,
                 }
             },
-            position: { x: 1400, y: 940 },
+            position: { x: 1400, y: 930 },
         },
         {
             id: 'aluControl',
@@ -240,6 +240,7 @@ export function initialNodes(
             position: { x: 1900, y: 990 },
         },
 
+
         {
             id: 'control',
             type: 'control',
@@ -249,6 +250,23 @@ export function initialNodes(
             },
 
             position: { x: 1000, y: 500 },
+        },
+
+        {
+            id: 'number1',
+            type: 'mipsGeneral',
+            data: {
+                nodeClass: 'number',
+                label: '4',
+                isProtected: false,
+                handles: numberHandleList,
+                size: {
+                    width: 40,
+                    height: 40,
+                }
+            },
+
+            position: { x: 1450, y: 1010 },
         },
 
         {

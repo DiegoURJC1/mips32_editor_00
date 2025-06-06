@@ -15,6 +15,7 @@ import {defaultSettings} from "./common-data/settings.js";
 import {initialEdges as initialEdgesMips} from "./flows/mips/initial-elements/initialEdges.js";
 import {initialEdges as initialEdgesStates} from "./flows/states/initial-elements/initialEdges.js";
 import {FlowMIPSProvider, useFlowMIPS} from "./hooks/FlowMIPSContext.jsx";
+import {numberHandleList} from "./flows/mips/nodes/common/handles/handleLists.js";
 
 
 let id = 0;
@@ -38,7 +39,12 @@ export const App = () => {
     const [numberOfStates, setNumberOfStates] = useState(initialNodesStates().length)
     const [settings, setSettings] = useState(defaultSettings);
 
-    const { removeOrientation, removeMultiplexer, addRow, removeRow, infoPanelTypes, activeInfoPanel, setActiveInfoPanel, } = useFlowMIPS();
+    const {
+        removeOrientation, removeMultiplexer,
+        addRow, removeRow,
+        infoPanelTypes, activeInfoPanel, setActiveInfoPanel,
+        registerNumberNode, unregisterNumberNode
+    } = useFlowMIPS();
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
 
@@ -55,6 +61,8 @@ export const App = () => {
                     removeOrientation(deletedNode.id);
                 } else if (deletedNode?.type === 'multiplexer') {
                     removeMultiplexer(deletedNode.id);
+                } else if (deletedNode?.data.nodeClass === 'number') {
+                    unregisterNumberNode(deletedNode.id);
                 }
 
                 updatedNodes = updatedNodes.filter(node => node.id !== deletedNode.id);
@@ -67,7 +75,7 @@ export const App = () => {
         if (filteredChanges.length > 0) {
             onNodesChangeMipsBase(filteredChanges);
         }
-    }, [nodesMips, onNodesChangeMipsBase, setNodesMips, removeOrientation, removeMultiplexer]);
+    }, [nodesMips, setNodesMips, removeOrientation, removeMultiplexer, unregisterNumberNode, onNodesChangeMipsBase]);
     const onEdgesChangeMips = useCallback((changes) => {
         // Si solo hay un cambio y es eliminar un edge, lo dejamos pasar sin filtros
         if (
@@ -221,7 +229,7 @@ export const App = () => {
     const onDrop = useCallback(
         (event) => {
             event.preventDefault();
-
+            console.log(type)
             if (!type) {
                 return;
             }
@@ -245,6 +253,9 @@ export const App = () => {
                 case 'multiplexer':
                     label = 'Mul';
                     break;
+                case 'number':
+                    label = '4';
+                    break;
                 case 'state':
                     label = 'Estado';
                     break;
@@ -254,20 +265,43 @@ export const App = () => {
 
             const upperType = type.toUpperCase();
             const isLogicGate = ['and', 'or', 'not'].includes(type);
+            const isNumber = type === 'number'
             let newNode;
 
             if (currentPanel === 0) {
-                newNode = {
-                    id: getId(),
-                    type: isLogicGate ? 'logicGate' : type,
-                    position,
-                    data: {
-                        label,
-                        ...(isLogicGate && {
-                            type: upperType,
-                        }),
-                    },
-                };
+                if (isNumber) {
+                    let newId = getId();
+                    newNode = {
+                        id: newId,
+                        type: 'mipsGeneral',
+                        position,
+                        data: {
+                            nodeClass: 'number',
+                            label: '4',
+                            isProtected: false,
+                            handles: numberHandleList,
+                            size: {
+                                width: 40,
+                                height: 40,
+                            }
+                        },
+                    };
+
+                    registerNumberNode(newId, '4');
+                } else {
+                    newNode = {
+                        id: getId(),
+                        type: isLogicGate ? 'logicGate' : type,
+                        position,
+                        data: {
+                            label,
+                            ...(isLogicGate && {
+                                type: upperType,
+                            }),
+                        },
+                    };
+                }
+
                 setNodesMips((nds) => nds.concat(newNode));
             } else if (currentPanel === 1) {
                 const numNodes = numberOfStates;
@@ -287,7 +321,7 @@ export const App = () => {
                 console.log("numberOfStates: ", numberOfStates);
             }
         },
-        [type, screenToFlowPosition, currentPanel, setNodesMips, numberOfStates, addRow, setNodesStates]
+        [type, screenToFlowPosition, currentPanel, setNodesMips, registerNumberNode, numberOfStates, addRow, setNodesStates]
     );
 
 

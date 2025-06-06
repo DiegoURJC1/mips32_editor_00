@@ -1,9 +1,7 @@
-import {useState} from "react";
 import "./table-panel.css"
 import {useFlowMIPS} from "../../hooks/FlowMIPSContext.jsx";
 import BasicButton from "../../modules/basic-button/BasicButton.jsx";
 export default function TablePanel() {
-    const [editingCell, setEditingCell] = useState(null);
 
     const { headers, tableData, editHeader, editCell, getRowNumberInBinary } = useFlowMIPS();
     const handleCellChange = (rowIndex, colIndex, e) => {
