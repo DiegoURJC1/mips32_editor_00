@@ -12,8 +12,14 @@ export default function MipsGeneralNode(
     }) {
     const {
         numberNodes,
+        updateNumberNodeValue
     } = useFlowMIPS();
     let label = numberNodes.get(id) ?? data.label;
+
+    const handleInputChange = (event) => {
+        updateNumberNodeValue(id, event.target.value);
+    };
+
     return (
         <div
             className={`mips-node ${data.nodeClass}`}
@@ -22,8 +28,17 @@ export default function MipsGeneralNode(
                 height: `${data.size.height}px`,
             }}
         >
-            <CustomNodeToolbar nodeId={id} data={data} handles={data.handles} />
+            <CustomNodeToolbar nodeId={id} data={data} handles={data.handles} >
+                {data.nodeClass === 'number' &&
+                    <input
+                        type="text"
+                        value={label}
+                        onChange={handleInputChange}
+                    />
+                }
+            </CustomNodeToolbar>
             {label}
+
             <HandlesMapper nodeId={id} handleList={data.handles} isConnectable={isConnectable} />
         </div>
     );

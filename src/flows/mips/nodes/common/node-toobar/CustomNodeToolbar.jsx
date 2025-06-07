@@ -55,7 +55,11 @@ export default function CustomNodeToolbar(props) {
                     <div className="content-tab">
                         <div className={"node-toolbar-section-title"}>Info básica</div>
                         <div className={"content-tab-content"}>
-                            <div className={"node-toolbar-subsection-title"}>{props.data?.label || 'No label provided'}</div>
+                            <div className={"node-toolbar-subsection-title"}>
+                                {props.data?.label != null && !isNaN(props.data.label) && isFinite(props.data.label)
+                                    ? 'Número'
+                                    : props.data?.label || 'No label provided'}
+                            </div>
                             {props.children}
                         </div>
                         <TrashButtonSmall
@@ -63,7 +67,6 @@ export default function CustomNodeToolbar(props) {
                             disabled={props.data?.isProtected}
                         />
                     </div>
-
                 ) : activeTab === 'handles' ? (
                     <div className="handles-tab">
                         <div className="target-handles">
