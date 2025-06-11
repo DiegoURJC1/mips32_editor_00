@@ -1,6 +1,6 @@
 import ButtonWithIcon from "/src/modules/button-with-icon/ButtonWithIcon";
 import "./top-bar.css"
-import {useFlowMIPS} from "../../hooks/FlowMIPSContext.jsx";
+import {useFlowMIPS} from "../../contexts/FlowMIPSContext.jsx";
 
 function TopBar({ currentPanel, setCurrentPanel }) {
     const mipsFlowPanel = 0;

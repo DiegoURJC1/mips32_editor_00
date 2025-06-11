@@ -3,7 +3,7 @@ import "./side-panel.css"
 import {useDnD} from "./DnDContext.jsx";
 import {DnDButtonsMips, DnDButtonsStates} from "../dnd-button/DnDButton.jsx";
 import {themes} from "../../common-data/settings.js";
-import {useThemeContext} from "../../hooks/ThemeContext.jsx";
+import {useThemeContext} from "../../contexts/ThemeContext.jsx";
 import BasicInputSmall from "../basic-input-small/BasicInputSmall.jsx";
 import BasicSelect from "../basic-select/BasicSelect.jsx";
 

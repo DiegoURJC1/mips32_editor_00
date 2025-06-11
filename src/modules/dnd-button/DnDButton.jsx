@@ -2,7 +2,7 @@ import React from "react";
 import {colorsForInlineSvg, renderRightAndSvg, renderRightNotSvg, renderRightOrSvg} from "../../assets/svg-nodes/svgNodesData.jsx";
 import "./dnd-button.css"
 import {themes} from "../../common-data/settings.js";
-import {useThemeContext} from "../../hooks/ThemeContext.jsx";
+import {useThemeContext} from "../../contexts/ThemeContext.jsx";
 
 
 export default function DndButton(props) {

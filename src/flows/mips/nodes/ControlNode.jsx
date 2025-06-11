@@ -4,7 +4,7 @@ import "./common/node-mips-stylesheet.css";
 import "./control-node-toolbar.css"
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
-import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";
+import {useFlowMIPS} from "../../../contexts/FlowMIPSContext.jsx";
 import ButtonWithIconSmall, {
     ButtonWithTextSmall
 } from "../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
@@ -18,6 +18,10 @@ export default function ControlNode(
     }) {
 
     const {
+
+        dynamicHeadersData,
+        addDynamicHandle2,removeDynamicHandle2,
+
         staticControlHandleInput,
         staticControlHandles,
         updateStaticHandleBits,
@@ -73,7 +77,7 @@ export default function ControlNode(
                         placeholder={"Número de bits"}
                     />
                     <ButtonWithTextSmall
-                        onClick={() => addDynamicHandle({ label: columnName, bits: handleBits })}
+                        onClick={() => addDynamicHandle2({ label: columnName, bits: handleBits })}
                     >Añadir salida</ButtonWithTextSmall>
                 </div>
                 <div className={"remove-handle-wrapper"}>
@@ -87,7 +91,7 @@ export default function ControlNode(
                         placeholder={"Nombre de salida"}
                     />
                     <ButtonWithTextSmall
-                        onClick={() => removeDynamicHandle(columnName)}
+                        onClick={() => removeDynamicHandle2(columnName)}
                     >Borrar salida</ButtonWithTextSmall>
                 </div>
             </CustomNodeToolbar>
@@ -101,7 +105,7 @@ export default function ControlNode(
             >
                     {data.label}
 
-                <HandlesMapper handleList={[...staticControlHandleInput, ...staticControlHandles, ...dynamicControlHandles]} isConnectable={isConnectable} />
+                <HandlesMapper handleList={[...staticControlHandleInput, ...staticControlHandles, ...dynamicHeadersData]} isConnectable={isConnectable} />
             </div>
         </>
     );

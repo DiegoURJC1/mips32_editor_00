@@ -11,9 +11,9 @@ import {
 
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
-import {useThemeContext} from "../../../hooks/ThemeContext.jsx";
+import {useThemeContext} from "../../../contexts/ThemeContext.jsx";
 import {themes} from "../../../common-data/settings.js";
-import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";
+import {useFlowMIPS} from "../../../contexts/FlowMIPSContext.jsx";
 import ButtonWithIconSmall from "../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
 
 // Constants

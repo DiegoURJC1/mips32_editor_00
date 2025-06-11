@@ -3,7 +3,7 @@ import { Position, useReactFlow, useNodeConnections } from "@xyflow/react";
 import CustomHandle from "../../../handles/CustomHandle.jsx";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import "./common/node-mips-stylesheet.css";
-import { useFlowMIPS } from "../../../hooks/FlowMIPSContext.jsx";
+import { useFlowMIPS } from "../../../contexts/FlowMIPSContext.jsx";
 import ButtonWithIconSmall, {
     ButtonWithTextSmall
 } from "../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";

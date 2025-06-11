@@ -4,7 +4,7 @@ import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import {colorsForInlineSvg, renderAluSvg} from "../../../assets/svg-nodes/svgNodesData.jsx";
 import {getAluHandles} from "./common/handles/handleLists.js";
-import {useThemeContext} from "../../../hooks/ThemeContext.jsx";
+import {useThemeContext} from "../../../contexts/ThemeContext.jsx";
 import {themes} from "../../../common-data/settings.js";
 
 export default function AluNode({ id, data, isConnectable }) {

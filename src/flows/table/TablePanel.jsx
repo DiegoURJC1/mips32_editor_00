@@ -1,15 +1,31 @@
 import "./table-panel.css"
-import {useFlowMIPS} from "../../hooks/FlowMIPSContext.jsx";
+import {useFlowMIPS} from "../../contexts/FlowMIPSContext.jsx";
 import BasicButton from "../../modules/basic-button/BasicButton.jsx";
+import {statesDataCopy} from "../../common-data/statesData.js";
 export default function TablePanel() {
-
-    const { headers, tableData, editHeader, editCell, getRowNumberInBinary } = useFlowMIPS();
+    const originalStatesTableData = statesDataCopy;
+    const { headers, tableData, editHeader, editCell, getRowNumberInBinary, dynamicHeadersData, editHeader2 } = useFlowMIPS();
     const handleCellChange = (rowIndex, colIndex, e) => {
-        editCell(rowIndex, colIndex, e.target.value);
+        let value = e.target.value;
+
+        // Si escribe más de un carácter, solo tomamos el último ingresado
+        if (value.length > 1) {
+            value = value.slice(-1);
+        }
+
+        // Convertir 'x' en 'X'
+        if (value === 'x') value = 'X';
+
+        // Solo permitir '', '0', '1', 'X'
+        if (['', '0', '1', 'X'].includes(value)) {
+            editCell(rowIndex, colIndex, value);
+        }
     };
 
+
+
     const handleHeaderChange = (colIndex, e) => {
-        editHeader(colIndex, e.target.value);
+        editHeader2(colIndex, e.target.value);
     };
 
     const downloadCSV = () => {
@@ -57,6 +73,22 @@ export default function TablePanel() {
                                 />
                             </th>
                         ))}
+                        {dynamicHeadersData.map((header, idx) => (
+                            <th key={header.id + header.assignedBit}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <input
+                                        className={"input-table-value"}
+                                        type="text"
+                                        value={header.label}
+                                        onChange={(e) => handleHeaderChange(idx, e)}
+                                        disabled={idx + 16 < 16}
+                                    />
+                                    {header.bits !== 1 && (
+                                        <div className={"assigned-bit"}>{header.assignedBit}</div>
+                                    )}
+                                </div>
+                            </th>
+                        ))}
                     </tr>
                     </thead>
                     <tbody>
@@ -70,6 +102,11 @@ export default function TablePanel() {
                                         type="text"
                                         value={cell}
                                         onChange={(e) => handleCellChange(rowIndex, colIndex, e)}
+                                        disabled={
+                                            originalStatesTableData.length > rowIndex &&
+                                            originalStatesTableData[0].length > colIndex &&
+                                            originalStatesTableData[rowIndex][colIndex] !== 'X' &&
+                                            rowIndex < 10 && colIndex < 16}
                                     />
                                 </td>
                             ))}

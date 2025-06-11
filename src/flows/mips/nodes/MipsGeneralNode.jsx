@@ -2,7 +2,7 @@ import React from "react";
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import "./common/node-mips-stylesheet.css";
-import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";
+import {useFlowMIPS} from "../../../contexts/FlowMIPSContext.jsx";
 
 export default function MipsGeneralNode(
     {

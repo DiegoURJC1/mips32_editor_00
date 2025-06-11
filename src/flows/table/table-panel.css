@@ -18,6 +18,11 @@ th {
     height: 100px;              /* Asegura que haya suficiente altura */
     background-color: var(--table-background-color);
 }
+.assigned-bit {
+    font-weight: normal;
+    margin-left: 4px;
+    background-color: var(--table-background-color);
+}
 
 tr, td {
     text-align: center;

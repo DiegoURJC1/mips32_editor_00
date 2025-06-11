@@ -3,7 +3,7 @@ import {Position, useNodeConnections, useReactFlow} from "@xyflow/react";
 import CustomNodeToolbar from "../../mips/nodes/common/node-toobar/CustomNodeToolbar.jsx";
 import "./common/node-states-stylesheet.css"
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
-import {useFlowMIPS} from "../../../hooks/FlowMIPSContext.jsx";
+import {useFlowMIPS} from "../../../contexts/FlowMIPSContext.jsx";
 
 export default function StatesNode({id, data, isConnectable}) {
     const { headers, tableData } = useFlowMIPS()

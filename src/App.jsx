@@ -3,6 +3,7 @@ import {ReactFlowProvider, useEdgesState, useNodesState, useReactFlow} from '@xy
 import './App.css'
 import '@xyflow/react/dist/style.css';
 import SidePanel from "./modules/side-panel/SidePanel.jsx";
+import AboutPanel from "./modules/about-panel/AboutPanel.jsx";
 import {initialNodes as initialNodesMips} from "./flows/mips/initial-elements/initialNodes.js";
 import {initialNodes as initialNodesStates} from "./flows/states/initial-elements/initialNodes.js";
 import {DnDProvider, useDnD} from "./modules/side-panel/DnDContext.jsx";
@@ -14,7 +15,7 @@ import TablePanel from "./flows/table/TablePanel.jsx";
 import {defaultSettings} from "./common-data/settings.js";
 import {initialEdges as initialEdgesMips} from "./flows/mips/initial-elements/initialEdges.js";
 import {initialEdges as initialEdgesStates} from "./flows/states/initial-elements/initialEdges.js";
-import {FlowMIPSProvider, useFlowMIPS} from "./hooks/FlowMIPSContext.jsx";
+import {FlowMIPSProvider, useFlowMIPS} from "./contexts/FlowMIPSContext.jsx";
 import {numberHandleList} from "./flows/mips/nodes/common/handles/handleLists.js";
 
 
@@ -25,7 +26,7 @@ const getId = () => `dndNode_${id++}`;
 
 export const App = () => {
     /**
-     * Table hooks
+     * Table contexts
      *
      */
     const [currentPanel, setCurrentPanel] = useState(0);
@@ -239,29 +240,7 @@ export const App = () => {
                 y: event.clientY,
             });
 
-            let label;
-            switch (type) {
-                case 'and':
-                    label = 'AND';
-                    break;
-                case 'or':
-                    label = 'OR';
-                    break;
-                case 'not':
-                    label = 'NOT';
-                    break;
-                case 'multiplexer':
-                    label = 'Mul';
-                    break;
-                case 'number':
-                    label = '4';
-                    break;
-                case 'state':
-                    label = 'Estado';
-                    break;
-                default:
-                    label = `${type} node`;
-            }
+            let label = getLabelFromType(type);
 
             const upperType = type.toUpperCase();
             const isLogicGate = ['and', 'or', 'not'].includes(type);
@@ -324,6 +303,18 @@ export const App = () => {
         [type, screenToFlowPosition, currentPanel, setNodesMips, registerNumberNode, numberOfStates, addRow, setNodesStates]
     );
 
+    const getLabelFromType = (type) => {
+        const labelMap = {
+            and: 'AND',
+            or: 'OR',
+            not: 'NOT',
+            multiplexer: 'Mul',
+            number: '4',
+            state: 'Estado',
+        };
+        return labelMap[type] || `${type} node`;
+    };
+
 
     /**
      * Settings handling
@@ -352,15 +343,7 @@ export const App = () => {
     return (
         <div className="content-wrapper">
             {activeInfoPanel === infoPanelTypes.about && (
-                <div className={"about-panel-background"} onClick={() => {setActiveInfoPanel(infoPanelTypes.none)}}>
-                    <div className={"about-panel"} onClick={(e) => {e.stopPropagation()}}>
-                        <div className={"info-panel-title"}>Acerca de</div>
-                        <div className={"info-panel-content"}>
-                            Proyecto realizado por Diego Gil Luengo.<br/><br/>
-                            Estudiante de la Universidad Rey Juan Carlos en el grado de Ingeniería de Computadores.
-                        </div>
-                    </div>
-                </div>
+                <AboutPanel onClose={() => setActiveInfoPanel(infoPanelTypes.none)} />
             )}
             <TopBar
                 currentPanel={currentPanel}
