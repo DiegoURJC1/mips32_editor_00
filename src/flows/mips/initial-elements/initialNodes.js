@@ -99,7 +99,7 @@ export function initialNodes(
             type: 'mipsGeneral',
             data: {
                 nodeClass: 'memory-data-register',
-                label: 'Registro de Instrucción',
+                label: 'Registro de datos de memoria',
                 isProtected: true,
                 handles: memoryDataRegisterHandleList,
                 size: {

@@ -41,6 +41,205 @@ export const initialEdges = [
         },
     },
     {
+        id: 'control->multiplexer1',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'multiplexer1',
+        sourceHandle: 'i-or-d-output',
+        targetHandle: 'control-input-multiplexer1',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 990, y: 560, id: uuidv4(), active: true },
+                { x: 530, y: 560, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'control->memory1',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'memory',
+        sourceHandle: 'mem-read-output',
+        targetHandle: 'control-read-input-memory',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 990, y: 600, id: uuidv4(), active: true },
+                { x: 660, y: 600, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'control->memory2',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'memory',
+        sourceHandle: 'mem-write-output',
+        targetHandle: 'control-write-input-memory',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 990, y: 640, id: uuidv4(), active: true },
+                { x: 720, y: 640, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'control->multiplexer3',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'multiplexer3',
+        sourceHandle: 'mem-to-reg-output',
+        targetHandle: 'control-input-multiplexer3',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 990, y: 680, id: uuidv4(), active: true },
+                { x: 780, y: 680, id: uuidv4(), active: true },
+                { x: 780, y: 1050, id: uuidv4(), active: true },
+                { x: 1080, y: 1050, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'control->instruction-register',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'instructionRegister',
+        sourceHandle: 'i-r-write-output',
+        targetHandle: 'control-input-instructionRegister',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 990, y: 720, id: uuidv4(), active: true },
+                { x: 860, y: 720, id: uuidv4(), active: true },
+            ],
+        },
+    },
+
+    {
+        id: 'control->multiplexer6',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'multiplexer6',
+        sourceHandle: 'pc-source-output',
+        targetHandle: 'control-input-multiplexer6',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 1150, y: 490, id: uuidv4(), active: true },
+                { x: 2080, y: 490, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'control->aluControl',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'aluControl',
+        sourceHandle: 'alu-op-output',
+        targetHandle: 'control-input-aluControl',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 1160, y: 530, id: uuidv4(), active: true },
+                { x: 1690, y: 530, id: uuidv4(), active: true },
+                { x: 1690, y: 1320, id: uuidv4(), active: true },
+                {x: 1640, y: 1320, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'control->multiplexer5',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'multiplexer5',
+        sourceHandle: 'alu-src-b-output',
+        targetHandle: 'control-input-multiplexer5',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 1180, y: 570, id: uuidv4(), active: true },
+                { x: 1630, y: 570, id: uuidv4(), active: true },
+                { x: 1630, y: 940, id: uuidv4(), active: true },
+                { x: 1580, y: 940, id: uuidv4(), active: true },
+
+            ],
+        },
+    },
+    {
+        id: 'control->multiplexer4',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'multiplexer4',
+        sourceHandle: 'alu-src-a-output',
+        targetHandle: 'control-input-multiplexer4',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 1180, y: 620, id: uuidv4(), active: true },
+                { x: 1580, y: 620, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'control->register',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'register',
+        sourceHandle: 'reg-write-output',
+        targetHandle: 'control-input-register',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 1180, y: 670, id: uuidv4(), active: true },
+                { x: 1250, y: 670, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'control->multiplexer2',
+        type: 'editable-edge',
+        source: 'control',
+        target: 'multiplexer2',
+        sourceHandle: 'reg-dst-output',
+        targetHandle: 'control-input-multiplexer2',
+        animated: false,
+        data: {
+            label: 1,
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 1150, y: 720, id: uuidv4(), active: true },
+                { x: 1150, y: 820, id: uuidv4(), active: true },
+                { x: 1080, y: 820, id: uuidv4(), active: true },
+            ],
+        },
+    },
+
+
+
+    {
         id: 'and->or',
         type: 'editable-edge',
         source: 'and',
@@ -96,6 +295,25 @@ export const initialEdges = [
                 { x: 470, y: 750, id: uuidv4(), active: true },
                 { x: 1520, y: 750, id: uuidv4(), active: true },
                 { x: 1520, y: 840, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'pc->multiplexer6',
+        type: 'editable-edge',
+        source: 'pc',
+        target: 'multiplexer6',
+        sourceHandle: 'output-pc',
+        targetHandle: '2-multiplexer6',
+        animated: false,
+        data: {
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 470, y: 840, id: uuidv4(), active: true },
+                { x: 470, y: 750, id: uuidv4(), active: true },
+                { x: 1520, y: 750, id: uuidv4(), active: true },
+                { x: 2030, y: 750, id: uuidv4(), active: true },
+                { x: 2030, y: 620, id: uuidv4(), active: true },
             ],
         },
     },
@@ -295,6 +513,24 @@ export const initialEdges = [
         },
     },
     {
+        id: 'letter_B->memory',
+        type: 'editable-edge',
+        source: 'letterB',
+        target: 'memory',
+        sourceHandle: 'output-letter',
+        targetHandle: 'data-input-memory',
+        animated: false,
+        data: {
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 1520, y: 960, id: uuidv4(), active: true },
+                { x: 1520, y: 1330, id: uuidv4(), active: true },
+                { x: 610, y: 1330, id: uuidv4(), active: true },
+                { x: 610, y: 940, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
         id: 'signExtend->shiftLeftSignExtend',
         type: 'editable-edge',
         source: 'signExtend',
@@ -381,6 +617,21 @@ export const initialEdges = [
             points: [
                 { x: 1500, y: 1250, id: uuidv4(), active: true },
                 { x: 1500, y: 1110, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
+        id: 'number1->multiplexer5',
+        type: 'editable-edge',
+        source: 'number1',
+        target: 'multiplexer5',
+        sourceHandle: 'output-number',
+        targetHandle: '1-multiplexer5',
+        animated: false,
+        data: {
+            algorithm: Algorithm.Linear,
+            points: [
+
             ],
         },
     },
