@@ -22,6 +22,7 @@ const proOptions = { hideAttribution: true };
 import { nodeTypes as mipsNodeTypes } from "../mips/nodes/common/nodeTypes.js";
 import { nodeTypes as statesNodeTypes } from './nodes/common/nodeTypes.js';
 import {useThemeContext} from "../../contexts/ThemeContext.jsx";
+import {useFlowMIPS} from "../../contexts/FlowMIPSContext.jsx";
 const allNodeTypes = {
     ...mipsNodeTypes,
     ...statesNodeTypes,

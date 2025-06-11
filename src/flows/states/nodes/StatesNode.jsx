@@ -1,18 +1,18 @@
 import React from 'react'
-import {Position, useNodeConnections, useReactFlow} from "@xyflow/react";
+import { Position, useNodeConnections, useReactFlow } from "@xyflow/react";
 import CustomNodeToolbar from "../../mips/nodes/common/node-toobar/CustomNodeToolbar.jsx";
 import "./common/node-states-stylesheet.css"
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
-import {useFlowMIPS} from "../../../contexts/FlowMIPSContext.jsx";
+import { useFlowMIPS } from "../../../contexts/FlowMIPSContext.jsx";
 
-export default function StatesNode({id, data, isConnectable}) {
-    const { headers, tableData } = useFlowMIPS()
+export default function StatesNode({ id, data, isConnectable }) {
+    const { headers, tableData, dynamicHeadersData } = useFlowMIPS();
     const size = {
         width: 60,
         height: 60,
     };
     const { getNode } = useReactFlow();
-    const connections = useNodeConnections({id,  handleType: 'target' });
+    const connections = useNodeConnections({ id, handleType: 'target' });
 
     const handleList = [
         {
@@ -31,8 +31,7 @@ export default function StatesNode({id, data, isConnectable}) {
             label: null,
             name: "Entrada"
         },
-    ]
-
+    ];
 
     function generateLabel() {
         const index = data.statesNumber;
@@ -44,30 +43,42 @@ export default function StatesNode({id, data, isConnectable}) {
         const binaryGroups = {}; // { base: [{ index, bit }] }
         const nonBinary = [];
 
-        // Clasificamos los encabezados
+        // Procesar headers estáticos
         headers.forEach((header, i) => {
             const match = header.match(/^([a-zA-Z_]+)(\d+)$/);
             if (match) {
                 const base = match[1];
+                const bit = parseInt(match[2], 10);
                 if (!binaryGroups[base]) binaryGroups[base] = [];
-                binaryGroups[base].push({ index: i, bit: parseInt(match[2], 10) });
+                binaryGroups[base].push({ index: i, bit });
             } else {
-                nonBinary.push({ header, index: i });
+                nonBinary.push({ label: header, index: i });
             }
         });
 
-        // Ordenar bits por su número para que el orden binario sea correcto
+        // Procesar headers dinámicos
+        dynamicHeadersData.forEach((header, i) => {
+            const globalIndex = i + 16;
+            const { label, assignedBit, bits } = header;
+
+            if (bits && bits > 1 && assignedBit !== undefined) {
+                if (!binaryGroups[label]) binaryGroups[label] = [];
+                binaryGroups[label].push({ index: globalIndex, bit: assignedBit });
+            } else {
+                nonBinary.push({ label, index: globalIndex });
+            }
+        });
+
+        // Ordenar los bits por bit de mayor a menor (más significativo primero)
         for (const base in binaryGroups) {
-            binaryGroups[base].sort((a, b) => a.bit - b.bit);
+            binaryGroups[base].sort((a, b) => b.bit - a.bit);
         }
 
-        // Si es el primer nodo
         if (index === 0) {
-            // Mostrar todo lo que no sea 'X'
-            for (const { header, index: i } of nonBinary) {
+            for (const { label, index: i } of nonBinary) {
                 const val = currentRow[i];
                 if (val !== 'X') {
-                    labelLines.push(`${header} = ${val}\n`);
+                    labelLines.push(`${label} = ${val}\n`);
                 }
             }
 
@@ -82,7 +93,6 @@ export default function StatesNode({id, data, isConnectable}) {
             return labelLines.join('');
         }
 
-        // Obtener filas de todos los nodos conectados
         const connectedRows = connections
             .map(conn => {
                 const node = getNode(conn.source);
@@ -91,36 +101,26 @@ export default function StatesNode({id, data, isConnectable}) {
                 }
                 return null;
             })
-            .filter(Boolean); // Quitamos nulos
+            .filter(Boolean);
 
-        // Comparar los valores no binarios
-        for (const { header, index: i } of nonBinary) {
+        for (const { label, index: i } of nonBinary) {
             const currentVal = currentRow[i];
             if (currentVal === 'X') continue;
             const allEqual = connectedRows.every(row => row[i]?.toString() === currentVal.toString());
             if (!allEqual) {
-                labelLines.push(`${header} = ${currentVal}\n`);
+                labelLines.push(`${label} = ${currentVal}\n`);
             }
         }
 
-        // Comparar valores binarios combinados
         for (const base in binaryGroups) {
             const bits = binaryGroups[base];
-            const currentValue = bits
-                .map(({ index }) => currentRow[index])
-                .reverse() // 👈 esto invierte los bits
-                .join('');
-            if (/^X+$/.test(currentValue)) continue; // No mostramos si todos son 'X'
-
+            const currentValue = bits.map(({ index }) => currentRow[index]).join('');
+            if (/^X+$/.test(currentValue)) continue;
 
             const allEqual = connectedRows.every(row => {
-                const comparedValue = bits
-                    .map(({ index }) => row[index])
-                    .reverse() // 👈 también invertimos aquí
-                    .join('');
+                const comparedValue = bits.map(({ index }) => row[index]).join('');
                 return comparedValue === currentValue;
             });
-
 
             if (!allEqual) {
                 labelLines.push(`${base} = ${currentValue}\n`);
@@ -131,13 +131,14 @@ export default function StatesNode({id, data, isConnectable}) {
     }
 
 
+
     return (
         <>
-            <div className={"state-number"}>
+            <div className="state-number">
                 {data.statesNumber}
             </div>
             <div
-                className={"states-node"}
+                className="states-node"
                 style={{
                     width: `${size.width}px`,
                     height: `${size.height}px`,
@@ -153,9 +154,9 @@ export default function StatesNode({id, data, isConnectable}) {
                             const isEmptyLine = line.trim() === '' || line.match(/= *$/);
                             return (
                                 <React.Fragment key={idx}>
-                                <span style={{ color: isEmptyLine ? 'var(--negation-color)' : undefined }}>
-                                  {line}
-                                </span>
+                                    <span style={{ color: isEmptyLine ? 'var(--negation-color)' : undefined }}>
+                                        {line}
+                                    </span>
                                     <br />
                                 </React.Fragment>
                             );
@@ -168,15 +169,13 @@ export default function StatesNode({id, data, isConnectable}) {
                         return (
                             <React.Fragment key={idx}>
                                 <span style={{ color: isEmptyLine ? 'var(--negation-color)' : undefined }}>
-                                  {line}
+                                    {line}
                                 </span>
                                 <br />
                             </React.Fragment>
                         );
                     })}
                 </div>
-
-
                 <HandlesMapper
                     handleList={handleList}
                     isConnectable={isConnectable}
