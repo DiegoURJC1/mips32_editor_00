@@ -1,16 +1,19 @@
 import ButtonWithIcon from "/src/modules/button-with-icon/ButtonWithIcon";
-import "./top-bar.css"
-import {useFlowMIPS} from "../../contexts/FlowMIPSContext.jsx";
+import mipsIcon from "/src/assets/icons/mipsFlowPanel.svg";
+import statesIcon from "/src/assets/icons/statesFlowPanel.svg";
+import tableIcon from "/src/assets/icons/tablePanel.svg";
+import "./top-bar.css";
+import { useFlowMIPS } from "../../contexts/FlowMIPSContext.jsx";
 
 function TopBar({ currentPanel, setCurrentPanel }) {
     const mipsFlowPanel = 0;
     const statesFlowPanel = 1;
     const tablePanel = 2;
 
-    const {infoPanelTypes, setActiveInfoPanel} = useFlowMIPS();
+    const { infoPanelTypes, setActiveInfoPanel } = useFlowMIPS();
     const handleInfButtonClick = () => {
         setActiveInfoPanel(infoPanelTypes.about);
-    }
+    };
 
     return (
         <nav className={"top-bar"}>
@@ -18,24 +21,24 @@ function TopBar({ currentPanel, setCurrentPanel }) {
                 MIPS32
                 <div className={"panel-buttons-wrapper"}>
                     <ButtonWithIcon
-                        icon={"/mips32_editor_00/src/assets/icons/mipsFlowPanel.svg"}
+                        icon={mipsIcon}
                         onClick={() => setCurrentPanel(mipsFlowPanel)}
                         isActive={currentPanel === mipsFlowPanel}
                     />
                     <ButtonWithIcon
-                        icon={"/mips32_editor_00/src/assets/icons/statesFlowPanel.svg"}
+                        icon={statesIcon}
                         onClick={() => setCurrentPanel(statesFlowPanel)}
                         isActive={currentPanel === statesFlowPanel}
                     />
                     <ButtonWithIcon
-                        icon={"/mips32_editor_00/src/assets/icons/tablePanel.svg"}
+                        icon={tableIcon}
                         onClick={() => setCurrentPanel(tablePanel)}
                         isActive={currentPanel === tablePanel}
                     />
                 </div>
             </div>
             <div className={"top-bar-right-wrapper"}>
-                <div className={"info-button"} onClick={() => handleInfButtonClick()}>
+                <div className={"info-button"} onClick={handleInfButtonClick}>
                     i
                 </div>
             </div>
