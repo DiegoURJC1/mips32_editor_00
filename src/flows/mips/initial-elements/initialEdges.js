@@ -454,6 +454,22 @@ export const initialEdges = [
         },
     },
     {
+        id: 'shiftLeftInstructionRegister->multiplexer6',
+        type: 'editable-edge',
+        source: 'shiftLeftInstructionRegister',
+        target: 'multiplexer6',
+        sourceHandle: 'output-shiftLeft2',
+        targetHandle: '2-multiplexer6',
+        animated: false,
+        data: {
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 2030, y: 650, id: uuidv4(), active: true },
+                { x: 2030, y: 620, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
         id: 'instructionRegister->register_2',
         type: 'editable-edge',
         source: 'instructionRegister',

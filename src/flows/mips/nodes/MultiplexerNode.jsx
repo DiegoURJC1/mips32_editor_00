@@ -11,7 +11,7 @@ import ButtonWithIconSmall, {
 export default function MultiplexerNode({ id, data, isConnectable }) {
     const { setEdges, getNodes } = useReactFlow();
     const connections = useNodeConnections(id);
-
+    const { handleConnectionList } = useFlowMIPS();
     const {
         multiplexerInputs,
         addMultiplexerInput,
@@ -48,7 +48,7 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
             id: `${inputId}-${id}`,
             type: "target",
             position: Position.Left,
-            connectioncount: 1,
+            connectioncount: 2,
             label: inputId,
             name: `Entrada ${inputId}`,
             bits: handleBits[inputId] || null,
@@ -97,46 +97,33 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
     }, [removedInputId, setEdges]);
 
     useEffect(() => {
-        connections.forEach((connection) => {
-            const { sourceHandle, targetHandle, source, target } = connection;
-
-            const handle = dynamicHandles.find(
-                (h) => h.id === sourceHandle || h.id === targetHandle
-            );
-
-            if (handle) {
-                const otherHandleId = sourceHandle === handle.id ? targetHandle : sourceHandle;
-                const otherNode = getNodes().find((n) => n.id === (source === handle.id ? target : source));
-                const otherHandle = otherNode?.data?.handles?.find((h) => h.id === otherHandleId);
-
-                if (otherHandle && otherHandle.bits != null) {
-                    setHandleBits((prevState) => {
-                        if (prevState[handle.label] !== otherHandle.bits) {
-                            return {
-                                ...prevState,
-                                [handle.label]: otherHandle.bits,
-                            };
-                        }
-                        return prevState;
-                    });
-                }
-            }
-        });
+        const updatedBits = {};
 
         dynamicHandles.forEach((handle) => {
-            const isConnected = connections.some(
-                (connection) =>
-                    connection.sourceHandle === handle.id || connection.targetHandle === handle.id
+            // Encuentra todas las conexiones que llegan a esta entrada
+            const matches = handleConnectionList.filter(
+                (conn) => conn.destinyNodeId === id && conn.destinyHandleId === handle.id
             );
 
-            if (!isConnected && handleBits[handle.label] !== null) {
-                setHandleBits((prevState) => ({
-                    ...prevState,
-                    [handle.label]: null,
-                }));
-            }
+            // Suma los bits asignados en esas conexiones
+            const totalBits = matches.reduce((sum, conn) => {
+                return sum + (typeof conn.assignedBits === 'number' ? conn.assignedBits : 0);
+            }, 0);
+
+            // Si no hay conexiones, guarda null
+            updatedBits[handle.label] = matches.length > 0 ? totalBits : null;
         });
-    }, [connections, dynamicHandles, getNodes, handleBits]);
+
+        setHandleBits((prevState) => {
+            const isChanged = Object.keys(updatedBits).some(
+                (key) => prevState[key] !== updatedBits[key]
+            );
+
+            return isChanged ? updatedBits : prevState;
+        });
+    }, [handleConnectionList, dynamicHandles, id]);
+
+
 
     return (
         <div
