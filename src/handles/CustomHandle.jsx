@@ -9,6 +9,8 @@ const CustomHandle = (props) => {
         handleType: props.type,
     });
 
+
+
     const isControlHandle = props.id?.toLowerCase().includes('control');
 
     // Determinar estilo del texto

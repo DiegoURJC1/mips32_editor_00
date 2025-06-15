@@ -4,7 +4,7 @@ import {
     aluExitHandleList, getInstructionRegisterHandles, getMemoryHandles, getRegisterHandles,
     letterHandleList, memoryDataRegisterHandleList, numberHandleList,
     pcHandleList,
-    shiftLeft2HandleList,
+    shiftLeft2HandleList, shiftLeft2HandleList2,
     signExtendHandleList
 } from "../nodes/common/handles/handleLists.js";
 const memorySize = { width: 120, height: 180 };
@@ -161,7 +161,7 @@ export function initialNodes(
                 nodeClass: 'shift-left-2',
                 label: 'Desp. 2 bits a la izq.',
                 isProtected: true,
-                handles: shiftLeft2HandleList,
+                handles: shiftLeft2HandleList2,
                 size: {
                     width: 80,
                     height: 100,

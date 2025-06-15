@@ -44,7 +44,8 @@ export const App = () => {
         removeOrientation, removeMultiplexer,
         addRow, removeRow,
         infoPanelTypes, activeInfoPanel, setActiveInfoPanel,
-        registerNumberNode, unregisterNumberNode
+        registerNumberNode, unregisterNumberNode,
+        addConnection, removeConnection
     } = useFlowMIPS();
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
@@ -78,22 +79,42 @@ export const App = () => {
         }
     }, [nodesMips, setNodesMips, removeOrientation, removeMultiplexer, unregisterNumberNode, onNodesChangeMipsBase]);
     const onEdgesChangeMips = useCallback((changes) => {
-        // Si solo hay un cambio y es eliminar un edge, lo dejamos pasar sin filtros
-        if (
-            changes.length === 1 &&
-            changes[0].type === 'remove'
-        ) {
+        console.log('Changes detected:', changes);
+        changes.forEach((change) => {
+            if (change.type === 'add') {
+                const edge = change;
+
+                console.log("Edge added: " + edge.id);
+
+                const originNodeId = edge.source;
+                const originHandleId = edge.sourceHandle;
+                const destinyNodeId = edge.target;
+                const destinyHandleId = edge.targetHandle;
+
+                addConnection(originNodeId, originHandleId, destinyNodeId, destinyHandleId);
+            }
+        });
+
+        if (changes.length === 1 && changes[0].type === 'remove') {
+            const edge = edgesMips.find(e => e.id === changes[0].id);
+            console.log("Edge removed: " + edge.id);
+
+            const originNodeId = edge.source;
+            const originHandleId = edge.sourceHandle;
+            const destinyNodeId = edge.target;
+            const destinyHandleId = edge.targetHandle;
+
+            removeConnection(originNodeId, originHandleId, destinyNodeId, destinyHandleId);
             onEdgesChangeMipsBase(changes);
             return;
         }
 
-        const protectedNodeIds = nodesMips
-            .filter(n => n.data?.isProtected)
-            .map(n => n.id);
+        const protectedNodeIds = nodesMips.filter(n => n.data?.isProtected).map(n => n.id);
 
         const filteredChanges = changes.filter(change => {
             if (change.type === 'remove') {
                 const edge = edgesMips.find(e => e.id === change.id);
+                console.log("Edge removed: " + edge.id);
                 if (!edge) return true;
 
                 const sourceIsProtected = protectedNodeIds.includes(edge.source);
@@ -115,7 +136,9 @@ export const App = () => {
         if (filteredChanges.length > 0) {
             onEdgesChangeMipsBase(filteredChanges);
         }
-    }, [edgesMips, nodesMips, onEdgesChangeMipsBase]);
+
+    }, [edgesMips, nodesMips, onEdgesChangeMipsBase, addConnection, removeConnection]);
+
 
 
 
@@ -337,8 +360,6 @@ export const App = () => {
         console.log("Settings set to default");
         console.log(settings);
     };
-
-
 
     return (
         <div className="content-wrapper">

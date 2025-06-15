@@ -9,7 +9,7 @@ export const pcHandleList = [
         connectioncount: 1,
         label: null,
         name: "Entrada",
-        style: null
+        style: null,
     },
     {
         id: "control-input-pc",
@@ -19,7 +19,7 @@ export const pcHandleList = [
         connectioncount: 1,
         label: null,
         name: "Control",
-        style: null
+        style: null,
     },
     {
         id: "output-pc",
@@ -29,7 +29,7 @@ export const pcHandleList = [
         connectioncount: null,
         label: null,
         name: "Salida",
-        style: null
+        style: null,
     }
 ];
 
@@ -114,7 +114,7 @@ export function getInstructionRegisterHandles(size) {
             id: "output-[31-26]-instructionRegister",
             type: "source",
             position: Position.Right,
-            bits: 5,
+            bits: 6,
             connectioncount: null,
             label: "Instrucción\n[31-26]",
             name: null,
@@ -280,7 +280,7 @@ export const shiftLeft2HandleList = [
         type: "target",
         position: Position.Left,
         bits: 32,
-        connectioncount: 2,
+        connectioncount: 1,
         label: null,
         name: "Entrada",
         style: null
@@ -290,6 +290,29 @@ export const shiftLeft2HandleList = [
         type: "source",
         position: Position.Right,
         bits: 32,
+        connectioncount: null,
+        label: null,
+        name: "Salida",
+        style: null
+    }
+];
+
+export const shiftLeft2HandleList2 = [
+    {
+        id: "input-shiftLeft2",
+        type: "target",
+        position: Position.Left,
+        bits: 26,
+        connectioncount: null,
+        label: null,
+        name: "Entrada",
+        style: null
+    },
+    {
+        id: "output-shiftLeft2",
+        type: "source",
+        position: Position.Right,
+        bits: 28,
         connectioncount: null,
         label: null,
         name: "Salida",
@@ -356,7 +379,7 @@ export function getAluHandles(size) {
             id: "zero-output-alu",
             type: "source",
             position: Position.Right,
-            bits: 1,
+            bits: 32,
             connectioncount: null,
             label: "Cero",
             name: null,

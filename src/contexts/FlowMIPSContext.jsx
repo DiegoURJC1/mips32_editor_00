@@ -1,4 +1,4 @@
-import {createContext, useContext, useState, useEffect} from "react";
+import {createContext, useContext, useState, useEffect, useCallback} from "react";
 import {Position} from "@xyflow/react";
 import {getControlHandles} from "../flows/mips/nodes/common/handles/handleLists.js";
 import {headersData as initialHeaders, statesData as initialData} from "../common-data/statesData.js"
@@ -7,6 +7,7 @@ import {useLogicGateOrientation} from "./hooks/useLogicGateOrientation.js";
 import {useMultiplexerInput} from "./hooks/useMultiplexerInput.js";
 import {useNumberNode} from "./hooks/useNumberNode.js";
 import {ControlHandle} from "../flows/mips/ControlHandle.js"
+import {useHandleConnectionList} from "./hooks/useHandleConnectionList.js";
 const FlowMIPSContext = createContext();
 
 
@@ -25,6 +26,7 @@ export const FlowMIPSProvider = ({ children }) => {
 
     const numberNodes = useNumberNode();
 
+    const handleConnectionList = useHandleConnectionList();
 
 
     /**
@@ -244,11 +246,11 @@ export const FlowMIPSProvider = ({ children }) => {
     }, [numHandles, dynamicHeadersData.length]);
 
     useEffect(() => {
-        setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicControlHandles.length)), 5))
+        setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicControlHandles.length)), 6))
     }, [staticControlHandles.length, dynamicControlHandles.length])
 
     useEffect(() => {
-        setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicHeadersData.length)), 5))
+        setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicHeadersData.length)), 6))
     }, [staticControlHandles.length, dynamicHeadersData.length])
 
     // Cambiar los bits de un handle estático
@@ -534,6 +536,8 @@ export const FlowMIPSProvider = ({ children }) => {
             ...multiplexerInputs,
 
             ...numberNodes,
+
+            ...handleConnectionList,
 
             staticControlHandleInput,
             staticControlHandles,

@@ -31,6 +31,7 @@ const proOptions = { hideAttribution: true };
 import { nodeTypes as mipsNodeTypes } from "./nodes/common/nodeTypes.js";
 import { nodeTypes as statesNodeTypes } from '../states/nodes/common/nodeTypes.js';
 import {useThemeContext} from "../../contexts/ThemeContext.jsx";
+import {useFlowMIPS} from "../../contexts/FlowMIPSContext.jsx";
 const allNodeTypes = {
     ...mipsNodeTypes,
     ...statesNodeTypes,
@@ -39,16 +40,17 @@ const allNodeTypes = {
 export function FlowMIPS(props) {
     const { getNodes } = useReactFlow();
     const { theme } = useThemeContext();
+    const { addConnection } = useFlowMIPS();
     const onClickDownload = () => {
         handleDownload(getNodes, getViewportForBounds, theme, 0);
     };
 
     const onConnect = useCallback(
         (connection) => {
+            console.log(connection);
             const { connectionLinePath } = useAppStore.getState();
 
             // Creamos un nuevo "edge" basado en el algoritmo seleccionado
-            // y transferimos todos los puntos de control desde connectionLinePath
             const edge = {
                 ...connection,
                 id: `${Date.now()}-${connection.source}-${connection.target}`,
@@ -65,10 +67,28 @@ export function FlowMIPS(props) {
                 },
             };
 
+
+            // Actualizamos las edges en el flow
             props.setEdges((edges) => addEdge(edge, edges));
-        },
-        [props]
+            console.log(edge);
+            const nodes = getNodes();
+            const sourceNode = nodes.find((node) => node.id === connection.source);
+            const sourceHandle = sourceNode?.data?.handles?.find((handle) => handle.id === connection.sourceHandle);
+            console.log("sourceHandle: " + sourceHandle);
+            const assignedBits = sourceHandle?.bits ?? 0;  // Si no tiene 'bits', usamos 0 como valor predeterminado
+            console.log("assignedBits: " + assignedBits);
+            // Llamamos a addConnection para agregar la conexión
+            addConnection(
+                connection.source,           // origen del nodo
+                connection.sourceHandle,     // handle de origen
+                connection.target,           // destino del nodo
+                connection.targetHandle,     // handle de destino
+                assignedBits                 // Pasamos assignedBits desde el sourceHandle
+            );
+        }, [props, getNodes]
     );
+
+
 
     return(
         <ReactFlow
