@@ -45,7 +45,7 @@ export default function ControlNode(
     useEffect(() => {
         updateNodeInternals(id);
         data.handles = [...staticControlHandles, ...dynamicControlHandles];
-    }, [dynamicControlHandles.length, id, updateNodeInternals]);
+    }, [data, dynamicControlHandles, dynamicControlHandles.length, id, staticControlHandles, updateNodeInternals]);
 
     const handleChange = (event) => {
         const value = event.target.value;

@@ -170,7 +170,10 @@ export const FlowMIPSProvider = ({ children }) => {
                 ...handle,
                 style: newPosition,
             };
+
         });
+
+        console.log(updatedDynamicHandlesL);
 
         const updatedDynamicHandlesR = rightHandles.map((handle, index) => {
             const newPosition = getHandlePosition((180 * (numHandles.right - index - 1)) / numHandles.right - 90);
@@ -179,6 +182,8 @@ export const FlowMIPSProvider = ({ children }) => {
                 style: newPosition,
             };
         });
+
+        console.log(updatedDynamicHandlesR);
 
         setDynamicHeadersData([...updatedDynamicHandlesL, ...updatedDynamicHandlesR]);
 
@@ -236,7 +241,7 @@ export const FlowMIPSProvider = ({ children }) => {
         });
 
         setStaticControlHandles(updatedHandles);
-    }, [numHandles]);
+    }, [numHandles, dynamicHeadersData.length]);
 
     useEffect(() => {
         setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicControlHandles.length)), 5))
@@ -285,6 +290,7 @@ export const FlowMIPSProvider = ({ children }) => {
 
         if (bits === 1) {
             addColumn(label)
+            console.log("Added: " + label);
         } else {
             const newColumns = [];
             for (let i = 0; i < bits; i++) {
@@ -334,6 +340,7 @@ export const FlowMIPSProvider = ({ children }) => {
                 new ControlHandle({id: id, label, bits: bits, type:'source', position, positionInverted: true, isLeft }),
             ]);
             setTableData(tableData.map(row => [...row, '']));
+            console.log("Added: " + label);
         } else {
             const newHandles = [];
             for (let i = 0; i < bits; i++) {
@@ -509,7 +516,6 @@ export const FlowMIPSProvider = ({ children }) => {
 
         setDynamicHeadersData(updatedHeaders);
     };
-
 
 
     /**

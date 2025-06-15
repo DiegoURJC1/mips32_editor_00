@@ -1,9 +1,13 @@
 export class ControlHandle {
-    constructor({id, label, bits, assignedBit = undefined }) {
+    constructor({id, label, bits, assignedBit = undefined, style, position, isLeft }) {
         this.id = id;
         this.label = label;
         this.bits = bits;
         this.assignedBit = assignedBit;
+        this.style = style;
+        this.position = position;
+        this.positionInverted = true;
+        this.isLeft = isLeft;
     }
 }
 
