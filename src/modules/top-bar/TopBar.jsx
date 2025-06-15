@@ -18,17 +18,17 @@ function TopBar({ currentPanel, setCurrentPanel }) {
                 MIPS32
                 <div className={"panel-buttons-wrapper"}>
                     <ButtonWithIcon
-                        icon={"./src/assets/icons/mipsFlowPanel.svg"}
+                        icon={"/mips32_editor_00/src/assets/icons/mipsFlowPanel.svg"}
                         onClick={() => setCurrentPanel(mipsFlowPanel)}
                         isActive={currentPanel === mipsFlowPanel}
                     />
                     <ButtonWithIcon
-                        icon={"./src/assets/icons/statesFlowPanel.svg"}
+                        icon={"/mips32_editor_00/src/assets/icons/statesFlowPanel.svg"}
                         onClick={() => setCurrentPanel(statesFlowPanel)}
                         isActive={currentPanel === statesFlowPanel}
                     />
                     <ButtonWithIcon
-                        icon={"./src/assets/icons/tablePanel.svg"}
+                        icon={"/mips32_editor_00/src/assets/icons/tablePanel.svg"}
                         onClick={() => setCurrentPanel(tablePanel)}
                         isActive={currentPanel === tablePanel}
                     />
