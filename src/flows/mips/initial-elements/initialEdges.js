@@ -569,6 +569,22 @@ export const initialEdges = [
         },
     },
     {
+        id: 'multiplexer3->register',
+        type: 'editable-edge',
+        source: 'multiplexer3',
+        target: 'register',
+        sourceHandle: 'output-multiplexer3',
+        targetHandle: 'data-input-register',
+        animated: false,
+        data: {
+            algorithm: Algorithm.Linear,
+            points: [
+                { x: 1140, y: 1130, id: uuidv4(), active: true },
+                { x: 1140, y: 990, id: uuidv4(), active: true },
+            ],
+        },
+    },
+    {
         id: 'register->letter_A',
         type: 'editable-edge',
         source: 'register',
