@@ -379,16 +379,23 @@ const initialConnectionList = [
     },
     {
         originNodeId: "alu",
-        originHandleId: "output-alu",
+        originHandleId: "zero-output-alu",
+        destinyNodeId: "and",
+        destinyHandleId: "input1",
+        assignedBits: 1
+    },
+    {
+        originNodeId: "alu",
+        originHandleId: "result-output-alu",
         destinyNodeId: "multiplexer6",
         destinyHandleId: "0-multiplexer6",
         assignedBits: 32
     },
     {
         originNodeId: "alu",
-        originHandleId: "output-alu",
-        destinyNodeId: "memory",
-        destinyHandleId: "address-input-memory",
+        originHandleId: "result-output-alu",
+        destinyNodeId: "aluExit",
+        destinyHandleId: "input-aluExit",
         assignedBits: 32
     },
     {

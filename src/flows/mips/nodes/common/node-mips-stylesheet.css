@@ -81,3 +81,13 @@
     text-align: center;
     color: var(--text-color);
 }
+
+.mips-node.multiplexer .node-label {
+    position: relative;
+    left: -8px;
+}
+
+.mips-node.multiplexer .node-label.shifted {
+    margin-top: 35px;
+
+}

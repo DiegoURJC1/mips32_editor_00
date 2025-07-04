@@ -73,6 +73,7 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
             position: Position.Right,
             connectioncount: null,
             name: "Salida",
+            bits: handleBits['output'] ?? null,
         },
     ];
 
@@ -100,28 +101,40 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
         const updatedBits = {};
 
         dynamicHandles.forEach((handle) => {
-            // Encuentra todas las conexiones que llegan a esta entrada
             const matches = handleConnectionList.filter(
                 (conn) => conn.destinyNodeId === id && conn.destinyHandleId === handle.id
             );
 
-            // Suma los bits asignados en esas conexiones
             const totalBits = matches.reduce((sum, conn) => {
                 return sum + (typeof conn.assignedBits === 'number' ? conn.assignedBits : 0);
             }, 0);
 
-            // Si no hay conexiones, guarda null
             updatedBits[handle.label] = matches.length > 0 ? totalBits : null;
         });
+
+        // 👉 Determinar si todos los inputs tienen bits asignados
+        const inputBits = Object.values(updatedBits);
+        const allHaveBits = inputBits.every((b) => typeof b === 'number');
+        const allEqual = allHaveBits && inputBits.every((b) => b === inputBits[0]);
+
+        const outputBits = allEqual ? inputBits[0] : null;
 
         setHandleBits((prevState) => {
             const isChanged = Object.keys(updatedBits).some(
                 (key) => prevState[key] !== updatedBits[key]
             );
 
-            return isChanged ? updatedBits : prevState;
+            const updated = { ...updatedBits };
+            if (prevState['output'] !== outputBits) {
+                updated['output'] = outputBits;
+            } else if (!isChanged) {
+                return prevState;
+            }
+
+            return { ...prevState, ...updated };
         });
     }, [handleConnectionList, dynamicHandles, id]);
+
 
 
 
@@ -144,7 +157,11 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
                 </div>
             </CustomNodeToolbar>
 
-            <div className="node-label">{data.label}</div>
+            <div
+                className={`node-label ${inputsCount % 2 !== 0 ? "shifted" : ""}`}
+            >
+                {data.label}
+            </div>
 
             {[...staticHandles, ...dynamicHandles].map((handle) => (
                 <CustomHandle

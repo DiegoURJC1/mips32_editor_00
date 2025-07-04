@@ -379,7 +379,7 @@ export function getAluHandles(size) {
             id: "zero-output-alu",
             type: "source",
             position: Position.Right,
-            bits: 32,
+            bits: 1,
             connectioncount: null,
             label: "Cero",
             name: null,
