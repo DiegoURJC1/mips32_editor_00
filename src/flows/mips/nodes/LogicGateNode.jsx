@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Position, useUpdateNodeInternals } from "@xyflow/react";
 
 import {
@@ -18,7 +18,7 @@ import ButtonWithIconSmall from "../../../modules/button-with-icon-small/ButtonW
 
 // Constants
 const NODE_HEIGHT = 80;
-
+import flipIcon from "/src/assets/icons/vertical_flip_icon.svg";
 // Generates handles for each gate type and orientation
 function getHandles(gateType, isLeft, height) {
     const unit = "px";
@@ -154,7 +154,7 @@ const LogicGateNode = React.memo(function LogicGateNode({ id, data, isConnectabl
             {isLeftOriented ? leftSVG : rightSVG}
 
             <CustomNodeToolbar data={data} handles={handleList} nodeId={id}>
-                <ButtonWithIconSmall onClick={handleToggleOrientation} icon={"src/assets/icons/vertical_flip_icon.svg"}/>
+                <ButtonWithIconSmall onClick={handleToggleOrientation} icon={flipIcon}/>
             </CustomNodeToolbar>
 
             <HandlesMapper handleList={handleList} isConnectable={isConnectable} />
