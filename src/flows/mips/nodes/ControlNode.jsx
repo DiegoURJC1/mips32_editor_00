@@ -24,14 +24,8 @@ export default function ControlNode(
 
         staticControlHandleInput,
         staticControlHandles,
-        updateStaticHandleBits,
 
         dynamicControlHandles,
-        addDynamicHandle,
-        removeDynamicHandle,
-        updateDynamicHandleBits,
-        updateDynamicHandleSide,
-        updateDynamicHandleLabel,
     } = useFlowMIPS();
     const size = {
         width: 160,
@@ -49,12 +43,18 @@ export default function ControlNode(
 
     const handleChange = (event) => {
         const value = event.target.value;
-        // Verificamos si el valor es un número antes de actualizar el estado
+
+        // Si el campo está vacío, se permite
+        if (value === "") {
+            setHandleBits("");
+            return;
+        }
+
+        // Si el valor es un número válido
         if (!isNaN(value)) {
-            setHandleBits(Number(value)); // Convertimos el valor a número antes de guardarlo
+            setHandleBits(Number(value));
         }
     };
-
     return (
         <>
             <CustomNodeToolbar data={data} nodeId={id}>
@@ -69,12 +69,11 @@ export default function ControlNode(
                         placeholder={"Nombre de salida"}
                     />
                     <BasicInputSmall
-                        type="number"
-                        min="1"
-                        max="32"
+                        type="text"
                         value={handleBits}
                         onChange={handleChange}
                         placeholder={"Número de bits"}
+                        style={{width: '100px'}}
                     />
                     <ButtonWithTextSmall
                         onClick={() => addDynamicHandle2({ label: columnName, bits: handleBits })}
