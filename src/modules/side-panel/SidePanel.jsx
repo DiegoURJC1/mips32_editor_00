@@ -61,7 +61,7 @@ export default function SidePanel(props) {
                     Ajustes
                 </div>
                 <div className={"grid-settings"}>
-                    Grid:
+                    Cuadrícula:
                     <BasicInputSmall
                         type={"number"}
                         min={10}
