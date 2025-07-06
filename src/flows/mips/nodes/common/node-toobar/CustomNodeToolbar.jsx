@@ -87,7 +87,7 @@ export default function CustomNodeToolbar(props) {
                         className={activeTab === 'extra' ? 'active' : ''}
                         onClick={() => setActiveTab('extra')}
                     >
-                        Extra
+                        Bits salidas
                     </button>
                 </div>
 
@@ -166,7 +166,6 @@ export default function CustomNodeToolbar(props) {
                                         <strong>{sourceLabel}</strong> → <strong>{targetLabel}</strong> [{targetNodeLabel}]
                                     </div>
                                     <div style={{ marginTop: '4px' }}>
-                                        Bits asignados:
                                         <BasicInputSmall
                                             type="text"
                                             value={conn.assignedBits ?? ''}
@@ -180,7 +179,7 @@ export default function CustomNodeToolbar(props) {
                                                 )
                                             }
                                             placeholder={"bits asignados"}
-                                            style={{ width: '60px', marginLeft: '8px' }}
+                                            style={{ width: '90px', marginLeft: '8px' }}
                                         />
                                     </div>
                                 </div>

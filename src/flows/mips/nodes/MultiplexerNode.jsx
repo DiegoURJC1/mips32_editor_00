@@ -7,6 +7,7 @@ import { useFlowMIPS } from "../../../contexts/FlowMIPSContext.jsx";
 import ButtonWithIconSmall, {
     ButtonWithTextSmall
 } from "../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
+import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 
 export default function MultiplexerNode({ id, data, isConnectable }) {
     const { setEdges, getNodes } = useReactFlow();
@@ -163,20 +164,11 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
                 {data.label}
             </div>
 
-            {[...staticHandles, ...dynamicHandles].map((handle) => (
-                <CustomHandle
-                    key={handle.id}
-                    id={handle.id}
-                    type={handle.type}
-                    position={handle.position}
-                    isConnectable={isConnectable}
-                    connectioncount={handle.connectioncount}
-                    label={handle.label}
-                    name={handle.label ? undefined : handle.name}
-                    style={handle.style}
-                    bits={handle.bits}
-                />
-            ))}
+            <HandlesMapper
+                nodeId={id}
+                handleList={[...staticHandles, ...dynamicHandles]}
+                isConnectable={isConnectable}
+            />
         </div>
     );
 }

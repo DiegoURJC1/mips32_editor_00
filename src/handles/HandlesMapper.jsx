@@ -28,6 +28,7 @@ export default function HandlesMapper({ nodeId, handleList, isConnectable }) {
                         style={handle.style}
                         positionInverted={handle.positionInverted}
                         bits={dynamicBits}
+                        name={handle.name}
                     />
                 );
             })}

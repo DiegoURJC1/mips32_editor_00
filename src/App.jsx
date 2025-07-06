@@ -45,8 +45,9 @@ export const App = () => {
         addRow, removeRow,
         infoPanelTypes, activeInfoPanel, setActiveInfoPanel,
         registerNumberNode, unregisterNumberNode,
-        addConnection, removeConnection,
+        addConnection, removeConnection, handleConnectionList,
         letterSwitchMap,
+        multiplexerInputs
     } = useFlowMIPS();
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
@@ -150,6 +151,11 @@ export const App = () => {
             if (edge.targetHandle === "letter-control-input") {
                 const isEnabled = letterSwitchMap.get(edge.target);
                 if (isEnabled === false) {
+                    const originNodeId = edge.source;
+                    const originHandleId = edge.sourceHandle;
+                    const destinyNodeId = edge.target;
+                    const destinyHandleId = edge.targetHandle;
+                    removeConnection(originNodeId, originHandleId, destinyNodeId, destinyHandleId);
                     return false; // eliminar este edge
                 }
             }
@@ -160,7 +166,38 @@ export const App = () => {
         if (edgesToKeep.length !== edges.length) {
             setEdgesMips(edgesToKeep);
         }
-    }, [edgesMips, letterSwitchMap, setEdgesMips]);
+    }, [edgesMips, letterSwitchMap, removeConnection, setEdgesMips]);
+
+    useEffect(() => {
+        const updatedEdges = edgesMips.filter(edge => {
+            // Verifica si el nodo destino es un multiplexer válido
+            const isMultiplexerTarget = /^multiplexer\d+$/.test(edge.target);
+            if (!isMultiplexerTarget) return true;
+
+            const inputHandleMatch = edge.targetHandle?.match(/^(\d+)-(.+)$/);
+            if (!inputHandleMatch) return true;
+
+            const inputId = parseInt(inputHandleMatch[1], 10); // El número del input
+            const targetNodeId = edge.target;
+
+            // Verifica cuántos inputs tiene el nodo destino
+            const maxInputAllowed = multiplexerInputs.get(targetNodeId);
+
+            // Si el inputId supera el número de inputs permitidos, eliminar el edge
+            if (maxInputAllowed !== undefined && inputId >= maxInputAllowed) {
+                removeConnection(edge.source, edge.sourceHandle, edge.target, edge.targetHandle);
+                return false; // Eliminar el edge
+            }
+
+            return true; // Conservar el edge
+        });
+
+        if (updatedEdges.length !== edgesMips.length) {
+            setEdgesMips(updatedEdges);
+        }
+    }, [multiplexerInputs, edgesMips, removeConnection, setEdgesMips]);
+
+
 
 
 

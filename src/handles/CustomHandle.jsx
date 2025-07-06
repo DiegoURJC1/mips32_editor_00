@@ -4,7 +4,10 @@ import './custom-handle.css';
 import {useFlowMIPS} from "../contexts/FlowMIPSContext.jsx";
 
 const CustomHandle = (props) => {
-    const { handleConnectionList } = useFlowMIPS();
+    const {
+        multiplexerInputs,
+        handleConnectionList
+    } = useFlowMIPS();
     const connections = useNodeConnections({
         handleId: props.id,
         handleType: props.type,
@@ -87,7 +90,7 @@ const CustomHandle = (props) => {
         }
 
         setIsMismatch(hasMismatch);
-    }, [getEdges, getNodes, props.id, props.type, props.nodeId, handleConnectionList]);
+    }, [getEdges, getNodes, props.id, props.type, props.nodeId, handleConnectionList, multiplexerInputs]);
 
 
 
@@ -98,16 +101,15 @@ const CustomHandle = (props) => {
     // Obtenemos estilos por defecto del tema
     const defaultBgColor = getComputedStyle(document.documentElement).getPropertyValue('--xy-handle-background-color-default').trim();
     const defaultBorderColor = getComputedStyle(document.documentElement).getPropertyValue('--xy-handle-border-color-default').trim();
-    const backgroundColor = isMismatch
-        ? 'var(--negation-color)'
-        : isControlHandle
-            ? 'var(--control-color)'
+    const backgroundColor = isControlHandle
+        ? 'var(--control-color)'
+        : isMismatch
+            ? 'var(--negation-color)'
             : defaultBgColor;
-
-    const borderColor = isMismatch
-        ? 'var(--negation-border-color)'
-        : isControlHandle
-            ? 'var(--control-border-color)'
+    const borderColor = isControlHandle
+        ? 'var(--control-border-color)'
+        : isMismatch
+            ? 'var(--negation-border-color)'
             : defaultBorderColor;
     return (
         <div>
@@ -119,6 +121,7 @@ const CustomHandle = (props) => {
                     backgroundColor: backgroundColor,
                     borderColor: borderColor,
                 }}
+                name={props.name}
             >
                 <div
                     className="handle-text"

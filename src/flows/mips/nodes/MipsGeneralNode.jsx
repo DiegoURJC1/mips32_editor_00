@@ -43,8 +43,8 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
                         : [...prev, {
                             id: "letter-control-input",
                             type: "target",
+                            name: "Entrada control",
                             position: Position.Top,
-                            label: null,
                             connectioncount: 1,
                             bits: 1,
                             isConnectable: isConnectable,
