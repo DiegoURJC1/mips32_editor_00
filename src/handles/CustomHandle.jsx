@@ -30,10 +30,9 @@ const CustomHandle = (props) => {
     const { getNodes, getEdges } = useReactFlow();
     useEffect(() => {
         const nodes = getNodes();
+        const edges = getEdges();
 
-        const thisNode = nodes.find(n =>
-            n.data?.handles?.some(h => h.id === props.id)
-        );
+        const thisNode = nodes.find(n => n.data?.handles?.some(h => h.id === props.id) && n.id === props.nodeId);
         if (!thisNode) return;
 
         const thisHandle = thisNode.data?.handles?.find(h => h.id === props.id);
@@ -45,9 +44,9 @@ const CustomHandle = (props) => {
         let hasMismatch = false;
 
         if (props.type === "target") {
-            // Caso: el handle actual es destino
             const connectionsToThis = handleConnectionList.filter(conn =>
-                conn.destinyHandleId === props.id && conn.destinyNodeId === thisNode.id
+                conn.destinyHandleId === props.id &&
+                conn.destinyNodeId === props.nodeId
             );
 
             const totalAssignedBits = connectionsToThis.reduce((sum, conn) => {
@@ -58,13 +57,16 @@ const CustomHandle = (props) => {
         }
 
         else if (props.type === "source") {
-            // Caso: el handle actual es origen
             const connectionsFromThis = handleConnectionList.filter(conn =>
-                conn.originHandleId === props.id && conn.originNodeId === thisNode.id
+                conn.originHandleId === props.id &&
+                conn.originNodeId === props.nodeId
             );
 
             for (const conn of connectionsFromThis) {
-                const destNode = nodes.find(n => n.id === conn.destinyNodeId);
+                const destNode = nodes.find(n =>
+                    n.id === conn.destinyNodeId &&
+                    n.data?.handles?.some(h => h.id === conn.destinyHandleId)
+                );
                 const destHandle = destNode?.data?.handles?.find(h => h.id === conn.destinyHandleId);
                 if (!destHandle || destHandle.bits == null) continue;
 
@@ -83,12 +85,10 @@ const CustomHandle = (props) => {
                 }
             }
         }
-        if (hasMismatch) {
-            console.log(thisHandle)
-            console.log(thisNode)
-        }
+
         setIsMismatch(hasMismatch);
-    }, [getEdges, getNodes, props.id, props.type, handleConnectionList]);
+    }, [getEdges, getNodes, props.id, props.type, props.nodeId, handleConnectionList]);
+
 
 
 
