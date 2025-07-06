@@ -9,7 +9,7 @@ export default function BasicInputSmall(props) {
             step={props.step}
             min={props.min}
             max={props.max}
-            value={props.value}
+            value={props.value ?? ""}
             onChange={(props.onChange)}
             style={props.style}
             placeholder={props.placeholder}
