@@ -96,10 +96,13 @@ export function EditableEdgeComponent(
 
     }, [sourceNode, targetNode, sourceHandleId, targetHandleId]);*/
 
+    const CONTROL_COLOR = 'orange'; // pon aquí el color hexadecimal real de var(--control-color)
+    const NEGATION_COLOR = '#ec4949'; // o el rojo que uses para negation-color
+
     const edgeColor = isMismatch
-        ? 'var(--negation-color)' // Si hay desajuste, el borde se pone rojo
+        ? NEGATION_COLOR
         : (isControlEdge || isAluControlEdge
-            ? 'var(--control-color)'
+            ? CONTROL_COLOR
             : COLORS[data.algorithm ?? Algorithm.BezierCatmullRom]);
 
     const { setEdges } = useReactFlow<BuiltInNode, EditableEdge>();
