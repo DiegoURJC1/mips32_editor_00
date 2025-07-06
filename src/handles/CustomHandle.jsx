@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {Handle, Position, useNodeConnections, useReactFlow} from '@xyflow/react';
 import './custom-handle.css';
+import {useFlowMIPS} from "../contexts/FlowMIPSContext.jsx";
 
 const CustomHandle = (props) => {
-
+    const { handleConnectionList } = useFlowMIPS();
     const connections = useNodeConnections({
         handleId: props.id,
         handleType: props.type,
@@ -29,7 +30,6 @@ const CustomHandle = (props) => {
     const { getNodes, getEdges } = useReactFlow();
     useEffect(() => {
         const nodes = getNodes();
-        const edges = getEdges();
 
         const thisNode = nodes.find(n =>
             n.data?.handles?.some(h => h.id === props.id)
@@ -42,27 +42,56 @@ const CustomHandle = (props) => {
             return;
         }
 
-        // 🔥 Revisamos todos los edges que conectan a este handle
-        const relatedEdges = edges.filter(e =>
-            e.sourceHandle === props.id || e.targetHandle === props.id
-        );
+        let hasMismatch = false;
 
-        const mismatches = relatedEdges.some(edge => {
-            const isSource = edge.sourceHandle === props.id;
-            const otherNodeId = isSource ? edge.target : edge.source;
-            const otherHandleId = isSource ? edge.targetHandle : edge.sourceHandle;
+        if (props.type === "target") {
+            // Caso: el handle actual es destino
+            const connectionsToThis = handleConnectionList.filter(conn =>
+                conn.destinyHandleId === props.id && conn.destinyNodeId === thisNode.id
+            );
 
-            const otherNode = nodes.find(n => n.id === otherNodeId);
-            if (!otherNode) return false;
+            const totalAssignedBits = connectionsToThis.reduce((sum, conn) => {
+                return sum + (conn.assignedBits ?? 0);
+            }, 0);
 
-            const otherHandle = otherNode.data?.handles?.find(h => h.id === otherHandleId);
-            if (!otherHandle || otherHandle.bits == null) return false;
+            hasMismatch = totalAssignedBits !== thisHandle.bits;
+        }
 
-            return otherHandle.bits !== thisHandle.bits;
-        });
+        else if (props.type === "source") {
+            // Caso: el handle actual es origen
+            const connectionsFromThis = handleConnectionList.filter(conn =>
+                conn.originHandleId === props.id && conn.originNodeId === thisNode.id
+            );
 
-        setIsMismatch(mismatches);
-    }, [getEdges, getNodes, props.id, connections]);
+            for (const conn of connectionsFromThis) {
+                const destNode = nodes.find(n => n.id === conn.destinyNodeId);
+                const destHandle = destNode?.data?.handles?.find(h => h.id === conn.destinyHandleId);
+                if (!destHandle || destHandle.bits == null) continue;
+
+                const connectionsToDest = handleConnectionList.filter(c =>
+                    c.destinyHandleId === conn.destinyHandleId &&
+                    c.destinyNodeId === conn.destinyNodeId
+                );
+
+                const totalAssignedBits = connectionsToDest.reduce((sum, c) => {
+                    return sum + (c.assignedBits ?? 0);
+                }, 0);
+
+                if (totalAssignedBits !== destHandle.bits) {
+                    hasMismatch = true;
+                    break;
+                }
+            }
+        }
+        if (hasMismatch) {
+            console.log(thisHandle)
+            console.log(thisNode)
+        }
+        setIsMismatch(hasMismatch);
+    }, [getEdges, getNodes, props.id, props.type, handleConnectionList]);
+
+
+
 
 
 

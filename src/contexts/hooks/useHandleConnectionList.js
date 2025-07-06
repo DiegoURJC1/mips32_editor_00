@@ -218,7 +218,7 @@ const initialConnectionList = [
     },
     {
         originNodeId: "instructionRegister",
-        originHandleId: "output-[25-21]-instructionRegister",
+        originHandleId: "output-[20-16]-instructionRegister",
         destinyNodeId: "shiftLeftInstructionRegister",
         destinyHandleId: "input-shiftLeft2",
         assignedBits: 5
@@ -233,7 +233,7 @@ const initialConnectionList = [
     {
         originNodeId: "instructionRegister",
         originHandleId: "output-[25-21]-instructionRegister",
-        destinyNodeId: "shiftLeftInstructionRegister",
+        destinyNodeId: "register",
         destinyHandleId: "read-reg-1-input-register",
         assignedBits: 5
     },
@@ -292,6 +292,13 @@ const initialConnectionList = [
         destinyNodeId: "register",
         destinyHandleId: "write-reg-input-register",
         assignedBits: 5
+    },
+    {
+        originNodeId: "multiplexer3",
+        originHandleId: "output-multiplexer3",
+        destinyNodeId: "register",
+        destinyHandleId: "data-input-register",
+        assignedBits: 32
     },
     {
         originNodeId: "register",
@@ -367,14 +374,14 @@ const initialConnectionList = [
         originNodeId: "multiplexer4",
         originHandleId: "output-multiplexer4",
         destinyNodeId: "alu",
-        destinyHandleId: "inputA-alu",
+        destinyHandleId: "input1-alu",
         assignedBits: 32
     },
     {
         originNodeId: "multiplexer5",
         originHandleId: "output-multiplexer5",
         destinyNodeId: "alu",
-        destinyHandleId: "inputB-alu",
+        destinyHandleId: "input2-alu",
         assignedBits: 32
     },
     {

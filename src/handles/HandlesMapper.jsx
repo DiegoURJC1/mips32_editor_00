@@ -27,7 +27,7 @@ export default function HandlesMapper({ nodeId, handleList, isConnectable }) {
                         label={handle.label}
                         style={handle.style}
                         positionInverted={handle.positionInverted}
-                        bits={dynamicBits} // 🔥 Aquí pasamos los bits dinámicos
+                        bits={dynamicBits}
                     />
                 );
             })}

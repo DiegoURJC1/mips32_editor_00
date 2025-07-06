@@ -40,16 +40,11 @@ export default function SidePanel(props) {
                     )}
                 </div>
             </div>
-            <div className={"values"}>
-                <div className="side-panel-section-title">
-                    Valores
-                </div>
-                <div>x: {props.settings.grid.x} y: {props.settings.grid.y}</div>
-                <div>g: {props.settings.grid.gap} o: {props.settings.grid.offset}</div>
-            </div>
             <div className={"color-settings"}>
                 <label htmlFor="theme">
-                    Tema:
+                    <div className="side-panel-section-title">
+                        Tema
+                    </div>
                     <BasicSelect
                         id="theme"
                         value={theme}

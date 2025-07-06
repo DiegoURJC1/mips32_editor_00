@@ -124,47 +124,45 @@ export default function CustomNodeToolbar(props) {
                 ) : activeTab === 'extra' && (
                     <div className="extra-tab">
                         <div className="node-toolbar-section-title">Conexiones salientes</div>
-                        {handleConnectionList
-                            .filter(conn => conn.originNodeId === props.nodeId)
-                            .map((conn, index) => {
-                                // Nodo actual tiene handles de salida disponibles
-                                const sourceHandle = sourceHandles?.find(h => h.id === conn.originHandleId);
+                        {handleConnectionList.filter(conn => conn.originNodeId === props.nodeId).map((conn, index) => {
+                            // Nodo actual tiene handles de salida disponibles
+                            const sourceHandle = sourceHandles?.find(h => h.id === conn.originHandleId);
 
-                                // Obtener el nodo destino y sus handles
-                                const allNodes = getNodes();
-                                const targetNode = allNodes.find(n => n.id === conn.destinyNodeId);
-                                const targetHandles = targetNode?.data?.handles || [];
-                                const targetHandle = targetHandles.find(h => h.id === conn.destinyHandleId);
+                            // Obtener el nodo destino y sus handles
+                            const allNodes = getNodes();
+                            const targetNode = allNodes.find(n => n.id === conn.destinyNodeId);
+                            const targetHandles = targetNode?.data?.handles || [];
+                            const targetHandle = targetHandles.find(h => h.id === conn.destinyHandleId);
 
-                                const sourceLabel = sourceHandle?.name || sourceHandle?.label || conn.originHandleId;
-                                const targetLabel = targetHandle?.name || targetHandle?.label || conn.destinyHandleId;
-                                const targetNodeLabel = targetNode?.data?.label || conn.destinyNodeId;
+                            const sourceLabel = sourceHandle?.name || sourceHandle?.label || conn.originHandleId;
+                            const targetLabel = targetHandle?.name || targetHandle?.label || conn.destinyHandleId;
+                            const targetNodeLabel = targetNode?.data?.label || conn.destinyNodeId;
 
-                                return (
-                                    <div key={index} className="connection-entry">
-                                        <div>
-                                            <strong>{sourceLabel}</strong> → <strong>{targetLabel}</strong> [{targetNodeLabel}]
-                                        </div>
-                                        <div style={{ marginTop: '4px' }}>
-                                            Bits asignados:
-                                            <input
-                                                type="number"
-                                                value={conn.assignedBits ?? ''}
-                                                onChange={(e) =>
-                                                    handleBitsChange(
-                                                        conn.originNodeId,
-                                                        conn.originHandleId,
-                                                        conn.destinyNodeId,
-                                                        conn.destinyHandleId,
-                                                        parseInt(e.target.value, 10)
-                                                    )
-                                                }
-                                                style={{ width: '60px', marginLeft: '8px' }}
-                                            />
-                                        </div>
+                            return (
+                                <div key={index} className="connection-entry">
+                                    <div>
+                                        <strong>{sourceLabel}</strong> → <strong>{targetLabel}</strong> [{targetNodeLabel}]
                                     </div>
-                                );
-                            })}
+                                    <div style={{ marginTop: '4px' }}>
+                                        Bits asignados:
+                                        <input
+                                            type="number"
+                                            value={conn.assignedBits ?? ''}
+                                            onChange={(e) =>
+                                                handleBitsChange(
+                                                    conn.originNodeId,
+                                                    conn.originHandleId,
+                                                    conn.destinyNodeId,
+                                                    conn.destinyHandleId,
+                                                    parseInt(e.target.value, 10)
+                                                )
+                                            }
+                                            style={{ width: '60px', marginLeft: '8px' }}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
                         {handleConnectionList.filter(conn => conn.originNodeId === props.nodeId).length === 0 && (
                             <p>No hay conexiones salientes para este nodo.</p>
                         )}

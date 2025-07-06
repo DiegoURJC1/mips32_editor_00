@@ -88,13 +88,13 @@ export function EditableEdgeComponent(
 
         return false; // Si no tienen bits o alguno es nulo, no hay desajuste
     };
-
+    /*
     useEffect(() => {
         // Verificamos si los bits de los handles en ambos nodos coinciden
         const mismatch = compareBits(sourceNode, targetNode);
         setIsMismatch(mismatch); // Actualizamos el estado si hay desajuste
 
-    }, [sourceNode, targetNode, sourceHandleId, targetHandleId]);
+    }, [sourceNode, targetNode, sourceHandleId, targetHandleId]);*/
 
     const edgeColor = isMismatch
         ? 'var(--negation-color)' // Si hay desajuste, el borde se pone rojo
