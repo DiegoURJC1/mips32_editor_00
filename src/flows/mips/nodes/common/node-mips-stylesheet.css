@@ -91,3 +91,24 @@
     margin-top: 35px;
 
 }
+
+.mips-node-control-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: var(--padding-small);
+    border-radius: var(--border-radius-small);
+    background-color: var(--input-background-color);
+    transition: background-color var(--transition-duration);
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.mips-node-control-toggle:hover {
+    background-color: var(--input-background-color-hover);
+}
+
+.mips-node-control-toggle input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: var(--control-color);
+}

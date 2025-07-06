@@ -45,7 +45,8 @@ export const App = () => {
         addRow, removeRow,
         infoPanelTypes, activeInfoPanel, setActiveInfoPanel,
         registerNumberNode, unregisterNumberNode,
-        addConnection, removeConnection
+        addConnection, removeConnection,
+        letterSwitchMap,
     } = useFlowMIPS();
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
@@ -139,6 +140,27 @@ export const App = () => {
 
     }, [edgesMips, nodesMips, onEdgesChangeMipsBase, addConnection, removeConnection]);
 
+    useEffect(() => {
+
+        const edges = edgesMips
+
+        // Filtrar los edges que deben eliminarse porque el nodo destino tiene letterSwitch desactivado
+        const edgesToKeep = edges.filter(edge => {
+            // Si el targetHandle es "letter-control-input" y el target node está desactivado, eliminar
+            if (edge.targetHandle === "letter-control-input") {
+                const isEnabled = letterSwitchMap.get(edge.target);
+                if (isEnabled === false) {
+                    return false; // eliminar este edge
+                }
+            }
+            return true; // mantener edge
+        });
+
+        // Solo actualizar si cambió la cantidad de edges
+        if (edgesToKeep.length !== edges.length) {
+            setEdgesMips(edgesToKeep);
+        }
+    }, [edgesMips, letterSwitchMap, setEdgesMips]);
 
 
 

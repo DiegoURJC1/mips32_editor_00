@@ -1,4 +1,4 @@
-import {createContext, useContext, useState, useEffect, useCallback} from "react";
+import {createContext, useContext, useState, useEffect} from "react";
 import {Position} from "@xyflow/react";
 import {getControlHandles} from "../flows/mips/nodes/common/handles/handleLists.js";
 import {headersData as initialHeaders, statesData as initialData} from "../common-data/statesData.js"
@@ -8,6 +8,7 @@ import {useMultiplexerInput} from "./hooks/useMultiplexerInput.js";
 import {useNumberNode} from "./hooks/useNumberNode.js";
 import {ControlHandle} from "../flows/mips/ControlHandle.js"
 import {useHandleConnectionList} from "./hooks/useHandleConnectionList.js";
+import {useLetterSwitchHandle} from "./hooks/useLetterSwitchHandle.js";
 const FlowMIPSContext = createContext();
 
 
@@ -28,6 +29,7 @@ export const FlowMIPSProvider = ({ children }) => {
 
     const handleConnectionList = useHandleConnectionList();
 
+    const letterNodes = useLetterSwitchHandle();
 
     /**
      * Control Node
@@ -538,6 +540,8 @@ export const FlowMIPSProvider = ({ children }) => {
             ...numberNodes,
 
             ...handleConnectionList,
+
+            ...letterNodes,
 
             staticControlHandleInput,
             staticControlHandles,
