@@ -3,6 +3,7 @@ import { NodeToolbar, Position, useReactFlow } from "@xyflow/react";
 import "./custom-node-toolbar.css";
 import ButtonWithIconSmall, { TrashButtonSmall } from "../../../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
 import { useFlowMIPS } from "../../../../../contexts/FlowMIPSContext.jsx";
+import BasicInputSmall from "../../../../../modules/basic-input-small/BasicInputSmall.jsx";
 
 export default function CustomNodeToolbar(props) {
     const { deleteElements } = useReactFlow();
@@ -36,8 +37,29 @@ export default function CustomNodeToolbar(props) {
     };
 
     const handleBitsChange = (originNodeId, originHandleId, destinyNodeId, destinyHandleId, newAssignedBits) => {
-        if (!isNaN(newAssignedBits)) {
-            setHandleConnectionAssignedBits(originNodeId, originHandleId, destinyNodeId, destinyHandleId, newAssignedBits);
+        if (newAssignedBits === "") {
+            setHandleConnectionAssignedBits(originNodeId, originHandleId, destinyNodeId, destinyHandleId, null);
+            return;
+        }
+
+        const parsed = parseInt(newAssignedBits, 10);
+        if (!isNaN(parsed)) {
+            // Buscar el handle origen para saber su máximo de bits
+            const originHandle = props.handles.find(h => h.id === originHandleId);
+
+            if (originHandle) {
+                const maxBits = originHandle.bits || 0;
+                // Solo aceptar si parsed <= maxBits
+                if (parsed <= maxBits) {
+                    setHandleConnectionAssignedBits(originNodeId, originHandleId, destinyNodeId, destinyHandleId, parsed);
+                } else {
+                    // Opcional: podrías limitarlo al máximo o mostrar un aviso, aquí lo limitamos al máximo:
+                    setHandleConnectionAssignedBits(originNodeId, originHandleId, destinyNodeId, destinyHandleId, maxBits);
+                }
+            } else {
+                // Si no encontró el handle, asigna igual el valor
+                setHandleConnectionAssignedBits(originNodeId, originHandleId, destinyNodeId, destinyHandleId, parsed);
+            }
         }
     };
 
@@ -145,8 +167,8 @@ export default function CustomNodeToolbar(props) {
                                     </div>
                                     <div style={{ marginTop: '4px' }}>
                                         Bits asignados:
-                                        <input
-                                            type="number"
+                                        <BasicInputSmall
+                                            type="text"
                                             value={conn.assignedBits ?? ''}
                                             onChange={(e) =>
                                                 handleBitsChange(
@@ -154,9 +176,10 @@ export default function CustomNodeToolbar(props) {
                                                     conn.originHandleId,
                                                     conn.destinyNodeId,
                                                     conn.destinyHandleId,
-                                                    parseInt(e.target.value, 10)
+                                                    e.target.value
                                                 )
                                             }
+                                            placeholder={"bits asignados"}
                                             style={{ width: '60px', marginLeft: '8px' }}
                                         />
                                     </div>
