@@ -44,7 +44,9 @@ export function FlowMIPS(props) {
     const onClickDownload = () => {
         handleDownload(getNodes, getViewportForBounds, theme, 0);
     };
-
+    const {
+        settings,
+    } = useFlowMIPS();
     const onConnect = useCallback(
         (connection) => {
             console.log(connection);
@@ -109,7 +111,7 @@ export function FlowMIPS(props) {
             // Viewport props
             fitView
             snapToGrid={true}
-            snapGrid={[props.settings.grid.x, props.settings.grid.y]}
+            snapGrid={[settings.grid.x, settings.grid.y]}
             translateExtent={
                 [[
                     vpcMips.translateExtentCoordinates.minX,
@@ -144,13 +146,15 @@ export function FlowMIPS(props) {
                     D
                 </ControlButton>
             </Controls>
-            <MiniMap
-                nodeColor={nodeColor}
-            />
+            {settings.minimap &&
+                <MiniMap
+                    nodeColor={nodeColor}
+                />
+            }
             <Background
                 variant="dots"
                 gap={defaultSettings.grid.gap}
-                offset={props.settings.grid.offset}
+                offset={settings.grid.offset}
                 size={1}
             />
         </ReactFlow>

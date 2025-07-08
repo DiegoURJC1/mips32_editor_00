@@ -31,7 +31,7 @@ function getHandles(gateType, isLeft, height) {
             return [
                 {
                     id: "input1",
-                    name: "Input 1",
+                    name: "Entrada superior",
                     type: "target",
                     position: inputPosition,
                     connectioncount: 1,
@@ -40,7 +40,7 @@ function getHandles(gateType, isLeft, height) {
                 },
                 {
                     id: "input2",
-                    name: "Input 2",
+                    name: "Entrada inferior",
                     type: "target",
                     position: inputPosition,
                     connectioncount: 1,
@@ -49,7 +49,7 @@ function getHandles(gateType, isLeft, height) {
                 },
                 {
                     id: "output",
-                    name: "Output",
+                    name: "Salida",
                     type: "source",
                     position: outputPosition,
                     bits: 1,
@@ -59,7 +59,7 @@ function getHandles(gateType, isLeft, height) {
             return [
                 {
                     id: "input",
-                    name: "Input",
+                    name: "Entrada",
                     type: "target",
                     position: inputPosition,
                     bits: 1,
@@ -67,7 +67,7 @@ function getHandles(gateType, isLeft, height) {
                 },
                 {
                     id: "output",
-                    name: "Output",
+                    name: "Salida",
                     type: "source",
                     position: outputPosition,
                     bits: 1,

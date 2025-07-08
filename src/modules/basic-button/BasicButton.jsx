@@ -8,6 +8,7 @@ const BasicButton = (props) => {
                 e.stopPropagation();
                 props.onClick();
             }}
+            style={props.style}
         >
             {props.children}
         </button>

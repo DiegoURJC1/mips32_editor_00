@@ -8,7 +8,7 @@ import BasicInputSmall from "../../../../../modules/basic-input-small/BasicInput
 export default function CustomNodeToolbar(props) {
     const { deleteElements } = useReactFlow();
     const { getNodes, getEdges } = useReactFlow();
-    const { setHandleConnectionAssignedBits, handleConnectionList } = useFlowMIPS();
+    const { currentPanel, setHandleConnectionAssignedBits, handleConnectionList } = useFlowMIPS();
 
     // Estado para controlar la pestaña activa
     const [activeTab, setActiveTab] = useState('content'); // "content", "handles", o "extra"
@@ -77,18 +77,23 @@ export default function CustomNodeToolbar(props) {
                     >
                         Contenido
                     </button>
-                    <button
-                        className={activeTab === 'handles' ? 'active' : ''}
-                        onClick={() => setActiveTab('handles')}
-                    >
-                        E/S
-                    </button>
-                    <button
-                        className={activeTab === 'extra' ? 'active' : ''}
-                        onClick={() => setActiveTab('extra')}
-                    >
-                        Bits salidas
-                    </button>
+                    {currentPanel !== 1 &&
+                        <>
+                            <button
+                                className={activeTab === 'handles' ? 'active' : ''}
+                                onClick={() => setActiveTab('handles')}
+                            >
+                                E/S
+                            </button>
+                            <button
+                                className={activeTab === 'extra' ? 'active' : ''}
+                                onClick={() => setActiveTab('extra')}
+                            >
+                                Bits salidas
+                            </button>
+                        </>
+                    }
+
                 </div>
 
                 {/* Mostrar contenido según la pestaña activa */}
@@ -108,7 +113,7 @@ export default function CustomNodeToolbar(props) {
                             disabled={props.data?.isProtected}
                         />
                     </div>
-                ) : activeTab === 'handles' ? (
+                ) : currentPanel !== 1 && activeTab === 'handles' ? (
                     <div className="handles-tab">
                         <div className="target-handles">
                             <div className={"node-toolbar-section-title"}>Entradas</div>
@@ -123,7 +128,7 @@ export default function CustomNodeToolbar(props) {
                                     ))}
                                 </ul>
                             ) : (
-                                <p>No hay handles de tipo target.</p>
+                                <p>No hay conexiones entrantes.</p>
                             )}
                         </div>
                         <div className="source-handles">
@@ -139,13 +144,13 @@ export default function CustomNodeToolbar(props) {
                                     ))}
                                 </ul>
                             ) : (
-                                <p>No hay handles de tipo source.</p>
+                                <p>No hay conexiones de salida.</p>
                             )}
                         </div>
                     </div>
-                ) : activeTab === 'extra' && (
+                ) : currentPanel !== 1 && activeTab === 'extra' && (
                     <div className="extra-tab">
-                        <div className="node-toolbar-section-title">Conexiones salientes</div>
+                        <div className="node-toolbar-section-title">Conexiones de salida</div>
                         {handleConnectionList.filter(conn => conn.originNodeId === props.nodeId).map((conn, index) => {
                             // Nodo actual tiene handles de salida disponibles
                             const sourceHandle = sourceHandles?.find(h => h.id === conn.originHandleId);

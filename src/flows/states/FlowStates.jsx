@@ -31,6 +31,7 @@ const allNodeTypes = {
 export function FlowStates(props) {
     const { getNodes } = useReactFlow();
     const { theme } = useThemeContext();
+    const { settings } = useFlowMIPS();
     const onClickDownload = () => {
         handleDownload(getNodes, getViewportForBounds, theme, 1);
     };
@@ -81,7 +82,7 @@ export function FlowStates(props) {
 
             fitView
             snapToGrid={true}
-            snapGrid={[props.settings.grid.x, props.settings.grid.y]}
+            snapGrid={[settings.grid.x, settings.grid.y]}
             translateExtent={
                 [[
                     vpcStates.translateExtentCoordinates.minX,
@@ -115,11 +116,14 @@ export function FlowStates(props) {
                     D
                 </ControlButton>
             </Controls>
-            <MiniMap/>
+            { settings.minimap &&
+                <MiniMap/>
+            }
+
             <Background
                 variant="dots"
                 gap={defaultSettings.grid.gap}
-                offset={props.settings.grid.offset}
+                offset={settings.grid.offset}
                 size={1}
             />
         </ReactFlow>

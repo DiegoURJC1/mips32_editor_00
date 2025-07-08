@@ -6,16 +6,24 @@ import {themes} from "../../common-data/settings.js";
 import {useThemeContext} from "../../contexts/ThemeContext.jsx";
 import BasicInputSmall from "../basic-input-small/BasicInputSmall.jsx";
 import BasicSelect from "../basic-select/BasicSelect.jsx";
+import {useFlowMIPS} from "../../contexts/FlowMIPSContext.jsx";
 
 export default function SidePanel(props) {
     const { theme, setThemeMode } = useThemeContext();
     const [_, setType] = useDnD();
+    const {
+        currentPanel,
 
+        settings,
+        handleUpdateSettingsGrid,
+        handleResetSettings,
+        handleMiniMapSwitchSettings,
+    } = useFlowMIPS();
     const onDragStart = (event, nodeType) => {
         setType(nodeType);
         event.dataTransfer.effectAllowed = 'move';
     };
-    const title = setTitle(props.currentPanel);
+    const title = setTitle(currentPanel);
 
     return (
         <aside className="side-panel">
@@ -27,13 +35,13 @@ export default function SidePanel(props) {
                     Nodos
                 </div>
                 <div className={"side-panel-dnd-buttons-wrapper"}>
-                    {props.currentPanel === 0 && (
+                    {currentPanel === 0 && (
                         <DnDButtonsMips
                             colorMode={props.theme}
                             onDragStart={onDragStart}
                         />
                     )}
-                    {props.currentPanel === 1 && (
+                    {currentPanel === 1 && (
                         <DnDButtonsStates
                             onDragStart={onDragStart}
                         />
@@ -51,8 +59,8 @@ export default function SidePanel(props) {
                         type={"number"}
                         min={10}
                         step={10}
-                        onChange={props.onChangeGrid}
-                        value={props.settings.grid.gap}
+                        onChange={handleUpdateSettingsGrid}
+                        value={settings.grid.gap}
                         inputMode="numeric"
                         style={{width: '45%', margin: '5px'}}
                     ></BasicInputSmall>
@@ -71,9 +79,20 @@ export default function SidePanel(props) {
                         </BasicSelect>
                     </label>
                 </div>
+                <div className="minimap-toggle">
+                    <label>
+                        Mini mapa:
+                        <BasicButton
+                            style={{ margin: '5px', height: 'fit-content' }}
+                            onClick={handleMiniMapSwitchSettings}
+                        >
+                            {settings.minimap ? 'Desactivar' : 'Activar'}
+                        </BasicButton>
+                    </label>
+                </div>
             </div>
 
-            <BasicButton onClick={props.onClickResetButton}>Reiniciar Ajustes</BasicButton>
+            <BasicButton onClick={handleResetSettings}>Reiniciar Ajustes</BasicButton>
         </aside>
     );
 }

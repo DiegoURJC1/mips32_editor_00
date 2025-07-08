@@ -462,6 +462,7 @@ export function getControlHandles(size, handlePositions) {
             position: Position.Left,
             bits: 1,
             label: "EscrPC Cond",
+            name: "EscrPC Cond",
             style: handlePositions.pcWriteCondOutput,
             positionInverted: true,
             isLeft: true,

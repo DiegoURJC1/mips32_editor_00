@@ -9,6 +9,7 @@ import {useNumberNode} from "./hooks/useNumberNode.js";
 import {ControlHandle} from "../flows/mips/ControlHandle.js"
 import {useHandleConnectionList} from "./hooks/useHandleConnectionList.js";
 import {useLetterSwitchHandle} from "./hooks/useLetterSwitchHandle.js";
+import {defaultSettings} from "../common-data/settings.js";
 const FlowMIPSContext = createContext();
 
 
@@ -531,6 +532,56 @@ export const FlowMIPSProvider = ({ children }) => {
     }
     const [activeInfoPanel, setActiveInfoPanel] = useState(infoPanelTypes.none);
 
+    /*
+     * Active panel
+     *
+     */
+    const [currentPanel, setCurrentPanel] = useState(0);
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            event.preventDefault();
+            event.returnValue = ''; // Requerido por algunos navegadores como Chrome
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
+    /**
+     * Settings handling
+     *
+     */
+    const [settings, setSettings] = useState(defaultSettings);
+    const handleUpdateSettingsGrid = (grid) => {
+        setSettings({
+            ...settings,
+            grid: {
+                x: grid.target.value,
+                y: grid.target.value,
+                gap: grid.target.value,
+                offset: grid.target.value,
+            },
+        });
+    };
+
+    const handleResetSettings = () => {
+        setSettings(defaultSettings);
+        console.log("Settings set to default");
+        console.log(settings);
+    };
+
+    const handleMiniMapSwitchSettings = () => {
+        setSettings({
+            ...settings,
+            minimap: !settings.minimap,
+        });
+    };
+
+
+
     return (
         <FlowMIPSContext.Provider value={{
             ...logicGates,
@@ -571,6 +622,14 @@ export const FlowMIPSProvider = ({ children }) => {
             infoPanelTypes,
             activeInfoPanel,
             setActiveInfoPanel,
+
+            currentPanel,
+            setCurrentPanel,
+
+            settings,
+            handleUpdateSettingsGrid,
+            handleResetSettings,
+            handleMiniMapSwitchSettings,
         }}>
             {children}
         </FlowMIPSContext.Provider>

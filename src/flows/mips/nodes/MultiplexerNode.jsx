@@ -138,7 +138,7 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
 
 
 
-
+    console.log(`Multiplexer${id} handles:`, [...staticHandles, ...dynamicHandles]);
     return (
         <div
             className="mips-node multiplexer"

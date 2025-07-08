@@ -57,7 +57,7 @@ export default function ControlNode(
     };
     return (
         <>
-            <CustomNodeToolbar data={data} nodeId={id}>
+            <CustomNodeToolbar data={data} nodeId={id} handles={data.handles}>
                 <div className={"add-handle-wrapper"}>
                     <BasicInputSmall
                         type="text"

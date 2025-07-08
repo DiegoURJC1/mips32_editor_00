@@ -4,6 +4,7 @@ export const themes = {
 }
 
 export const defaultSettings = {
+    minimap: true,
     grid: {
         x: 10,
         y: 10,

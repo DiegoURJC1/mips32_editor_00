@@ -12,7 +12,6 @@ import './xy-theme.css'
 import TopBar from "./modules/top-bar/TopBar.jsx";
 import {FlowStates} from "./flows/states/FlowStates.jsx";
 import TablePanel from "./flows/table/TablePanel.jsx";
-import {defaultSettings} from "./common-data/settings.js";
 import {initialEdges as initialEdgesMips} from "./flows/mips/initial-elements/initialEdges.js";
 import {initialEdges as initialEdgesStates} from "./flows/states/initial-elements/initialEdges.js";
 import {FlowMIPSProvider, useFlowMIPS} from "./contexts/FlowMIPSContext.jsx";
@@ -29,7 +28,6 @@ export const App = () => {
      * Table contexts
      *
      */
-    const [currentPanel, setCurrentPanel] = useState(0);
 
     const [nodesMips, setNodesMips, onNodesChangeMipsBase] = useNodesState(initialNodesMips);
     const [nodesStates, setNodesStates, onNodesChangeStatesBase] = useNodesState(initialNodesStates);
@@ -38,7 +36,7 @@ export const App = () => {
     const [edgesStates, setEdgesStates, onEdgesChangeStatesBase] = useEdgesState(initialEdgesStates);
 
     const [numberOfStates, setNumberOfStates] = useState(initialNodesStates().length)
-    const [settings, setSettings] = useState(defaultSettings);
+
 
     const {
         removeOrientation, removeMultiplexer,
@@ -47,7 +45,10 @@ export const App = () => {
         registerNumberNode, unregisterNumberNode,
         addConnection, removeConnection, handleConnectionList,
         letterSwitchMap,
-        multiplexerInputs
+        multiplexerInputs,
+
+        currentPanel,
+        setCurrentPanel
     } = useFlowMIPS();
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
@@ -398,27 +399,7 @@ export const App = () => {
     };
 
 
-    /**
-     * Settings handling
-     *
-     */
-    const handleUpdateSettingsGrid = (grid) => {
-        setSettings({
-            ...settings,
-            grid: {
-                x: grid.target.value,
-                y: grid.target.value,
-                gap: grid.target.value,
-                offset: grid.target.value,
-            },
-        });
-    };
 
-    const handleResetSettings = () => {
-        setSettings(defaultSettings);
-        console.log("Settings set to default");
-        console.log(settings);
-    };
 
     return (
         <div className="content-wrapper">
@@ -434,10 +415,7 @@ export const App = () => {
                     <>
                         <SidePanel
                             currentPanel={currentPanel}
-                            settings={settings}
 
-                            onChangeGrid={handleUpdateSettingsGrid}
-                            onClickResetButton={handleResetSettings}
                         />
                         <div className="flow-wrapper" ref={reactFlowWrapper}>
                             <FlowMIPS
@@ -450,8 +428,6 @@ export const App = () => {
                                 // Drag and Drop
                                 onDrop={onDrop}
                                 onDragOver={onDragOver}
-                                // Settings
-                                settings={settings}
                             />
                         </div>
                     </>
@@ -460,10 +436,6 @@ export const App = () => {
                     <>
                         <SidePanel
                             currentPanel={currentPanel}
-                            settings={settings}
-
-                            onChangeGrid={handleUpdateSettingsGrid}
-                            onClickResetButton={handleResetSettings}
                         />
                         <div className="flow-wrapper" ref={reactFlowWrapper}>
                             <FlowStates
@@ -475,8 +447,6 @@ export const App = () => {
 
                                 onDrop={onDrop}
                                 onDragOver={onDragOver}
-
-                                settings={settings}
                             />
                         </div>
                     </>
