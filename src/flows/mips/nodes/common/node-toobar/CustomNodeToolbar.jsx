@@ -118,7 +118,7 @@ export default function CustomNodeToolbar(props) {
                                         <li key={handle.id}>
                                             {handle.name || handle.label}
                                             <br /> Bits: {handle.bits || 'Nan'}
-                                            <br /> Num: {handle.connectioncount || "∞"}
+                                            <br /> Num máx de conexiones: {handle.connectioncount || "∞"}
                                         </li>
                                     ))}
                                 </ul>

@@ -40,22 +40,7 @@ export default function SidePanel(props) {
                     )}
                 </div>
             </div>
-            <div className={"color-settings"}>
-                <label htmlFor="theme">
-                    <div className="side-panel-section-title">
-                        Tema
-                    </div>
-                    <BasicSelect
-                        id="theme"
-                        value={theme}
-                        onChange={(e) => setThemeMode(e.target.value)}
-                    >
-                        <option value={themes.light}>Claro</option>
-                        <option value={themes.dark}>Oscuro</option>
-                    </BasicSelect>
-                </label>
 
-            </div>
             <div className={"settings"}>
                 <div className="side-panel-section-title">
                     Ajustes
@@ -69,7 +54,22 @@ export default function SidePanel(props) {
                         onChange={props.onChangeGrid}
                         value={props.settings.grid.gap}
                         inputMode="numeric"
+                        style={{width: '45%', margin: '5px'}}
                     ></BasicInputSmall>
+                </div>
+                <div className={"color-settings"}>
+                    <label htmlFor="theme">
+                        Tema:
+                        <BasicSelect
+                            id="theme"
+                            value={theme}
+                            onChange={(e) => setThemeMode(e.target.value)}
+                            style={{margin: '5px'}}
+                        >
+                            <option value={themes.light}>Claro</option>
+                            <option value={themes.dark}>Oscuro</option>
+                        </BasicSelect>
+                    </label>
                 </div>
             </div>
 

@@ -19,6 +19,7 @@ export function initialNodes(
     setNumHandlesControl,
 ) {
     return [
+        /*
         {
             id: 'test',
             type: 'test',
@@ -28,7 +29,7 @@ export function initialNodes(
                 height: '80px',
             },
             position: { x: 350, y: 1110 },
-        },
+        },*/
 
         {
             id: 'and',
