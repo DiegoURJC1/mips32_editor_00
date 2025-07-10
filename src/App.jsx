@@ -18,8 +18,8 @@ import {FlowMIPSProvider, useFlowMIPS} from "./contexts/FlowMIPSContext.jsx";
 import {numberHandleList} from "./flows/mips/nodes/common/handles/handleLists.js";
 
 
-let id = 0;
-const getId = () => `dndNode_${id++}`;
+let dndId = 0;
+const getDndId = () => `dndNode_${dndId++}`;
 
 
 
@@ -43,13 +43,14 @@ export const App = () => {
         addRow, removeRow,
         infoPanelTypes, activeInfoPanel, setActiveInfoPanel,
         registerNumberNode, unregisterNumberNode,
-        addConnection, removeConnection, handleConnectionList,
+        addConnection, removeConnection,
         letterSwitchMap,
         multiplexerInputs,
 
         currentPanel,
         setCurrentPanel
     } = useFlowMIPS();
+
     const onNodesChangeMips = useCallback((changes) => {
         let updatedNodes = [...nodesMips];
 
@@ -81,6 +82,8 @@ export const App = () => {
             onNodesChangeMipsBase(filteredChanges);
         }
     }, [nodesMips, setNodesMips, removeOrientation, removeMultiplexer, unregisterNumberNode, onNodesChangeMipsBase]);
+
+
     const onEdgesChangeMips = useCallback((changes) => {
         console.log('Changes detected:', changes);
         changes.forEach((change) => {
@@ -168,7 +171,7 @@ export const App = () => {
             setEdgesMips(edgesToKeep);
         }
     }, [edgesMips, letterSwitchMap, removeConnection, setEdgesMips]);
-
+    /*
     useEffect(() => {
         const updatedEdges = edgesMips.filter(edge => {
             // Verifica si el nodo destino es un multiplexer válido
@@ -198,7 +201,7 @@ export const App = () => {
         }
     }, [multiplexerInputs, edgesMips, removeConnection, setEdgesMips]);
 
-
+*/
 
 
 
@@ -332,7 +335,7 @@ export const App = () => {
 
             if (currentPanel === 0) {
                 if (isNumber) {
-                    let newId = getId();
+                    let newId = getDndId();
                     newNode = {
                         id: newId,
                         type: 'mipsGeneral',
@@ -352,7 +355,7 @@ export const App = () => {
                     registerNumberNode(newId, '4');
                 } else {
                     newNode = {
-                        id: getId(),
+                        id: getDndId(),
                         type: isLogicGate ? 'logicGate' : type,
                         position,
                         data: {
@@ -369,7 +372,7 @@ export const App = () => {
                 const numNodes = numberOfStates;
                 setNumberOfStates(numNodes + 1);
                 newNode = {
-                    id: getId(),
+                    id: getDndId(),
                     type,
                     position,
                     data: {

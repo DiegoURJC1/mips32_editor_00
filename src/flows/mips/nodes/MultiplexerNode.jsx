@@ -10,14 +10,18 @@ import ButtonWithIconSmall, {
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 
 export default function MultiplexerNode({ id, data, isConnectable }) {
-    const { setEdges, getNodes } = useReactFlow();
+    const { setEdges } = useReactFlow();
     const connections = useNodeConnections(id);
+    //console.log(`${id}: ${connections[0].target}, ${connections[0].targetHandle}, ${connections[0].source}, ${connections[0].sourceHandle}`);
+
     const { handleConnectionList } = useFlowMIPS();
     const {
         multiplexerInputs,
         addMultiplexerInput,
         removeMultiplexerInput,
         setMultiplexerInputCount,
+
+        changeStaticHandleBits,
     } = useFlowMIPS();
 
     const inputsCount = multiplexerInputs.get(id) ?? 2;
@@ -33,15 +37,29 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
     const calculateBitsControl = (numInputs) => Math.ceil(Math.log2(numInputs));
     const [bitsControl, setBitsControl] = useState(calculateBitsControl(inputsCount));
     const [handleBits, setHandleBits] = useState({});
-    const [removedInputId, setRemovedInputId] = useState(null);
 
     const size = {
         width: 60,
-        height: 40 + numInputs.length * 40,
+        height: 40 + inputsCount * 40,
     };
 
     useEffect(() => {
         setBitsControl(calculateBitsControl(inputsCount));
+
+        // Verificamos si la conexión al handle de control está activa
+        connections.forEach((connection) => {
+            // Verificamos si la conexión es al handle de control
+            if (connection.targetHandle === `control-input-${id}` && connection.sourceHandle === 'control') {
+                const controlHandleId = connection.sourceHandle;
+
+                // Si los bitsControl han cambiado, actualizamos con changeStaticHandleBits
+                if (bitsControl !== null && bitsControl !== undefined) {
+                    changeStaticHandleBits(controlHandleId, bitsControl);
+                }
+                console.log(`bitsControl: ${bitsControl}`);
+                console.log(`controlHandleId: ${controlHandleId}`);
+            }
+        });
     }, [inputsCount]);
 
     const dynamicHandles = useMemo(() => (
@@ -84,19 +102,17 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
 
     const handleRemoveInput = () => {
         if (inputsCount > 2) {
-            setRemovedInputId(`${inputsCount - 1}`);
+           const removedInputId = `${inputsCount - 1}-${id}`;
+            console.log(`removedInputId: ${removedInputId}`);
+            setEdges((edges) =>
+                edges.filter((e) =>
+                    !(e.targetHandle === `${removedInputId}` && e.target === id)
+                )
+            );
             removeMultiplexerInput(id);
         }
     };
 
-    useEffect(() => {
-        if (removedInputId) {
-            setEdges((edges) =>
-                edges.filter((e) => !e.targetHandle?.startsWith(`${removedInputId}`))
-            );
-            setRemovedInputId(null);
-        }
-    }, [removedInputId, setEdges]);
 
     useEffect(() => {
         const updatedBits = {};
@@ -137,8 +153,6 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
     }, [handleConnectionList, dynamicHandles, id]);
 
 
-
-    console.log(`Multiplexer${id} handles:`, [...staticHandles, ...dynamicHandles]);
     return (
         <div
             className="mips-node multiplexer"
