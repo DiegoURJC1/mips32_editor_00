@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useUpdateNodeInternals } from '@xyflow/react';
+import {useReactFlow, useUpdateNodeInternals} from '@xyflow/react';
 import CustomNodeToolbar from "./common/node-toobar/CustomNodeToolbar.jsx";
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import "./common/node-mips-stylesheet.css";
@@ -14,7 +14,9 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
         updateNumberNodeBits,
         letterSwitchMap,
         setLetterSwitch,
+        setHandleConnectionAssignedBits,
     } = useFlowMIPS();
+    const { getEdges } = useReactFlow();
     const [localValue, setLocalValue] = useState(data.label ?? "0");
     const [localBits, setLocalBits] = useState(32);
     const [handles, setHandles] = useState(data.handles ?? []);
@@ -71,11 +73,46 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
         if (!isNaN(parsed)) updateNumberNodeValue(id, parsed);
     };
 
-    const handleBitsChange = (e) => {
-        const newBits = parseInt(e.target.value) || 0;
+    const handleBitsChangeNumberNode = (e) => {
+        const value = e.target.value;
+
+        // Si el valor es vacío, no hacer nada
+        if (value === "") {
+            setLocalBits(null);  // o puedes usar `0` en vez de `null` si prefieres
+            return;
+        }
+
+        // Intentar convertir el valor a un número
+        let newBits = parseInt(value);
+
+        // Si el valor no es un número válido, asignar valor por defecto (0)
+        if (isNaN(newBits)) {
+            setLocalBits(0);
+            updateNumberNodeBits(id, 0);
+            return;
+        }
+
+        // Restringir el valor a que esté dentro del rango [0, 32]
+        newBits = Math.max(0, Math.min(32, newBits));
+
+        // Actualizar los bits en el estado local
         setLocalBits(newBits);
         updateNumberNodeBits(id, newBits);
+
+        // Obtener todas las conexiones de ReactFlow
+        const edges = getEdges();
+
+        // Filtrar las conexiones que tengan el target y targetHandle que coincidan
+        const matchingEdges = edges.filter((edge) =>
+            edge.source === id && edge.sourceHandle === "output-number"
+        );
+
+        // Para cada conexión que coincida, actualizar los bits asignados
+        matchingEdges.forEach((edge) => {
+            setHandleConnectionAssignedBits(id, "output-number", edge.target, edge.targetHandle, newBits);
+        });
     };
+
 
     return (
         <div
@@ -98,7 +135,7 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
                         <BasicInputSmall
                             type="text"
                             value={localBits}
-                            onChange={handleBitsChange}
+                            onChange={handleBitsChangeNumberNode}
                             placeholder="Bits"
                             min={1}
                             max={64}
