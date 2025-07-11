@@ -8,7 +8,7 @@ import {
     type EdgeProps,
     type XYPosition,
 } from '@xyflow/react';
-
+import { useThemeContext } from '../../contexts/ThemeContext';
 import { ControlPoint, type ControlPointData } from './ControlPoint';
 import { getPath, getControlPoints } from './path';
 import { Algorithm, COLORS } from './constants';
@@ -67,6 +67,7 @@ export function EditableEdgeComponent(
     }: EdgeProps<EditableEdge>) {
     const sourceOrigin = { x: sourceX, y: sourceY } as XYPosition;
     const targetOrigin = { x: targetX, y: targetY } as XYPosition;
+    const { theme } = useThemeContext();
 
     const { getNode } = useReactFlow<BuiltInNode, EditableEdge>();
     const sourceNode = getNode(source);
@@ -141,6 +142,13 @@ export function EditableEdgeComponent(
 
     const controlPointsWithIds = useIdsForInactiveControlPoints(controlPoints);
 
+
+    const shadowColor = theme === 'dark'
+        ? 'rgba(255, 255, 255, 0.2)'  // sombra clara para fondo oscuro
+        : 'rgba(0, 0, 0, 0.2)';       // sombra oscura para fondo claro
+
+    const shadowFilter = selected ? `drop-shadow(0 0 4px ${shadowColor})` : 'none';
+
     return (
         <>
             <BaseEdge
@@ -153,7 +161,7 @@ export function EditableEdgeComponent(
                     ...style,
                     stroke: edgeColor,
                     strokeWidth: selected ? 4 : 2,
-                    filter: selected ? 'drop-shadow(0 0 4px rgba(50,50,50,0.2))' : 'none',
+                    filter: shadowFilter,
                     transition: 'stroke-width 0.2s, filter 0.2s',
                 }}
             />

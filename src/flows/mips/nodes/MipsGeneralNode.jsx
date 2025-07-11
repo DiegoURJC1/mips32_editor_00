@@ -21,7 +21,7 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
     const [localBits, setLocalBits] = useState(32);
     const [handles, setHandles] = useState(data.handles ?? []);
 
-    const isControlVariable = data.nodeClass === 'letter' || data.nodeClass === 'alu-exit';
+    const isControlVariable = data.nodeClass === 'letter' || data.nodeClass === 'alu-exit' || data.nodeClass === 'memory-data-register';
     const topHandleEnabled = letterSwitchMap.get(id) === true;
 
     // Sincronizar número
