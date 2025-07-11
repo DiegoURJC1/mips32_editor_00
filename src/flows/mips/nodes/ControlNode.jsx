@@ -20,7 +20,8 @@ export default function ControlNode(
     const {
 
         dynamicHeadersData,
-        addDynamicHandle2,removeDynamicHandle2,
+        addDynamicHandle,
+        removeDynamicHandle,
 
         staticControlHandleInput,
         staticControlHandles,
@@ -76,7 +77,7 @@ export default function ControlNode(
                         style={{width: '100px'}}
                     />
                     <ButtonWithTextSmall
-                        onClick={() => addDynamicHandle2({ label: columnName, bits: handleBits })}
+                        onClick={() => addDynamicHandle({ label: columnName, bits: handleBits })}
                     >Añadir salida</ButtonWithTextSmall>
                 </div>
                 <div className={"remove-handle-wrapper"}>
@@ -90,7 +91,7 @@ export default function ControlNode(
                         placeholder={"Nombre de salida"}
                     />
                     <ButtonWithTextSmall
-                        onClick={() => removeDynamicHandle2(columnName)}
+                        onClick={() => removeDynamicHandle(columnName)}
                     >Borrar salida</ButtonWithTextSmall>
                 </div>
             </CustomNodeToolbar>
@@ -104,7 +105,7 @@ export default function ControlNode(
             >
                     {data.label}
 
-                <HandlesMapper handleList={[...staticControlHandleInput, ...staticControlHandles, ...dynamicHeadersData]} isConnectable={isConnectable} />
+                <HandlesMapper handleList={[...staticControlHandleInput, ...staticControlHandles, ...dynamicControlHandles]} isConnectable={isConnectable} />
             </div>
         </>
     );

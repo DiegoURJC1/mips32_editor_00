@@ -21,7 +21,7 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
     const [localBits, setLocalBits] = useState(32);
     const [handles, setHandles] = useState(data.handles ?? []);
 
-    const isLetter = data.nodeClass === 'letter';
+    const isControlVariable = data.nodeClass === 'letter' || data.nodeClass === 'alu-exit';
     const topHandleEnabled = letterSwitchMap.get(id) === true;
 
     // Sincronizar número
@@ -36,7 +36,7 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
     const updateNodeInternals = useUpdateNodeInternals();
     // Agregar o quitar handle dinámico al cambiar el switch
     useEffect(() => {
-        if (isLetter) {
+        if (isControlVariable) {
             if (topHandleEnabled) {
                 setHandles(prev => {
                     const exists = prev.some(h => h.id === "letter-control-input");
@@ -59,7 +59,7 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
             }
         }
         updateNodeInternals(id);
-    }, [topHandleEnabled, isLetter, updateNodeInternals, id, isConnectable]);
+    }, [topHandleEnabled, isControlVariable, updateNodeInternals, id, isConnectable]);
 
 
     const handleSwitchToggle = (e) => {
@@ -143,7 +143,7 @@ export default function MipsGeneralNode({ id, data, isConnectable }) {
                     </div>
                 )}
 
-                {isLetter && (
+                {isControlVariable && (
                     <div className="mips-node-control-toggle">
                         <label>
                             <input

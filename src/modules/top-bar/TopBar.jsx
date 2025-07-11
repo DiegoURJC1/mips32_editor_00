@@ -24,21 +24,28 @@ function TopBar({ currentPanel, setCurrentPanel }) {
                         icon={mipsIcon}
                         onClick={() => setCurrentPanel(mipsFlowPanel)}
                         isActive={currentPanel === mipsFlowPanel}
+                        title={"Diagrama MIPS"}
                     />
                     <ButtonWithIcon
                         icon={statesIcon}
                         onClick={() => setCurrentPanel(statesFlowPanel)}
                         isActive={currentPanel === statesFlowPanel}
+                        title={"Diagrama de estados"}
                     />
                     <ButtonWithIcon
                         icon={tableIcon}
                         onClick={() => setCurrentPanel(tablePanel)}
                         isActive={currentPanel === tablePanel}
+                        title={"Tabla de verdad"}
                     />
                 </div>
             </div>
             <div className={"top-bar-right-wrapper"}>
-                <div className={"info-button"} onClick={handleInfButtonClick}>
+                <div
+                    className={"info-button"}
+                    onClick={handleInfButtonClick}
+                    title={"Información"}
+                >
                     i
                 </div>
             </div>

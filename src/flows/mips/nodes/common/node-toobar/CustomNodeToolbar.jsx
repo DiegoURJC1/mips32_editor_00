@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { NodeToolbar, Position, useReactFlow } from "@xyflow/react";
 import "./custom-node-toolbar.css";
-import ButtonWithIconSmall, { TrashButtonSmall } from "../../../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
+import { TrashButtonSmall } from "../../../../../modules/button-with-icon-small/ButtonWithIconSmall.jsx";
 import { useFlowMIPS } from "../../../../../contexts/FlowMIPSContext.jsx";
 import BasicInputSmall from "../../../../../modules/basic-input-small/BasicInputSmall.jsx";
 
 export default function CustomNodeToolbar(props) {
     const { deleteElements } = useReactFlow();
     const { getNodes, getEdges } = useReactFlow();
-    const { currentPanel, setHandleConnectionAssignedBits, handleConnectionList } = useFlowMIPS();
+    const {
+        currentPanel,
+        setHandleConnectionAssignedBits,
+        handleConnectionList,
+
+        staticHandleConnectionList,
+        dynamicHandleConnectionList,
+
+    } = useFlowMIPS();
 
     // Estado para controlar la pestaña activa
     const [activeTab, setActiveTab] = useState('content'); // "content", "handles", o "extra"

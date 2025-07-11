@@ -6,7 +6,17 @@ import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 import { useFlowMIPS } from "../../../contexts/FlowMIPSContext.jsx";
 
 export default function StatesNode({ id, data, isConnectable }) {
-    const { headers, tableData, dynamicHeadersData } = useFlowMIPS();
+    const {
+        tableData,
+        staticControlHandles,
+        dynamicControlHandles,
+        sumStaticHandleBits,
+        sumDynamicHandleBits,
+        sumBitsBeforeStaticLabel,
+        sumBitsBeforeDynamicLabel,
+        sumAllHandleBits,
+
+    } = useFlowMIPS();
     const size = {
         width: 60,
         height: 60,
@@ -40,95 +50,120 @@ export default function StatesNode({ id, data, isConnectable }) {
 
         if (!currentRow) return '';
 
-        const binaryGroups = {}; // { base: [{ index, bit }] }
-        const nonBinary = [];
+        let shiftBits = 0; // Mantiene el desplazamiento de los bits
+        let tempBits = ''; // Para almacenar los bits concatenados
 
-        // Procesar headers estáticos
-        headers.forEach((header, i) => {
-            const match = header.match(/^([a-zA-Z_]+)(\d+)$/);
-            if (match) {
-                const base = match[1];
-                const bit = parseInt(match[2], 10);
-                if (!binaryGroups[base]) binaryGroups[base] = [];
-                binaryGroups[base].push({ index: i, bit });
-            } else {
-                nonBinary.push({ label: header, index: i });
-            }
-        });
-
-        // Procesar headers dinámicos
-        dynamicHeadersData.forEach((header, i) => {
-            const globalIndex = i + 16;
-            const { label, assignedBit, bits } = header;
-
-            if (bits && bits > 1 && assignedBit !== undefined) {
-                if (!binaryGroups[label]) binaryGroups[label] = [];
-                binaryGroups[label].push({ index: globalIndex, bit: assignedBit });
-            } else {
-                nonBinary.push({ label, index: globalIndex });
-            }
-        });
-
-        // Ordenar los bits por bit de mayor a menor (más significativo primero)
-        for (const base in binaryGroups) {
-            binaryGroups[base].sort((a, b) => b.bit - a.bit);
+        // Función para comprobar si todos los valores son 'X'
+        function isAllX(bits) {
+            return bits.split('').every(bit => bit === 'X');
         }
 
+        // Procesar los headers estáticos
         if (index === 0) {
-            for (const { label, index: i } of nonBinary) {
-                const val = currentRow[i];
-                if (val !== 'X') {
-                    labelLines.push(`${label} = ${val}\n`);
+            staticControlHandles.concat(dynamicControlHandles).forEach((header) => {
+                const { label, bits } = header;
+                // Si tiene más de 1 bit, concatenamos los valores de las celdas correspondientes
+                if (bits && bits > 1) {
+                    tempBits = ''; // Restablecemos tempBits para cada nuevo conjunto de bits
+
+                    // Concatenar los valores correspondientes a los bits
+                    for (let j = shiftBits; j < bits + shiftBits; j++) {
+                        const value = currentRow[j];
+
+                        // Verificamos que el valor no sea undefined ni null
+                        if (value !== undefined && value !== null) {
+                            tempBits += String(value);
+                        } else {
+                            tempBits += '';
+                        }
+                    }
+
+                    // Verificar si la secuencia es solo 'X', si es así, no la mostramos
+                    if (!isAllX(tempBits)) {
+                        labelLines.push(`${label} = ${tempBits}`);
+                    }
+                } else {
+                    // Si solo tiene un bit, lo mostramos (incluyendo cuando es 0)
+                    const value = currentRow[shiftBits] !== undefined ? String(currentRow[shiftBits]) : '0'; // Aseguramos que el valor se muestre
+                    if (value !== 'X')
+                        labelLines.push(`${label} = ${value}`);
                 }
-            }
 
-            for (const base in binaryGroups) {
-                const bits = binaryGroups[base];
-                const value = bits.map(({ index }) => currentRow[index]).join('');
-                if (!/^X+$/.test(value)) {
-                    labelLines.push(`${base} = ${value}\n`);
-                }
-            }
-
-            return labelLines.join('');
-        }
-
-        const connectedRows = connections
-            .map(conn => {
-                const node = getNode(conn.source);
-                if (node && node.data && typeof node.data.statesNumber !== 'undefined') {
-                    return tableData[node.data.statesNumber];
-                }
-                return null;
-            })
-            .filter(Boolean);
-
-        for (const { label, index: i } of nonBinary) {
-            const currentVal = currentRow[i];
-            if (currentVal === 'X') continue;
-            const allEqual = connectedRows.every(row => row[i]?.toString() === currentVal.toString());
-            if (!allEqual) {
-                labelLines.push(`${label} = ${currentVal}\n`);
-            }
-        }
-
-        for (const base in binaryGroups) {
-            const bits = binaryGroups[base];
-            const currentValue = bits.map(({ index }) => currentRow[index]).join('');
-            if (/^X+$/.test(currentValue)) continue;
-
-            const allEqual = connectedRows.every(row => {
-                const comparedValue = bits.map(({ index }) => row[index]).join('');
-                return comparedValue === currentValue;
+                // Actualizamos el desplazamiento de los bits
+                shiftBits += bits;
             });
+        } else {
+            shiftBits = 0; // Mantiene el desplazamiento de los bits
+            tempBits = '';
 
-            if (!allEqual) {
-                labelLines.push(`${base} = ${currentValue}\n`);
-            }
+            // Obtener las filas de las conexiones entrantes
+            const connectedRows = connections
+                .map(conn => {
+                    const node = getNode(conn.source);
+                    if (node && node.data && typeof node.data.statesNumber !== 'undefined') {
+                        return tableData[node.data.statesNumber];
+                    }
+                    return null;
+                })
+                .filter(Boolean);
+
+            staticControlHandles.concat(dynamicControlHandles).forEach((header) => {
+                const { label, bits } = header;
+
+                // Si tiene más de 1 bit
+                if (bits && bits > 1) {
+                    tempBits = '';
+
+                    // Concatenar los valores correspondientes a los bits del nodo actual
+                    for (let j = shiftBits; j < bits + shiftBits; j++) {
+                        const value = currentRow[j];
+
+                        // Verificamos que el valor no sea undefined ni null
+                        if (value !== undefined && value !== null) {
+                            tempBits += String(value);
+                        } else {
+                            tempBits += '';
+                        }
+                    }
+
+                    // Ahora comparamos la secuencia de bits de la fila actual con las filas de los nodos conectados
+                    const allEqual = connectedRows.every(row => {
+                        const connectedBits = row.slice(shiftBits, shiftBits + bits).join('');
+                        return connectedBits === tempBits; // Comparamos la secuencia completa de bits
+                    });
+
+                    // Verificar si la secuencia es solo 'X', si es así, no la mostramos
+                    if (!isAllX(tempBits) && !allEqual) {
+                        labelLines.push(`${label} = ${tempBits}`);
+                    }
+                } else {
+                    const currentVal = currentRow[shiftBits];
+
+                    if (currentVal !== 'X') {
+                        const allEqual = connectedRows.every(row => {
+                            return row[shiftBits]?.toString() === currentVal.toString();
+                        });
+
+                        // Si solo tiene un bit, lo mostramos (incluyendo cuando es 0)
+                        const value = currentRow[shiftBits] !== undefined ? String(currentRow[shiftBits]) : '0'; // Aseguramos que el valor se muestre
+
+                        // Verificar si el valor es distinto de 'X' y si los valores son diferentes entre las conexiones entrantes
+                        if (!allEqual) {
+                            labelLines.push(`${label} = ${value}`);
+                        }
+                    }
+                }
+
+                // Actualizamos el desplazamiento de los bits
+                shiftBits += bits;
+            });
         }
 
-        return labelLines.join('');
+        return labelLines.join('\n');
     }
+
+
+
 
 
 

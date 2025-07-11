@@ -1,22 +1,4 @@
 
-export const headersData = [
-    "EscrPC",
-    "EscrPCCond",
-    "IoD",
-    "LeerMem",
-    "EscrMem",
-    "EscrIR",
-    "MemaReg",
-    "FuentePC1",
-    "FuentePC0",
-    "ALUOp1",
-    "ALUOp0",
-    "SelALUB1",
-    "SelALUB0",
-    "SelALUA",
-    "EscrReg",
-    "RegDest",
-]
 
 export const statesData = [
     [1, 0,   0, 1, 0, 1, 'X',   0,   0,   0,   0,   0,   1,   0, 0, 'X'],
@@ -31,7 +13,7 @@ export const statesData = [
     [1, 0, 'X', 0, 0, 0, 'X',   1,   0, 'X', 'X', 'X', 'X', 'X', 0, 'X'],
 ];
 
-export const statesDataCopy = [
+export const statesDataReferenceCopy = [
     [1, 0,   0, 1, 0, 1, 'X',   0,   0,   0,   0,   0,   1,   0, 0, 'X'],
     [0, 0, 'X', 0, 0, 0, 'X', 'X', 'X',   0,   0,   1,   1,   0, 0, 'X'],
     [0, 0, 'X', 0, 0, 0, 'X', 'X', 'X',   0,   0,   1,   0,   1, 0, 'X'],

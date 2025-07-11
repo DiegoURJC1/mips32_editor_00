@@ -5,6 +5,7 @@ function ButtonWithIcon(props) {
         <button
             className={`button-with-icon ${props.isActive ? "active" : ""}`}
             onClick={props.onClick}
+            title={props.title}
         >
             <img className="svg-icon" src={props.icon} alt="icon" />
         </button>

@@ -400,10 +400,6 @@ export const App = () => {
         };
         return labelMap[type] || `${type} node`;
     };
-
-
-
-
     return (
         <div className="content-wrapper">
             {activeInfoPanel === infoPanelTypes.about && (

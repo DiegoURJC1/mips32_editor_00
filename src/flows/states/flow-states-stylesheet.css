@@ -1,0 +1,14 @@
+.svg-icon-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.svg-icon-small svg {
+    width: 1.4em; /* antes 1em */
+    height: 1.4em;
+    fill: var(--text-color);
+    display: block;
+}

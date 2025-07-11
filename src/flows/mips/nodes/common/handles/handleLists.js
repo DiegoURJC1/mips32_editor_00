@@ -456,6 +456,17 @@ export const aluExitHandleList = [
 
 export function getControlHandles(size, handlePositions) {
     return [
+
+        {
+            id: "pc-write-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "EscrPC",
+            style: handlePositions.pcWriteOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
         {
             id: "pc-write-cond-output",
             type: "source",
@@ -464,16 +475,6 @@ export function getControlHandles(size, handlePositions) {
             label: "EscrPC Cond",
             name: "EscrPC Cond",
             style: handlePositions.pcWriteCondOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
-            id: "pc-write-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "EscrPC",
-            style: handlePositions.pcWriteOutput,
             positionInverted: true,
             isLeft: true,
         },
@@ -508,16 +509,6 @@ export function getControlHandles(size, handlePositions) {
             isLeft: true,
         },
         {
-            id: "mem-to-reg-output",
-            type: "source",
-            position: Position.Left,
-            bits: 1,
-            label: "MemaReg",
-            style: handlePositions.memToRegOutput,
-            positionInverted: true,
-            isLeft: true,
-        },
-        {
             id: "i-r-write-output",
             type: "source",
             position: Position.Left,
@@ -527,6 +518,17 @@ export function getControlHandles(size, handlePositions) {
             positionInverted: true,
             isLeft: true,
         },
+        {
+            id: "mem-to-reg-output",
+            type: "source",
+            position: Position.Left,
+            bits: 1,
+            label: "MemaReg",
+            style: handlePositions.memToRegOutput,
+            positionInverted: true,
+            isLeft: true,
+        },
+
         {
             id: "pc-source-output",
             type: "source",

@@ -1,8 +1,7 @@
 import {createContext, useContext, useState, useEffect} from "react";
-import {Position} from "@xyflow/react";
+import {Position, useUpdateNodeInternals} from "@xyflow/react";
 import {getControlHandles} from "../flows/mips/nodes/common/handles/handleLists.js";
-import {headersData as initialHeaders, statesData as initialData} from "../common-data/statesData.js"
-import {staticHeadersDataControlHandle as initialStaticHeadersControlHandle } from "../flows/mips/ControlHandle.js"
+import {statesData as initialData, statesDataReferenceCopy as tableReferenceData} from "../common-data/statesData.js"
 import {useLogicGateOrientation} from "./hooks/useLogicGateOrientation.js";
 import {useMultiplexerInput} from "./hooks/useMultiplexerInput.js";
 import {useNumberNode} from "./hooks/useNumberNode.js";
@@ -16,11 +15,8 @@ const FlowMIPSContext = createContext();
 export const useFlowMIPS = () => useContext(FlowMIPSContext);
 
 export const FlowMIPSProvider = ({ children }) => {
-    const [headers, setHeaders] = useState(initialHeaders);
     const [tableData, setTableData] = useState(initialData);
-
-    const [staticHeadersData, setStaticHeadersData] = useState(initialStaticHeadersControlHandle);
-    const [dynamicHeadersData, setDynamicHeadersData] = useState([]);
+    const [tableDataReference, setTableDataReference] = useState(tableReferenceData);
 
     const logicGates = useLogicGateOrientation();
 
@@ -79,11 +75,15 @@ export const FlowMIPSProvider = ({ children }) => {
             connectioncount: 1,
         },
     ]
-    const staticControlHandleList = getControlHandles(sizeControl, staticHandlePositions);
-    
-    const [staticControlHandles, setStaticControlHandles] = useState(staticControlHandleList);
+
+    const [staticControlHandles, setStaticControlHandles] = useState(getControlHandles(sizeControl, staticHandlePositions));
 
     const [dynamicControlHandles, setDynamicControlHandles] = useState([]);
+
+    const [staticHeadersData, setStaticHeadersData] = useState(getControlHandles(sizeControl, staticHandlePositions).map(handle => handle.label));
+
+    const [dynamicHeadersData, setDynamicHeadersData] = useState([]);
+    const updateNodeInternals = useUpdateNodeInternals();
     /*
     useEffect(() => {
 
@@ -166,8 +166,8 @@ export const FlowMIPSProvider = ({ children }) => {
     */
     useEffect(() => {
 
-        const leftHandles = dynamicHeadersData.filter(h => h.isLeft);
-        const rightHandles = dynamicHeadersData.filter(h => !h.isLeft);
+        const leftHandles = dynamicControlHandles.filter(h => h.isLeft);
+        const rightHandles = dynamicControlHandles.filter(h => !h.isLeft);
 
         const updatedDynamicHandlesL = leftHandles.map((handle, index) => {
             const newPosition = getHandlePosition((180 * (numHandles.left - index - 1)) / numHandles.left + 90);
@@ -190,7 +190,7 @@ export const FlowMIPSProvider = ({ children }) => {
 
         console.log(updatedDynamicHandlesR);
 
-        setDynamicHeadersData([...updatedDynamicHandlesL, ...updatedDynamicHandlesR]);
+        setDynamicControlHandles([...updatedDynamicHandlesL, ...updatedDynamicHandlesR]);
 
         const updatedHandles = staticControlHandles.map(handle => {
             let newStyle;
@@ -246,15 +246,13 @@ export const FlowMIPSProvider = ({ children }) => {
         });
 
         setStaticControlHandles(updatedHandles);
-    }, [numHandles, dynamicHeadersData.length]);
+        updateNodeInternals('control');
+    }, [numHandles, dynamicControlHandles.length]);
 
     useEffect(() => {
         setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicControlHandles.length)), 6))
     }, [staticControlHandles.length, dynamicControlHandles.length])
 
-    useEffect(() => {
-        setBitsInputControl(Math.max(Math.ceil(Math.log2(staticControlHandles.length + dynamicHeadersData.length)), 6))
-    }, [staticControlHandles.length, dynamicHeadersData.length])
 
     // Cambiar los bits de un handle estático
     const updateStaticHandleBits = (label, bits) => {
@@ -264,133 +262,94 @@ export const FlowMIPSProvider = ({ children }) => {
     };
 
     // Funciones para manejar dinámicos
+
     const addDynamicHandle = ({ label, bits }) => {
-        if (label === "" || label === undefined) return;
-        console.log(label, bits);
-        console.log("H: ", numHandles)
-        const id = `dyn-${label}`;
-        const allNames = new Set([
-            ...staticControlHandles.map(h => h.label),
-            ...staticControlHandles.map(h => h.id),
-            ...dynamicControlHandles.map(h => h.label),
-            ...dynamicControlHandles.map(h => h.id)
-        ]);
+        // 1. Verificar si el label ya existe en los handles estáticos o dinámicos
+        const existingStaticHandle = staticControlHandles.find(h => h.label === label);
+        const existingDynamicHandle = dynamicControlHandles.find(h => h.label === label);
 
-        if (bits < 1 || bits > 32 || allNames.has(label)) return;
+        if (existingStaticHandle || existingDynamicHandle) {
+            console.log(`Error: Ya existe un handle con el label "${label}".`);
+            return; // Abortamos si el label ya existe
+        }
+
+        // 2. Verificar que los bits sean válidos
+        if (bits <= 0 || bits > 32) {
+            console.log(`Error: Los bits deben ser mayores que 0 y menores o iguales a 32.`);
+            return; // Abortamos si los bits no son válidos
+        }
+
+        // 3. Determinar la posición y si es izquierdo o derecho
         let position;
         let isLeft;
+
         if (numHandles.right <= numHandles.left) {
             isLeft = false;
             position = Position.Right;
-            setNumHandles({left: numHandles.left, right: numHandles.right+1});
+            setNumHandles(prevState => ({ left: prevState.left, right: prevState.right + 1 }));
         } else {
             isLeft = true;
             position = Position.Left;
-            setNumHandles({left: numHandles.left+1, right: numHandles.right});
-        }
-        setDynamicControlHandles(prev => [
-            ...prev,
-            { id, type:'source', label, bits, position, positionInverted: true, isLeft },
-        ]);
-
-        if (bits === 1) {
-            addColumn(label)
-            console.log("Added: " + label);
-        } else {
-            const newColumns = [];
-            for (let i = 0; i < bits; i++) {
-                newColumns.push(label + i);
-                console.log("Added: " + label + i);
-            }
-
-            // Añadir columnas en lote
-            setHeaders(prevHeaders => [...prevHeaders, ...newColumns]);
-            setTableData(prevData =>
-                prevData.map(row => [...row, ...new Array(newColumns.length).fill('')])
-            );
+            setNumHandles(prevState => ({ left: prevState.left + 1, right: prevState.right }));
         }
 
-        console.log("Updated Control handles:\n", dynamicControlHandles);
+        // 4. Crear el nuevo handle
+        const newHandle = {
+            id: label,            // ID igual al label
+            type: "source",       // Tipo source
+            position: position,   // La posición determinada
+            bits: bits,           // Bits proporcionados
+            label: label,         // El label proporcionado
+            name: label,          // Nombre igual al label
+            style: {},            // Puedes agregar estilos aquí si es necesario
+            positionInverted: true,
+            isLeft: isLeft
+        };
+
+        // 5. Agregar el nuevo handle al final de los handles dinámicos
+        setDynamicControlHandles(prevHandles => [...prevHandles, newHandle]);
+
+        setTableData(tableData.map(row => [...row, ...Array(bits).fill('')]));
+        console.log("antes")
+        console.log(tableData);
+        console.log(`Nuevo handle agregado: ${JSON.stringify(newHandle)}`);
     };
 
-    const addDynamicHandle2 = ({ label, bits }) => {
-        if (label === "" || label === undefined) return;
-        console.log(label, bits);
-        console.log("H: ", numHandles)
-        const id = `dynamic-${label}`;
-        const allNames = new Set([
-            ...staticControlHandles.map(h => h.label),
-            ...staticControlHandles.map(h => h.id),
-            ...dynamicHeadersData.map(h => h.label),
-            ...dynamicHeadersData.map(h => h.id)
-        ]);
-
-        if (bits < 1 || bits > 32 || allNames.has(label)) return;
-        let position;
-        let isLeft;
-        if (numHandles.right <= numHandles.left) {
-            isLeft = false;
-            position = Position.Right;
-            setNumHandles({left: numHandles.left, right: numHandles.right+1});
-        } else {
-            isLeft = true;
-            position = Position.Left;
-            setNumHandles({left: numHandles.left+1, right: numHandles.right});
-        }
 
 
-        if (bits === 1) {
-            setDynamicHeadersData(prev => [
-                ...prev,
-                new ControlHandle({id: id, label, bits: bits, type:'source', position, positionInverted: true, isLeft }),
-            ]);
-            setTableData(tableData.map(row => [...row, '']));
-            console.log("Added: " + label);
-        } else {
-            const newHandles = [];
-            for (let i = 0; i < bits; i++) {
-                newHandles.push(new ControlHandle({id: id, label, bits: bits, assignedBit: i, type:'source', position, positionInverted: true, isLeft}));
-                console.log("Added: " + label + i);
-            }
-
-            setTableData(tableData.map(row => [...row, ...Array(bits).fill('')]));
-            // Añadir columnas en lote
-            setDynamicHeadersData(prevHeaders => [...prevHeaders, ...newHandles]);
-        }
-        console.log("Updated Control handles2:\n", dynamicControlHandles);
-        console.log(tableData)
-    };
 
     const removeDynamicHandle = (label) => {
         if (!dynamicControlHandles.some(h => h.label === label)) return;
         const handle = dynamicControlHandles.find(h => h.label === label);
+
+        const indexToRemove = sumStaticHandleBits() + sumBitsBeforeDynamicLabel(handle.label);
+
         if (handle.isLeft) {
             setNumHandles({left: numHandles.left-1, right: numHandles.right});
         } else {
             setNumHandles({left: numHandles.left, right: numHandles.right-1});
         }
         setDynamicControlHandles(prev => prev.filter(h => h.label !== label));
-        removeColumn(label);
-    };
+        for (let i = 0; i < handle.bits; i++) {
+            const newTableData = tableData.map(row => {
+                // Eliminar la columna en la posición indexToRemove de cada fila
+                const updatedRow = [...row]; // Crear una copia de la fila
+                updatedRow.splice(indexToRemove+i, 1); // Eliminar la columna
+                return updatedRow;
+            });
 
-    const removeDynamicHandle2 = (label) => {
-        if (!dynamicHeadersData.some(h => h.label === label)) return;
-        const handle = dynamicHeadersData.find(h => h.label === label);
-        if (handle.isLeft) {
-            setNumHandles({left: numHandles.left-1, right: numHandles.right});
-        } else {
-            setNumHandles({left: numHandles.left, right: numHandles.right-1});
-        }
-        setDynamicHeadersData(prev => prev.filter(h => h.label !== label));
-        if (handle.bits === 1) {
-            removeColumn2(handle.label);
-        } else {
-            for (let i = 0; i < handle.bits; i++) {
-                removeColumn2(handle.label);
-            }
+            // Eliminar la columna de tableDataReference
+            const newTableDataReference = tableDataReference.map(row => {
+                // Eliminar la columna en la posición indexToRemove de cada fila
+                const updatedRow = [...row]; // Crear una copia de la fila
+                updatedRow.splice(indexToRemove+i, 1); // Eliminar la columna
+                return updatedRow;
+            });
+            // Actualizar el estado de las tablas con las nuevas filas sin la columna eliminada
+            setTableData(newTableData);
+            setTableDataReference(newTableDataReference);
         }
         console.log(tableData)
-
     };
 
     const updateDynamicHandleBits = (label, bits) => {
@@ -419,53 +378,115 @@ export const FlowMIPSProvider = ({ children }) => {
     };
 
     /**
+     * Static handles
+     */
+    const changeStaticHandleBits = (handleId, newNumBit) => {
+        if (newNumBit <= 0 || newNumBit > 32) return;
+        const handle = staticControlHandles.find(h => h.id === handleId);
+        if (!handle) return;
+
+        const handleIndex = staticControlHandles.findIndex(h => h.id === handleId);
+        if (handleIndex === -1) return;
+
+        const sumBefore = staticControlHandles.slice(0, handleIndex).reduce((total, handle) => total + handle.bits, 0);
+
+        setStaticControlHandles(prev => prev.map((h, index) => index === handleIndex ? { ...h, bits: newNumBit } : h));
+
+        tableData(prevData => {
+            const newData = [...prevData];
+            // Insertamos una nueva columna vacía en el índice dado
+            newData.forEach(row => row.splice(handleIndex, 0, "")); // Insertamos columna vacía
+            return newData;
+        });
+
+        tableDataReference(prevData => {
+            const newData = [...prevData];
+            // Insertamos una nueva columna vacía en el índice dado
+            newData.forEach(row => row.splice(handleIndex, 0, "")); // Insertamos columna vacía
+            return newData;
+        });
+
+        // Puedes usar `sumBefore` como desees, aquí solo lo calculamos
+        console.log(`Suma de los bits anteriores: ${sumBefore}`);
+    };
+
+    const sumStaticHandleBits = () => {
+        return staticControlHandles.reduce((total, handle) => total + handle.bits, 0);
+    };
+    const sumDynamicHandleBits = () => {
+        return dynamicControlHandles.reduce((total, handle) => total + handle.bits, 0);
+    };
+    const sumAllHandleBits = () => {
+        return sumStaticHandleBits() + sumDynamicHandleBits();
+    };
+    const sumBitsBeforeStaticLabel = (label) => {
+        // Encontramos el índice del elemento con el label proporcionado
+        const index = staticControlHandles.findIndex(item => item.label === label);
+
+        // Si no encontramos el label, retornamos 0
+        if (index === -1) {
+            console.log('Label no encontrado');
+            return 0;
+        }
+
+        // Sumamos los bits de los elementos anteriores al índice encontrado
+        return staticControlHandles
+            .slice(0, index) // Obtener todos los elementos antes del índice
+            .reduce((total, item) => total + (item.bits || 0), 0); // Sumar los bits, si no hay bits, se toma 0
+    };
+    const sumBitsBeforeDynamicLabel = (label) => {
+        // Encontramos el índice del elemento con el label proporcionado
+        const index = dynamicControlHandles.findIndex(item => item.label === label);
+
+        // Si no encontramos el label, retornamos 0
+        if (index === -1) {
+            console.log('Label no encontrado');
+            return 0;
+        }
+
+        // Sumamos los bits de los elementos anteriores al índice encontrado
+        return dynamicControlHandles
+            .slice(0, index) // Obtener todos los elementos antes del índice
+            .reduce((total, item) => total + (item.bits || 0), 0); // Sumar los bits, si no hay bits, se toma 0
+    };
+
+
+    /**
      * Table
      */
-    const addColumn = (headerName) => {
-        if (headers.includes(headerName)) {
-            console.warn(`Column "${headerName}" already exists.`);
+    const removeColumn2 = (label) => {
+        // Buscar el índice de la columna en dynamicHeadersData que coincide con el label
+        const columnIndex = dynamicHeadersData.findIndex(item => item.label === label);
+
+        // Si no se encuentra, no hacer nada
+        if (columnIndex === -1) {
+            console.log('Columna no encontrada');
             return;
         }
 
-        setHeaders([...headers, headerName]);
-        setTableData(tableData.map(row => [...row, '']));
-    };
+        // Ajustamos el índice sumando el tamaño de staticControlHandles
+        const indexToRemove = sumBitsBeforeDynamicLabel + sumStaticHandleBits;
 
-    const removeColumn = (headerName) => {
-        const columnIndex = headers.indexOf(headerName);
-
-        if (columnIndex !== -1) {
-            setHeaders(headers.filter((_, i) => i !== columnIndex));
-            setTableData(tableData.map(row => row.filter((_, i) => i !== columnIndex)));
-        } else {
-            console.warn(`Column "${headerName}" does not exist.`);
-        }
-    };
-    const removeColumn2 = (label) => {
-        // Encuentra los índices de los headers con el label dado
-        const indicesToRemove = dynamicHeadersData
-            .map((header, index) => (header.label === label ? index : -1))
-            .filter(index => index !== -1);
-
-        // Elimina los headers correspondientes de dynamicHeadersData
-        const newHeadersData = dynamicHeadersData.filter(
-            (_, index) => !indicesToRemove.includes(index)
-        );
-        setDynamicHeadersData(newHeadersData);
-
-        // Elimina las columnas correspondientes (índice + 16) de cada fila en tableData
+        // Eliminar la columna de tableData
         const newTableData = tableData.map(row => {
-            const newRow = [...row]; // copia del array
-            // Eliminamos columnas desde el final para evitar desajustes de índice
-            indicesToRemove
-                .map(index => index + 16)
-                .sort((a, b) => b - a)
-                .forEach(colIndex => {
-                    newRow.splice(colIndex, 1);
-                });
-            return newRow;
+            // Eliminar la columna en la posición indexToRemove de cada fila
+            const updatedRow = [...row]; // Crear una copia de la fila
+            updatedRow.splice(indexToRemove, 1); // Eliminar la columna
+            return updatedRow;
         });
+
+        // Eliminar la columna de tableDataReference
+        const newTableDataReference = tableDataReference.map(row => {
+            // Eliminar la columna en la posición indexToRemove de cada fila
+            const updatedRow = [...row]; // Crear una copia de la fila
+            updatedRow.splice(indexToRemove, 1); // Eliminar la columna
+            return updatedRow;
+        });
+
+        // Actualizar el estado de las tablas con las nuevas filas sin la columna eliminada
         setTableData(newTableData);
+        setTableDataReference(newTableDataReference);
+        console.log(newTableData)
     };
 
 
@@ -473,8 +494,10 @@ export const FlowMIPSProvider = ({ children }) => {
 
 
     const addRow = () => {
-        const newRow = new Array(headers.length + dynamicHeadersData.length).fill(''); // Valor predeterminado para la nueva fila
+        const newRow = new Array(sumAllHandleBits()).fill(''); // Valor predeterminado para la nueva fila
         setTableData([...tableData, newRow]);
+        console.log("sumAllHandleBits");
+        console.log(sumAllHandleBits());
     };
 
     const removeRow = (index) => {
@@ -491,18 +514,6 @@ export const FlowMIPSProvider = ({ children }) => {
         setTableData(newData);
     };
 
-    const editHeader = (colIndex, newHeader) => {
-        const oldHeader = headers[colIndex];
-        const newHeaders = [...headers];
-        newHeaders[colIndex] = newHeader;
-        setHeaders(newHeaders);
-
-        // Si el header modificado coincide con un dynamic handle, también actualiza su label
-        const dynamicHandle = dynamicControlHandles.find(h => h.label === oldHeader);
-        if (dynamicHandle) {
-            updateDynamicHandleLabel(oldHeader, newHeader);
-        }
-    };
     const editHeader2 = (colIndex, newLabel) => {
         const targetIndex = colIndex - 16;
         if (targetIndex < 0 || targetIndex >= dynamicHeadersData.length) return;
@@ -532,9 +543,8 @@ export const FlowMIPSProvider = ({ children }) => {
     }
     const [activeInfoPanel, setActiveInfoPanel] = useState(infoPanelTypes.none);
 
-    /*
+    /**
      * Active panel
-     *
      */
     const [currentPanel, setCurrentPanel] = useState(0);
     useEffect(() => {
@@ -594,25 +604,32 @@ export const FlowMIPSProvider = ({ children }) => {
 
             ...letterNodes,
 
+            staticHeadersData,
             staticControlHandleInput,
             staticControlHandles,
             updateStaticHandleBits,
 
+            changeStaticHandleBits,
+            sumStaticHandleBits,
+            sumDynamicHandleBits,
+            sumBitsBeforeStaticLabel,
+            sumBitsBeforeDynamicLabel,
+            sumAllHandleBits,
+
             dynamicHeadersData,
-            addDynamicHandle2,removeDynamicHandle2,editHeader2,
+            addDynamicHandle,removeDynamicHandle,editHeader2,
 
 
             dynamicControlHandles,
-            addDynamicHandle,
-            removeDynamicHandle,
             updateDynamicHandleBits,
             updateDynamicHandleSide,
             updateDynamicHandleLabel,
 
-            headers,
-            tableData,
 
-            editHeader,
+
+            tableData,
+            tableDataReference,
+
             editCell,
             getRowNumberInBinary,
 
