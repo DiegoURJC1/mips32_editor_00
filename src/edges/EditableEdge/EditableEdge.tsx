@@ -146,13 +146,15 @@ export function EditableEdgeComponent(
             <BaseEdge
                 id={id}
                 path={path}
-                {...restDelegated} // ✅ Solo pasamos los props válidos
+                {...restDelegated}
                 markerStart={markerStart}
                 markerEnd={markerEnd}
                 style={{
                     ...style,
-                    strokeWidth: 2,
-                    stroke: edgeColor, // Usamos el color basado en la coincidencia de los bits
+                    stroke: edgeColor,
+                    strokeWidth: selected ? 4 : 2,
+                    filter: selected ? 'drop-shadow(0 0 4px rgba(50,50,50,0.2))' : 'none',
+                    transition: 'stroke-width 0.2s, filter 0.2s',
                 }}
             />
 
