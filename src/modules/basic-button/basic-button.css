@@ -26,3 +26,10 @@
 .basic-button:active{
     scale: 95%;
 }
+
+.svg-icon-small-download {
+    display: flex;
+    align-items: center;
+    height: 1em;
+    color: inherit;
+}
