@@ -110,7 +110,7 @@ export default function CustomNodeToolbar(props) {
                         <div className={"node-toolbar-section-title"}>Info básica</div>
                         <div className={"content-tab-content"}>
                             <div className={"node-toolbar-subsection-title"}>
-                                {props.data?.label != null && !isNaN(props.data.label) && isFinite(props.data.label)
+                                {currentPanel === 0 &&props.data?.label != null && !isNaN(props.data.label) && isFinite(props.data.label)
                                     ? 'Número'
                                     : props.data?.label || 'No label provided'}
                             </div>

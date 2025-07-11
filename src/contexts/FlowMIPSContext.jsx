@@ -319,37 +319,40 @@ export const FlowMIPSProvider = ({ children }) => {
 
 
     const removeDynamicHandle = (label) => {
-        if (!dynamicControlHandles.some(h => h.label === label)) return;
         const handle = dynamicControlHandles.find(h => h.label === label);
+        if (!handle) return;
 
-        const indexToRemove = sumStaticHandleBits() + sumBitsBeforeDynamicLabel(handle.label);
+        const bitsToRemove = handle.bits;
+        const startIndex = sumStaticHandleBits() + sumBitsBeforeDynamicLabel(handle.label);
 
+        // Actualizar los contadores
         if (handle.isLeft) {
-            setNumHandles({left: numHandles.left-1, right: numHandles.right});
+            setNumHandles({ left: numHandles.left - 1, right: numHandles.right });
         } else {
-            setNumHandles({left: numHandles.left, right: numHandles.right-1});
+            setNumHandles({ left: numHandles.left, right: numHandles.right - 1 });
         }
-        setDynamicControlHandles(prev => prev.filter(h => h.label !== label));
-        for (let i = 0; i < handle.bits; i++) {
-            const newTableData = tableData.map(row => {
-                // Eliminar la columna en la posición indexToRemove de cada fila
-                const updatedRow = [...row]; // Crear una copia de la fila
-                updatedRow.splice(indexToRemove+i, 1); // Eliminar la columna
-                return updatedRow;
-            });
 
-            // Eliminar la columna de tableDataReference
-            const newTableDataReference = tableDataReference.map(row => {
-                // Eliminar la columna en la posición indexToRemove de cada fila
-                const updatedRow = [...row]; // Crear una copia de la fila
-                updatedRow.splice(indexToRemove+i, 1); // Eliminar la columna
-                return updatedRow;
-            });
-            // Actualizar el estado de las tablas con las nuevas filas sin la columna eliminada
-            setTableData(newTableData);
-            setTableDataReference(newTableDataReference);
-        }
-        console.log(tableData)
+        // Eliminar el handle
+        setDynamicControlHandles(prev => prev.filter(h => h.label !== label));
+
+        // Crear nuevas tablas eliminando las columnas necesarias de una sola vez
+        const newTableData = tableData.map(row => {
+            const updatedRow = [...row];
+            updatedRow.splice(startIndex, bitsToRemove); // Eliminar múltiples columnas de golpe
+            return updatedRow;
+        });
+
+        const newTableDataReference = tableDataReference.map(row => {
+            const updatedRow = [...row];
+            updatedRow.splice(startIndex, bitsToRemove); // Igual aquí
+            return updatedRow;
+        });
+
+        // Aplicar los nuevos datos
+        setTableData(newTableData);
+        setTableDataReference(newTableDataReference);
+
+        console.log(`Handle "${label}" eliminado correctamente.`);
     };
 
     const updateDynamicHandleBits = (label, bits) => {
