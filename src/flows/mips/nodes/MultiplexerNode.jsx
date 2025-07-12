@@ -10,7 +10,7 @@ import ButtonWithIconSmall, {
 import HandlesMapper from "../../../handles/HandlesMapper.jsx";
 
 export default function MultiplexerNode({ id, data, isConnectable }) {
-    const { setEdges } = useReactFlow();
+    const { setEdges, getNodes } = useReactFlow();
     const connections = useNodeConnections(id);
     //console.log(`${id}: ${connections[0].target}, ${connections[0].targetHandle}, ${connections[0].source}, ${connections[0].sourceHandle}`);
 
@@ -20,6 +20,8 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
         addMultiplexerInput,
         removeMultiplexerInput,
         setMultiplexerInputCount,
+
+        staticControlHandles,
 
         changeStaticHandleBits,
     } = useFlowMIPS();
@@ -35,7 +37,7 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
     ), [inputsCount]);
 
     const calculateBitsControl = (numInputs) => Math.ceil(Math.log2(numInputs));
-    const [bitsControl, setBitsControl] = useState(calculateBitsControl(inputsCount));
+    const bitsControl = useMemo(() => calculateBitsControl(inputsCount), [inputsCount]);
     const [handleBits, setHandleBits] = useState({});
 
     const size = {
@@ -44,23 +46,27 @@ export default function MultiplexerNode({ id, data, isConnectable }) {
     };
 
     useEffect(() => {
-        setBitsControl(calculateBitsControl(inputsCount));
-
-        // Verificamos si la conexión al handle de control está activa
         connections.forEach((connection) => {
-            // Verificamos si la conexión es al handle de control
-            if (connection.targetHandle === `control-input-${id}` && connection.sourceHandle === 'control') {
+            if (
+                connection.targetHandle === `control-input-${id}` &&
+                connection.source === 'control' &&
+                connection.target === id
+            ) {
                 const controlHandleId = connection.sourceHandle;
 
-                // Si los bitsControl han cambiado, actualizamos con changeStaticHandleBits
-                if (bitsControl !== null && bitsControl !== undefined) {
-                    changeStaticHandleBits(controlHandleId, bitsControl);
+                // Buscar en staticControlHandles el objeto con id igual a controlHandleId
+                const handle = staticControlHandles.find(h => h.id === controlHandleId);
+                if (handle && handle.label) {
+                    changeStaticHandleBits(handle.label, bitsControl);
+                    console.log(`bitsControl: ${bitsControl}`);
+                    console.log(`label usado: ${handle.label}`);
+                } else {
+                    console.log(`handle con id ${controlHandleId} no encontrado o sin label`);
                 }
-                console.log(`bitsControl: ${bitsControl}`);
-                console.log(`controlHandleId: ${controlHandleId}`);
             }
         });
-    }, [inputsCount]);
+    }, [inputsCount, connections, id, bitsControl]);
+
 
     const dynamicHandles = useMemo(() => (
         numInputs.map((inputId, index) => ({

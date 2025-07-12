@@ -277,7 +277,7 @@ const initialConnectionList = [
         originHandleId: "output-[15-0]-instructionRegister",
         destinyNodeId: "aluControl",
         destinyHandleId: "input-aluControl",
-        assignedBits: 5
+        assignedBits: 6
     },
     {
         originNodeId: "aluControl",

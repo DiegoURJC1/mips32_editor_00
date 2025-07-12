@@ -413,7 +413,7 @@ export const aluControlHandleList = [
         id: "input-aluControl",
         type: "target",
         position: Position.Left,
-        bits: 5,
+        bits: 6,
         connectioncount: 1,
         label: null,
         name: "Entrada",

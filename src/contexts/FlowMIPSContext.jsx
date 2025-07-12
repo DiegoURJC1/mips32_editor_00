@@ -383,34 +383,66 @@ export const FlowMIPSProvider = ({ children }) => {
     /**
      * Static handles
      */
-    const changeStaticHandleBits = (handleId, newNumBit) => {
-        if (newNumBit <= 0 || newNumBit > 32) return;
-        const handle = staticControlHandles.find(h => h.id === handleId);
-        if (!handle) return;
+    const changeStaticHandleBits = (label, newNumBit) => {
+        if (newNumBit < 1 || newNumBit > 32) return;
 
-        const handleIndex = staticControlHandles.findIndex(h => h.id === handleId);
-        if (handleIndex === -1) return;
+        const handleIndex = staticControlHandles.findIndex(h => h.label === label);
+        if (handleIndex === -1) {
+            console.log("Label no encontrado");
+            return;
+        }
 
-        const sumBefore = staticControlHandles.slice(0, handleIndex).reduce((total, handle) => total + handle.bits, 0);
+        const handle = staticControlHandles[handleIndex];
+        const oldNumBit = handle.bits;
 
-        setStaticControlHandles(prev => prev.map((h, index) => index === handleIndex ? { ...h, bits: newNumBit } : h));
+        const realIndex = sumBitsBeforeStaticLabel(label) - 1;
 
-        tableData(prevData => {
-            const newData = [...prevData];
-            // Insertamos una nueva columna vacía en el índice dado
-            newData.forEach(row => row.splice(handleIndex, 0, "")); // Insertamos columna vacía
-            return newData;
-        });
+        if (newNumBit === oldNumBit + 1) {
+            setStaticControlHandles(prev =>
+                prev.map((h, i) => i === handleIndex ? { ...h, bits: newNumBit } : h)
+            );
 
-        tableDataReference(prevData => {
-            const newData = [...prevData];
-            // Insertamos una nueva columna vacía en el índice dado
-            newData.forEach(row => row.splice(handleIndex, 0, "")); // Insertamos columna vacía
-            return newData;
-        });
+            setTableData(prevData =>
+                prevData.map(row => {
+                    const newRow = [...row];
+                    newRow.splice(realIndex + oldNumBit, 0, ""); // columna vacía
+                    return newRow;
+                })
+            );
 
-        // Puedes usar `sumBefore` como desees, aquí solo lo calculamos
-        console.log(`Suma de los bits anteriores: ${sumBefore}`);
+            setTableDataReference(prevData =>
+                prevData.map(row => {
+                    const newRow = [...row];
+                    newRow.splice(realIndex + oldNumBit, 0, "X"); // columna con 'X'
+                    return newRow;
+                })
+            );
+
+        } else if (newNumBit === oldNumBit - 1) {
+            setStaticControlHandles(prev =>
+                prev.map((h, i) => i === handleIndex ? { ...h, bits: newNumBit } : h)
+            );
+
+            setTableData(prevData =>
+                prevData.map(row => {
+                    const newRow = [...row];
+                    newRow.splice(realIndex + newNumBit, 1); // eliminar columna
+                    return newRow;
+                })
+            );
+
+            setTableDataReference(prevData =>
+                prevData.map(row => {
+                    const newRow = [...row];
+                    newRow.splice(realIndex + newNumBit, 1);
+                    return newRow;
+                })
+            );
+
+        } else {
+            console.log("El nuevo número de bits debe ser exactamente 1 bit más o 1 bit menos que el actual.");
+            return;
+        }
     };
 
     const sumStaticHandleBits = () => {

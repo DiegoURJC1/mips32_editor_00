@@ -56,6 +56,13 @@ export default function ControlNode(
             setHandleBits(Number(value));
         }
     };
+
+    useEffect(() => {
+        data.handles = [...staticControlHandleInput, ...staticControlHandles, ...dynamicControlHandles];
+        updateNodeInternals(id);
+    }, [staticControlHandles, dynamicControlHandles, data, id, updateNodeInternals]);
+
+    const handles = Array.isArray(data.handles) ? data.handles : [];
     return (
         <>
             <CustomNodeToolbar data={data} nodeId={id} handles={data.handles}>
@@ -105,7 +112,7 @@ export default function ControlNode(
             >
                     {data.label}
 
-                <HandlesMapper handleList={[...staticControlHandleInput, ...staticControlHandles, ...dynamicControlHandles]} isConnectable={isConnectable} />
+                <HandlesMapper handleList={handles} isConnectable={isConnectable} />
             </div>
         </>
     );
