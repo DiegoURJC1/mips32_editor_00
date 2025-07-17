@@ -83,7 +83,7 @@ export default function SidePanel(props) {
                     <label>
                         Mini mapa:
                         <BasicButton
-                            style={{ margin: '5px', height: 'fit-content' }}
+                            style={{ margin: '5px', padding: "0.2em 0.4em", borderRadius: "0.4em" }}
                             onClick={handleMiniMapSwitchSettings}
                         >
                             {settings.minimap ? 'Desactivar' : 'Activar'}

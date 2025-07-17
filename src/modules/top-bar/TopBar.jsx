@@ -4,6 +4,7 @@ import statesIcon from "/src/assets/icons/statesFlowPanel.svg";
 import tableIcon from "/src/assets/icons/tablePanel.svg";
 import "./top-bar.css";
 import { useFlowMIPS } from "../../contexts/FlowMIPSContext.jsx";
+import BasicButton from "../basic-button/BasicButton.jsx";
 
 function TopBar({ currentPanel, setCurrentPanel }) {
     const mipsFlowPanel = 0;
@@ -41,6 +42,14 @@ function TopBar({ currentPanel, setCurrentPanel }) {
                 </div>
             </div>
             <div className={"top-bar-right-wrapper"}>
+                <BasicButton
+                    style={{ padding: "0.1em 0.2em", fontSize: "0.5em", borderRadius: "0.6em" }}
+                    onClick={() => {
+                        window.open(`${import.meta.env.BASE_URL}/Instrucciones_de_uso.pdf`, "_blank");
+                    }}
+                >
+                    Instrucciones
+                </BasicButton>
                 <div
                     className={"info-button"}
                     onClick={handleInfButtonClick}
