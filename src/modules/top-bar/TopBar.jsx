@@ -19,7 +19,7 @@ function TopBar({ currentPanel, setCurrentPanel }) {
     return (
         <nav className={"top-bar"}>
             <div className={"top-bar-left-wrapper"}>
-                MIPS32
+                MULTIEDIT32
                 <div className={"panel-buttons-wrapper"}>
                     <ButtonWithIcon
                         icon={mipsIcon}
